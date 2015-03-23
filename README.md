@@ -9,6 +9,6 @@ A sample property file that tests on your local system is in `src/test/resources
 To run the tests, you run maven with the target `test`.
 The configuration file should be specified by setting the environment variable
 
-    jenkins.propsfile=/path/to/the/properties
+    jenkins_propsfile=/path/to/the/properties
 
 ![](doc/run-configuration-eclipse.png "Eclipse run configuration")
