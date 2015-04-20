@@ -5,6 +5,7 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +123,10 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		waitForElement(By.linkText("Next →"));
 		driver.findElement(By.linkText("Next →")).click();
 
+		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(4).active"));
+		waitForElement(By.linkText("Next →"));
+		driver.findElement(By.linkText("Next →")).click();
+
 		waitForElement(By.cssSelector("div.panel-success"));
 	}
 
@@ -176,7 +181,8 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		driver.findElements(By.cssSelector("div.molgenis-tree span.fancytree-has-children span.fancytree-checkbox"))
 				.forEach(WebElement::click);
 
-		List<WebElement> elements = driver.findElements(By.cssSelector(".molgenis-table-container tr"));
+		List<WebElement> elements = new ArrayList<WebElement>(driver.findElements(By
+				.cssSelector(".molgenis-table-container tr")));
 		Set<String> expected = new TreeSet<String>();
 		expected.addAll(Arrays
 				.asList("ABCA4 601691 Fundus flavimaculatus,Macular degeneration, age...   3 RP19,CORD3,ARMD2,ABCA4,STGD1,FFM,ABCR 1p22.1 153800,248200,604116,601718 HP:0008736,HP:0007703,HP:0007868,HP:0000551,HP:... ABCA4 Glaucoma,Hyperinsulinemia,Retinitis pigmentosa,... ORPHANET,OMIM 1872,791,153800,248200,604116,601718 24",
