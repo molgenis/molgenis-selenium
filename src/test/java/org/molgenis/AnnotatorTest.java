@@ -5,6 +5,7 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +123,10 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		waitForElement(By.linkText("Next →"));
 		driver.findElement(By.linkText("Next →")).click();
 
+		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(4).active"));
+		waitForElement(By.linkText("Next →"));
+		driver.findElement(By.linkText("Next →")).click();
+
 		waitForElement(By.cssSelector("div.panel-success"));
 	}
 
@@ -176,13 +181,14 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		driver.findElements(By.cssSelector("div.molgenis-tree span.fancytree-has-children span.fancytree-checkbox"))
 				.forEach(WebElement::click);
 
-		List<WebElement> elements = driver.findElements(By.cssSelector(".molgenis-table-container tr"));
+		List<WebElement> elements = new ArrayList<WebElement>(driver.findElements(By
+				.cssSelector(".molgenis-table-container tr")));
 		Set<String> expected = new TreeSet<String>();
 		expected.addAll(Arrays
-				.asList("ABCA4 601691 Fundus flavimaculatus,Macular degeneration, age... 3 RP19,CORD3,ARMD2,ABCA4,STGD1,FFM,ABCR 1p22.1 153800,248200,604116,601718 HP:0008736,HP:0007703,HP:0007868,HP:0000551,HP:... ABCA4 Glaucoma,Hyperinsulinemia,Retinitis pigmentosa,... ORPHANET,OMIM 1872,791,153800,248200,604116,601718 24",
-						"ESPN 606351 Deafness, autosomal recessive 36 3 ESPN 1p36.31 609006 HP:0000407,HP:0000007,HP:0008568 ESPN Sensorineural hearing impairment,Autosomal rece... OMIM 609006 83715",
-						"H6PD 138090 Cortisone reductase deficiency 1 3 H6PD,G6PDH,GDH,CORTRD1 1p36.22 604931 HP:0001061,HP:0000007,HP:0000876,HP:0001513,HP:... H6PD Obesity,Infertility,Acne,Hirsutism,Autosomal re... OMIM 604931 9563",
-						"HSPG2 142461 Dyssegmental dysplasia, Silverman-Handmaker typ... 3 SJS1,PLC,SJA,HSPG2,SJS 1p36.12 224410,255800 HP:0002673,HP:0000252,HP:0010978,HP:0004298,HP:... HSPG2 Abnormality of the pharynx,Wrist flexion contra... OMIM 224410,255800 3339"));
+				.asList("ABCA4 601691 Fundus flavimaculatus,Macular degeneration, age...   3 RP19,CORD3,ARMD2,ABCA4,STGD1,FFM,ABCR 1p22.1 153800,248200,604116,601718 HP:0008736,HP:0007703,HP:0007868,HP:0000551,HP:... ABCA4 Glaucoma,Hyperinsulinemia,Retinitis pigmentosa,... ORPHANET,OMIM 1872,791,153800,248200,604116,601718 24",
+						"ESPN 606351 Deafness, autosomal recessive 36   3 ESPN 1p36.31 609006 HP:0000407,HP:0000007,HP:0008568 ESPN Sensorineural hearing impairment,Autosomal rece... OMIM 609006 83715",
+						"H6PD 138090 Cortisone reductase deficiency 1   3 H6PD,G6PDH,GDH,CORTRD1 1p36.22 604931 HP:0001061,HP:0000007,HP:0000876,HP:0001513,HP:... H6PD Obesity,Infertility,Acne,Hirsutism,Autosomal re... OMIM 604931 9563",
+						"HSPG2 142461 Dyssegmental dysplasia, Silverman-Handmaker typ...   3 SJS1,PLC,SJA,HSPG2,SJS 1p36.12 224410,255800 HP:0002673,HP:0000252,HP:0010978,HP:0004298,HP:... HSPG2 Abnormality of the pharynx,Wrist flexion contra... OMIM 224410,255800 3339"));
 		Set<String> rows = elements.stream().map(WebElement::getText).collect(Collectors.toCollection(TreeSet::new));
 		LOG.info("Data table rows:\n" + Joiner.on('\n').join(rows));
 		Assert.assertEquals(rows, expected);
