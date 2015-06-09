@@ -317,10 +317,8 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			// TODO related to issue: A REST API request with a logged out token gives error message in HTML instead of
-			// JSON #3068
-			// assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-			// "{\"errors\":[{\"message\":\"No READ permission on entity LoggingEvent\"}]}");
+			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
+					"{\"errors\":[{\"message\":\"No READ permission on entity LoggingEvent\"}]}");
 		}
 	}
 }
