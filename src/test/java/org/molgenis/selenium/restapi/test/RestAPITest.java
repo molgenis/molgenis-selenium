@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,8 @@ import org.springframework.web.client.RestTemplate;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Automated version of the REST API test sheet.
@@ -126,12 +129,11 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		RestTemplate template = new RestTemplate();
 		template.setMessageConverters(asList(new GsonHttpMessageConverter(true)));
 		String apiHref = baseUrl + "/api/v1";
-		System.out.println(apiHref);
 		client = new MolgenisClient(template, apiHref);
 	}
 
 	@Test
-	public void testAnonymousUserHasNoReadPermissionOnLoggingEvent()
+	public void testAnonymousUserHasNoReadPermissions()
 	{
 		System.out.println("anonymous gets...");
 		try
@@ -142,8 +144,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No READ permission on entity LoggingEvent\"}]}");
+			assertEquals(parseErrorMessage(actual), "No READ permission on entity LoggingEvent");
 		}
 
 		try
@@ -154,8 +155,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No READ permission on entity ScriptType\"}]}");
+			assertEquals(parseErrorMessage(actual), "No READ permission on entity ScriptType");
 		}
 
 		try
@@ -166,8 +166,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No READ permission on entity UserAuthority\"}]}");
+			assertEquals(parseErrorMessage(actual), "No READ permission on entity UserAuthority");
 		}
 
 		try
@@ -178,15 +177,18 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No READ permission on entity GroupAuthority\"}]}");
+			assertEquals(parseErrorMessage(actual), "No READ permission on entity GroupAuthority");
 		}
 	}
 
-	public String formatResponseBodyAsStringToOneLine(String s)
+	public static String parseErrorMessage(HttpClientErrorException actual)
 	{
-		String result = s.replaceAll("(\\n)|(\\s{2,})", "");
-		return result.replaceAll("(\\:\\s{1,1})", "\\:");
+		Gson gson = new Gson();
+		TypeToken<Map<String, List<Map<String, String>>>> type = new TypeToken<Map<String, List<Map<String, String>>>>()
+		{
+		};
+		Map<String, List<Map<String, String>>> object = gson.fromJson(actual.getResponseBodyAsString(), type.getType());
+		return object.get("errors").get(0).get("message");
 	}
 
 	@Test
@@ -205,8 +207,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No READ permission on entity UserAuthority\"}]}");
+			assertEquals(parseErrorMessage(actual), "No READ permission on entity UserAuthority");
 		}
 
 		try
@@ -217,8 +218,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No READ permission on entity GroupAuthority\"}]}");
+			assertEquals(parseErrorMessage(actual), "No READ permission on entity GroupAuthority");
 		}
 	}
 
@@ -247,8 +247,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No WRITE permission on entity ScriptType\"}]}");
+			assertEquals(parseErrorMessage(actual), "No WRITE permission on entity ScriptType");
 		}
 	}
 
@@ -265,8 +264,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No WRITE permission on entity UserAuthority\"}]}");
+			assertEquals(parseErrorMessage(actual), "No WRITE permission on entity UserAuthority");
 		}
 	}
 
@@ -283,8 +281,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"No WRITE permission on entity GroupAuthority\"}]}");
+			assertEquals(parseErrorMessage(actual), "No WRITE permission on entity GroupAuthority");
 		}
 	}
 
@@ -300,8 +297,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), BAD_REQUEST);
-			assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-					"{\"errors\":[{\"message\":\"Missing token in header\"}]}");
+			assertEquals(parseErrorMessage(actual), "Missing token in header");
 		}
 	}
 
@@ -318,10 +314,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			// TODO related to issue: A REST API request with a logged out token gives error message in HTML instead of
-			// JSON #3068
-			// assertEquals(formatResponseBodyAsStringToOneLine(actual.getResponseBodyAsString()),
-			// "{\"errors\":[{\"message\":\"No READ permission on entity LoggingEvent\"}]}");
+			assertEquals(parseErrorMessage(actual), "No READ permission on entity LoggingEvent");
 		}
 	}
 }
