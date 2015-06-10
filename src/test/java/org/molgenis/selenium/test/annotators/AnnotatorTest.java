@@ -1,4 +1,4 @@
-package org.molgenis.selenium.annotators.test;
+package org.molgenis.selenium.test.annotators;
 
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertTrue;
@@ -17,7 +17,7 @@ import org.molgenis.DriverType;
 import org.molgenis.MolegnisSeleniumUtils;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.data.rest.client.bean.QueryResponse;
-import org.molgenis.selenium.security.login.SignInAppModel;
+import org.molgenis.selenium.model.security.login.SignInAppModel;
 import org.molgenis.util.GsonHttpMessageConverter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

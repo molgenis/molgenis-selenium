@@ -1,4 +1,4 @@
-package org.molgenis.selenium.security.login;
+package org.molgenis.selenium.model.security.login;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

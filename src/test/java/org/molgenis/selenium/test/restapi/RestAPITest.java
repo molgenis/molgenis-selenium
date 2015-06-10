@@ -1,4 +1,4 @@
-package org.molgenis.selenium.restapi.test;
+package org.molgenis.selenium.test.restapi;
 
 import static java.util.Arrays.asList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
