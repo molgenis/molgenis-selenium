@@ -1,8 +1,6 @@
 target/
 /bin/
 /test-output/
-src/test/resources/molgenis01.properties
-src/test/resources/molgenis62.properties
 .project
 .classpath
 .settings
