@@ -12,17 +12,17 @@ public class MolegnisSeleniumUtils
 {
 	public static void waitForElement(By by, WebDriver webDriver) throws InterruptedException
 	{
-		waitFor(() -> isElementPresent(by, webDriver));
+		MolegnisSeleniumUtils.waitFor(() -> MolegnisSeleniumUtils.isElementPresent(by, webDriver));
 	}
 
 	public static void waitForElementInvisible(By by, WebDriver webDriver) throws InterruptedException
 	{
-		waitFor(() -> !webDriver.findElement(by).isDisplayed());
+		MolegnisSeleniumUtils.waitFor(() -> !webDriver.findElement(by).isDisplayed());
 	}
 
 	public static void waitFor(BooleanSupplier p) throws InterruptedException
 	{
-		waitFor(p, 60);
+		MolegnisSeleniumUtils.waitFor(p, 60);
 	}
 
 	public static void waitFor(BooleanSupplier p, int timeout) throws InterruptedException

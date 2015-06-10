@@ -11,11 +11,13 @@ public enum DriverType implements DriverSetup
 
 	FIREFOX
 	{
+		@Override
 		public DesiredCapabilities getDesiredCapabilities()
 		{
 			return DesiredCapabilities.firefox();
 		}
 
+		@Override
 		public WebDriver getWebDriverInstance(DesiredCapabilities capabilities)
 		{
 			FirefoxDriver driver = new FirefoxDriver(capabilities);
