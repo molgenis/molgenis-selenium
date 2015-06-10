@@ -1,6 +1,9 @@
-package org.molgenis;
+package org.molgenis.selenium.annotators.test;
 
 import static java.util.Arrays.asList;
+import static org.molgenis.selenium.config.MolegnisSeleniumUtils.isElementPresent;
+import static org.molgenis.selenium.config.MolegnisSeleniumUtils.waitFor;
+import static org.molgenis.selenium.config.MolegnisSeleniumUtils.waitForElement;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
@@ -77,10 +80,10 @@ public class AnnotatorTest extends AbstractSeleniumTests
 		driver.get(baseUrl + "/");
 		String uploadLinkText = "Import data";
 		uploadLinkText = "Upload";
-		super.waitForElement(By.linkText(uploadLinkText));
+		waitForElement(By.linkText(uploadLinkText), driver);
 		driver.findElement(By.linkText(uploadLinkText)).click();
-		super.waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(1).active"));
-		super.waitForElement(By.name("upload"));
+		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(1).active"), driver);
+		waitForElement(By.name("upload"), driver);
 
 		// http://stackoverflow.com/questions/5610256/file-upload-using-selenium-webdriver-and-java
 		File file;
@@ -97,19 +100,19 @@ public class AnnotatorTest extends AbstractSeleniumTests
 		driver.findElement(By.name("upload")).sendKeys(file.getAbsolutePath());
 		driver.findElement(By.linkText("Next →")).click();
 
-		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(2).active"));
-		waitForElement(By.linkText("Next →"));
+		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(2).active"), driver);
+		waitForElement(By.linkText("Next →"), driver);
 		driver.findElement(By.linkText("Next →")).click();
 
-		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(3).active"));
-		waitForElement(By.linkText("Next →"));
+		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(3).active"), driver);
+		waitForElement(By.linkText("Next →"), driver);
 		driver.findElement(By.linkText("Next →")).click();
 
-		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(4).active"));
-		waitForElement(By.linkText("Next →"));
+		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(4).active"), driver);
+		waitForElement(By.linkText("Next →"), driver);
 		driver.findElement(By.linkText("Next →")).click();
 
-		super.waitForElement(By.cssSelector("div.panel-success"));
+		waitForElement(By.cssSelector("div.panel-success"), driver);
 	}
 
 	@Test
@@ -136,11 +139,11 @@ public class AnnotatorTest extends AbstractSeleniumTests
 		openDataset();
 		LOG.info("openDataset done.");
 
-		waitForElement(By.linkText("Annotators"));
+		waitForElement(By.linkText("Annotators"), driver);
 		LOG.info("click annotators...");
 		driver.findElement(By.linkText("Annotators")).click();
 		LOG.info("click annotators done.");
-		waitForElement(By.cssSelector("#annotate-dataset-form a.select-all-btn"));
+		waitForElement(By.cssSelector("#annotate-dataset-form a.select-all-btn"), driver);
 		Thread.sleep(1000);
 		LOG.info("click HGNC");
 		driver.findElement(By.cssSelector("#enabled-annotator-selection-container input[value=HGNC-Symbol]")).click();
@@ -149,13 +152,13 @@ public class AnnotatorTest extends AbstractSeleniumTests
 		LOG.info("click annotate button");
 		driver.findElement(By.id("annotate-dataset-button")).click();
 		LOG.info("Wait for result");
-		waitFor(() -> isElementPresent(By.linkText("Show result"))
+		waitFor(() -> isElementPresent(By.linkText("Show result"), driver)
 				&& driver.findElement(By.linkText("Show result")).isDisplayed(), 240);
 		LOG.info("found result, click Show Result");
 		driver.findElement(By.linkText("Show result")).click();
 
 		LOG.info("Wait for annotator attribute");
-		waitForElement(By.cssSelector("a.tree-deselect-all-btn"));
+		waitForElement(By.cssSelector("a.tree-deselect-all-btn"), driver);
 		driver.findElement(By.cssSelector("a.tree-deselect-all-btn")).click();
 
 		Thread.sleep(1000);
@@ -180,7 +183,7 @@ public class AnnotatorTest extends AbstractSeleniumTests
 	private void openDataset() throws InterruptedException
 	{
 		driver.get(baseUrl + "/menu/main/dataexplorer?entity=test_entity");
-		waitFor(() -> isElementPresent(By.id("entity-class-name"))
+		waitFor(() -> isElementPresent(By.id("entity-class-name"), driver)
 				&& driver.findElement(By.id("entity-class-name")).getText().contains("test_entity"));
 	}
 
