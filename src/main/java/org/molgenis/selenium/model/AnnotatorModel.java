@@ -1,4 +1,4 @@
-package org.molgenis.selenium.test.annotators;
+package org.molgenis.selenium.model;
 
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertTrue;
@@ -12,48 +12,54 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.molgenis.AbstractSeleniumTests;
-import org.molgenis.DriverType;
 import org.molgenis.MolegnisSeleniumUtils;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.data.rest.client.bean.QueryResponse;
-import org.molgenis.selenium.model.security.login.SignInAppModel;
 import org.molgenis.util.GsonHttpMessageConverter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import com.google.common.base.Joiner;
 
-public class AnnotatorTest extends AbstractSeleniumTests
+/**
+ * This is a model of the MOLGENIS login user interface
+ */
+public class AnnotatorModel
 {
-	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorModel.class);
 
-	private WebDriver driver = DriverType.FIREFOX.getDriver();;
-
-	@Value("${anntest.baseurl}")
-	private String baseUrl;
-	@Value("${anntest.uid}")
-	private String uid;
-	@Value("${anntest.pwd}")
-	private String pwd;
 	private MolgenisClient molgenisClient;
 	private String token;
+	private WebDriver driver;
+	
+	public AnnotatorModel(WebDriver driver){
+		this.driver = driver;
+	}
 
-	public void deleteTestEntity()
+	public void createMolgenisClient(String baseUrl)
 	{
-		molgenisClient.deleteMetadata("test_entity");
+		String apiURL = String.format("%s/api/v1", baseUrl);
+		LOG.info("apiURL = " + apiURL);
+		RestTemplate template = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+		template.setMessageConverters(asList(new GsonHttpMessageConverter(true)));
+		molgenisClient = new MolgenisClient(template, apiURL);
+	}
+
+	public void loginRestApi(String uid, String pwd)
+	{
+		LOG.info("login REST api");
+		token = molgenisClient.login(uid, pwd).getToken();
 	}
 
 	public void enableAnnotators()
 	{
+		LOG.info("Enable annotators");
 		QueryResponse queryResponse = molgenisClient.queryEquals(token, "RuntimeProperty", "Name",
 				"plugin.dataexplorer.mod.annotators");
 		Map<String, Object> item = queryResponse.getItems().get(0);
@@ -65,16 +71,15 @@ public class AnnotatorTest extends AbstractSeleniumTests
 		molgenisClient.update(token, "RuntimeProperty", id, "Value", "true");
 	}
 
-	public void login() throws Exception
+	public void deleteTestEntity()
 	{
-		driver.get(baseUrl + "/");
-		SignInAppModel signin = new SignInAppModel(driver);
-		signin.open();
-		signin.signIn(uid, pwd);
+		LOG.info("Delete test_entity");
+		molgenisClient.deleteMetadata("test_entity");
 	}
 
-	public void upload() throws Exception
+	public void uploadDataFile(String baseUrl) throws Exception
 	{
+		LOG.info("upload datafile");
 		driver.get(baseUrl + "/");
 		String uploadLinkText = "Import data";
 		uploadLinkText = "Upload";
@@ -113,48 +118,55 @@ public class AnnotatorTest extends AbstractSeleniumTests
 		MolegnisSeleniumUtils.waitForElement(By.cssSelector("div.panel-success"), driver);
 	}
 
-	@Test
-	public void testAnnotateAll() throws Exception
+	public void openDataset(String baseUrl) throws InterruptedException
 	{
-		String apiURL = String.format("%s/api/v1", baseUrl);
-		LOG.info("apiURL = " + apiURL);
-		RestTemplate template = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-		template.setMessageConverters(asList(new GsonHttpMessageConverter(true)));
-		molgenisClient = new MolgenisClient(template, apiURL);
-		LOG.info("login REST api");
-		token = molgenisClient.login(uid, pwd).getToken();
-		LOG.info("Enable annotators");
-		enableAnnotators();
-		LOG.info("Delete test_entity");
-		deleteTestEntity();
-
-		LOG.info("login");
-		login();
-		LOG.info("upload datafile");
-		upload();
-
 		LOG.info("openDataset ...");
-		openDataset();
+		driver.get(baseUrl + "/menu/main/dataexplorer?entity=test_entity");
+		MolegnisSeleniumUtils.waitFor(() -> MolegnisSeleniumUtils.isElementPresent(By.id("entity-class-name"), driver)
+				&& driver.findElement(By.id("entity-class-name")).getText().contains("test_entity"));
 		LOG.info("openDataset done.");
+	}
 
+	public void clickAnnotators() throws InterruptedException
+	{
 		MolegnisSeleniumUtils.waitForElement(By.linkText("Annotators"), driver);
 		LOG.info("click annotators...");
 		driver.findElement(By.linkText("Annotators")).click();
 		LOG.info("click annotators done.");
 		MolegnisSeleniumUtils.waitForElement(By.cssSelector("#annotate-dataset-form a.select-all-btn"), driver);
 		Thread.sleep(1000);
+	}
+
+	public void clickHGNC()
+	{
 		LOG.info("click HGNC");
 		driver.findElement(By.cssSelector("#enabled-annotator-selection-container input[value=HGNC-Symbol]")).click();
+	}
+
+	public void clickOMIM()
+	{
 		LOG.info("click OMIM");
 		driver.findElement(By.cssSelector("#enabled-annotator-selection-container input[value=OmimHpo]")).click();
+	}
+
+	public void clickAnnotateButton() throws InterruptedException
+	{
 		LOG.info("click annotate button");
 		driver.findElement(By.id("annotate-dataset-button")).click();
 		LOG.info("Wait for result");
 		MolegnisSeleniumUtils.waitFor(() -> MolegnisSeleniumUtils.isElementPresent(By.linkText("Show result"), driver)
 				&& driver.findElement(By.linkText("Show result")).isDisplayed(), 240);
 		LOG.info("found result, click Show Result");
-		driver.findElement(By.linkText("Show result")).click();
+	}
 
+	public void clickShowResults()
+	{
+		LOG.info("Show result");
+		driver.findElement(By.linkText("Show result")).click();
+	}
+
+	public void checkResults() throws InterruptedException
+	{
 		LOG.info("Wait for annotator attribute");
 		MolegnisSeleniumUtils.waitForElement(By.cssSelector("a.tree-deselect-all-btn"), driver);
 		driver.findElement(By.cssSelector("a.tree-deselect-all-btn")).click();
@@ -174,20 +186,13 @@ public class AnnotatorTest extends AbstractSeleniumTests
 						"HSPG2 142461 Dyssegmental dysplasia, Silverman-Handmaker typ...   3 HSPG2,PLC,SJS,SJA,SJS1 1p36.12 224410,255800 HP:0002673,HP:0000252,HP:0010978,HP:0004298,HP:... HSPG2 Abnormality of the pharynx,Wrist flexion contra... OMIM 224410,255800 3339"));
 		Set<String> rows = elements.stream().map(WebElement::getText).collect(Collectors.toCollection(TreeSet::new));
 		LOG.info("Data table rows:\n" + Joiner.on('\n').join(rows));
+
+		System.out.println(rows);
+		System.out.println(expected);
 		Assert.assertEquals(rows, expected);
+
 		LOG.info("output is as expected");
 	}
 
-	private void openDataset() throws InterruptedException
-	{
-		driver.get(baseUrl + "/menu/main/dataexplorer?entity=test_entity");
-		MolegnisSeleniumUtils.waitFor(() -> MolegnisSeleniumUtils.isElementPresent(By.id("entity-class-name"), driver)
-				&& driver.findElement(By.id("entity-class-name")).getText().contains("test_entity"));
-	}
-
-	@Override
-	public WebDriver getDriver()
-	{
-		return this.driver;
-	}
 }
+
