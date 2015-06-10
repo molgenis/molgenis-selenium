@@ -2,7 +2,6 @@ package org.molgenis;
 
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,39 +10,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.data.rest.client.bean.QueryResponse;
+import org.molgenis.selenium.config.AbstractSeleniumTests;
+import org.molgenis.selenium.config.DriverType;
+import org.molgenis.selenium.security.login.SignInAppModel;
 import org.molgenis.util.GsonHttpMessageConverter;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.web.client.RestTemplate;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Joiner;
 
-@ContextConfiguration(classes = JenkinsConfig.class)
-public class AnnotatorTest extends AbstractTestNGSpringContextTests
+public class AnnotatorTest extends AbstractSeleniumTests
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
 
-	private WebDriver driver;
-	private StringBuffer verificationErrors = new StringBuffer();
+	private WebDriver driver = DriverType.FIREFOX.getDriver();;
+
 	@Value("${anntest.baseurl}")
 	private String baseUrl;
 	@Value("${anntest.uid}")
@@ -52,13 +45,6 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	private String pwd;
 	private MolgenisClient molgenisClient;
 	private String token;
-
-	@BeforeTest
-	public void setUp() throws Exception
-	{
-		driver = new FirefoxDriver();
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-	}
 
 	public void deleteTestEntity()
 	{
@@ -81,13 +67,9 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	public void login() throws Exception
 	{
 		driver.get(baseUrl + "/");
-		waitForElement(By.linkText("Sign in"));
-		driver.findElement(By.linkText("Sign in")).click();
-		driver.findElement(By.id("loginUsername")).clear();
-		driver.findElement(By.id("loginUsername")).sendKeys(uid);
-		driver.findElement(By.id("loginPassword")).clear();
-		driver.findElement(By.id("loginPassword")).sendKeys(pwd);
-		driver.findElement(By.id("login-btn")).click();
+		SignInAppModel signin = new SignInAppModel(driver);
+		signin.open();
+		signin.signIn(uid, pwd);
 	}
 
 	public void upload() throws Exception
@@ -95,10 +77,10 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		driver.get(baseUrl + "/");
 		String uploadLinkText = "Import data";
 		uploadLinkText = "Upload";
-		waitForElement(By.linkText(uploadLinkText));
+		super.waitForElement(By.linkText(uploadLinkText));
 		driver.findElement(By.linkText(uploadLinkText)).click();
-		waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(1).active"));
-		waitForElement(By.name("upload"));
+		super.waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(1).active"));
+		super.waitForElement(By.name("upload"));
 
 		// http://stackoverflow.com/questions/5610256/file-upload-using-selenium-webdriver-and-java
 		File file;
@@ -127,7 +109,7 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		waitForElement(By.linkText("Next →"));
 		driver.findElement(By.linkText("Next →")).click();
 
-		waitForElement(By.cssSelector("div.panel-success"));
+		super.waitForElement(By.cssSelector("div.panel-success"));
 	}
 
 	@Test
@@ -202,58 +184,9 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 				&& driver.findElement(By.id("entity-class-name")).getText().contains("test_entity"));
 	}
 
-	@AfterTest
-	public void tearDown() throws Exception
+	@Override
+	public WebDriver getDriver()
 	{
-		driver.quit();
-		String verificationErrorString = verificationErrors.toString();
-		if (!"".equals(verificationErrorString))
-		{
-			fail(verificationErrorString);
-		}
-	}
-
-	private static void waitFor(BooleanSupplier p) throws InterruptedException
-	{
-		waitFor(p, 60);
-	}
-
-	private static void waitFor(BooleanSupplier p, int timeout) throws InterruptedException
-	{
-		for (int second = 0;; second++)
-		{
-			if (second >= timeout) fail("timeout");
-			try
-			{
-				if (p.getAsBoolean()) break;
-			}
-			catch (Exception e)
-			{
-			}
-			Thread.sleep(1000);
-		}
-	}
-
-	private void waitForElement(By by) throws InterruptedException
-	{
-		waitFor(() -> isElementPresent(by));
-	}
-
-	private void waitForElementInvisible(By by) throws InterruptedException
-	{
-		waitFor(() -> !driver.findElement(by).isDisplayed());
-	}
-
-	private boolean isElementPresent(By by)
-	{
-		try
-		{
-			driver.findElement(by);
-			return true;
-		}
-		catch (NoSuchElementException e)
-		{
-			return false;
-		}
+		return this.driver;
 	}
 }
