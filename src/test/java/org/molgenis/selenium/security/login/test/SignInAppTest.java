@@ -1,7 +1,7 @@
 package org.molgenis.selenium.security.login.test;
 
-import org.molgenis.selenium.config.AbstractSeleniumTests;
-import org.molgenis.selenium.config.DriverType;
+import org.molgenis.AbstractSeleniumTests;
+import org.molgenis.DriverType;
 import org.molgenis.selenium.security.login.SignInAppModel;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;

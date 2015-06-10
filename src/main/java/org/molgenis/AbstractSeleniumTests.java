@@ -1,8 +1,7 @@
-package org.molgenis.selenium.config;
+package org.molgenis;
 
 import static org.testng.Assert.fail;
 
-import org.molgenis.JenkinsConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterMethod;

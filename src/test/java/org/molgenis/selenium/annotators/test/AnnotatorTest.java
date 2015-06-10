@@ -12,11 +12,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.molgenis.AbstractSeleniumTests;
+import org.molgenis.DriverType;
+import org.molgenis.MolegnisSeleniumUtils;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.data.rest.client.bean.QueryResponse;
-import org.molgenis.selenium.config.AbstractSeleniumTests;
-import org.molgenis.selenium.config.DriverType;
-import org.molgenis.selenium.config.MolegnisSeleniumUtils;
 import org.molgenis.selenium.security.login.SignInAppModel;
 import org.molgenis.util.GsonHttpMessageConverter;
 import org.openqa.selenium.By;

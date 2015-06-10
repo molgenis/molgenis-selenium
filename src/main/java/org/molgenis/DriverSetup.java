@@ -1,4 +1,4 @@
-package org.molgenis.selenium.config;
+package org.molgenis;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;

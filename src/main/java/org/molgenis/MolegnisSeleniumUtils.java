@@ -1,4 +1,4 @@
-package org.molgenis.selenium.config;
+package org.molgenis;
 
 import static org.testng.Assert.fail;
 
