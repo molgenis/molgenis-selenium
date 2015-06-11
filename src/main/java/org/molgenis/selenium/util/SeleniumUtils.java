@@ -1,4 +1,4 @@
-package org.molgenis;
+package org.molgenis.selenium.util;
 
 import static org.testng.Assert.fail;
 
@@ -8,21 +8,21 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 
-public class MolegnisSeleniumUtils
+public class SeleniumUtils
 {
 	public static void waitForElement(By by, WebDriver webDriver) throws InterruptedException
 	{
-		MolegnisSeleniumUtils.waitFor(() -> MolegnisSeleniumUtils.isElementPresent(by, webDriver));
+		SeleniumUtils.waitFor(() -> SeleniumUtils.isElementPresent(by, webDriver));
 	}
 
 	public static void waitForElementInvisible(By by, WebDriver webDriver) throws InterruptedException
 	{
-		MolegnisSeleniumUtils.waitFor(() -> !webDriver.findElement(by).isDisplayed());
+		SeleniumUtils.waitFor(() -> !webDriver.findElement(by).isDisplayed());
 	}
 
 	public static void waitFor(BooleanSupplier p) throws InterruptedException
 	{
-		MolegnisSeleniumUtils.waitFor(p, 60);
+		SeleniumUtils.waitFor(p, 60);
 	}
 
 	public static void waitFor(BooleanSupplier p, int timeout) throws InterruptedException

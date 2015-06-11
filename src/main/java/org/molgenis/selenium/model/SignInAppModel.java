@@ -2,15 +2,12 @@ package org.molgenis.selenium.model;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is a model of the MOLGENIS login user interface
  */
 public class SignInAppModel
 {
-	private static final Logger LOG = LoggerFactory.getLogger(SignInAppModel.class);
 	private WebDriver driver;
 
 	// IDs of user interface elements
@@ -54,15 +51,6 @@ public class SignInAppModel
 	public void signOut()
 	{
 		driver.findElement(By.id(SIGNOUT_BUTTON)).click();
-	}
-
-	public static void login(WebDriver driver, String baseURL, String uid, String pwd)
-	{
-		LOG.info("login");
-		driver.get(baseURL + "/");
-		SignInAppModel signin = new SignInAppModel(driver);
-		signin.open();
-		signin.signIn(uid, pwd);
 	}
 }
 

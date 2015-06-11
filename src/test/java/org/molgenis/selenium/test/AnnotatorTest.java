@@ -2,34 +2,48 @@ package org.molgenis.selenium.test;
 
 import org.molgenis.AbstractSeleniumTests;
 import org.molgenis.DriverType;
+import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.AnnotatorModel;
-import org.molgenis.selenium.model.SignInAppModel;
+import org.molgenis.selenium.util.RestApiV1Util;
+import org.molgenis.selenium.util.SignInUtil;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class AnnotatorTest extends AbstractSeleniumTests
 {
-	private WebDriver driver = DriverType.FIREFOX.getDriver();
-	private AnnotatorModel model = new AnnotatorModel(driver);
+	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
+	private AnnotatorModel model;
 
-	@Value("${anntest.baseurl}")
+	@Value("${test.baseurl}")
 	private String baseUrl;
 
-	@Value("${anntest.uid}")
+	@Value("${test.uid}")
 	private String uid;
 
-	@Value("${anntest.pwd}")
+	@Value("${test.pwd}")
 	private String pwd;
+
+	@BeforeClass
+	public void beforeSuite()
+	{
+		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseUrl, LOG);
+		WebDriver driver = DriverType.FIREFOX.getDriver();
+		this.model = new AnnotatorModel(driver, molgenisClient, RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd,
+				LOG));
+	}
 
 	@Test
 	public void testAnnotateAll() throws Exception
 	{
-		model.createMolgenisClient(baseUrl);
-		model.loginRestApi(uid, pwd);
-		model.enableAnnotators();
+		model.enableAnnotatorsOnDataExplorer();
 		model.deleteTestEntity();
-		SignInAppModel.login(driver, baseUrl, uid, pwd);
+
+		SignInUtil.login(model.getDriver(), baseUrl, uid, pwd, LOG);
+
 		model.uploadDataFile(baseUrl);
 		model.openDataset(baseUrl);
 		model.clickAnnotators();
@@ -43,6 +57,6 @@ public class AnnotatorTest extends AbstractSeleniumTests
 	@Override
 	public WebDriver getDriver()
 	{
-		return this.driver;
+		return this.model.getDriver();
 	}
 }
