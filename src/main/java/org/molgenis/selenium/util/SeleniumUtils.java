@@ -55,15 +55,21 @@ public class SeleniumUtils
 		}
 	}
 
-	public static void setPageTimeout(WebDriver driver, long seconds)
+	public static void setPageTimeout(WebDriver webDriver, long seconds)
 	{
 		// Set loading pages timeout
-		driver.manage().timeouts().pageLoadTimeout(seconds, TimeUnit.SECONDS);
+		webDriver.manage().timeouts().pageLoadTimeout(seconds, TimeUnit.SECONDS);
 	}
 
-	public static void setScriptTimeout(WebDriver driver, long seconds)
+	public static void setScriptTimeout(WebDriver webDriver, long seconds)
 	{
 		// Set asynchronous scripts timeout
-		driver.manage().timeouts().setScriptTimeout(seconds, TimeUnit.SECONDS);
+		webDriver.manage().timeouts().setScriptTimeout(seconds, TimeUnit.SECONDS);
+	}
+
+	public static void setImplicitlyWaitTimeout(WebDriver webDriver, long seconds)
+	{
+		// Set asynchronous scripts timeout
+		webDriver.manage().timeouts().implicitlyWait(seconds, TimeUnit.SECONDS);
 	}
 }

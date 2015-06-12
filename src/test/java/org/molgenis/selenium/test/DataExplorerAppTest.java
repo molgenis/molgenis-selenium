@@ -7,6 +7,7 @@ import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.DataExplorerAppModel;
 import org.molgenis.selenium.util.SignInUtil;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,9 +52,19 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 	public void test1() throws InterruptedException
 	{
 		this.driver.get(baseUrl);
-		model.openDataExplorerPageByClickOnMenu();
-		model.selectEntityFromSelect2PullDown("TypeTest");
+		model.openDataExplorerPlugin();
+
+		model.selectEntity("TypeTest");
 		Assert.assertEquals(model.getSelectedEntityTitle(), "TypeTest");
+		
+		WebElement next = model.getNext();
+		Assert.assertEquals(next.getText(), "Next");
+
+		next.click();
+		next.click();
+
+		WebElement previous = model.getPrevious();
+		Assert.assertEquals(previous.getText(), "Previous");
 	}
 
 	@Test
@@ -61,6 +72,9 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 	{
 		model.selectEntityFromUrl("org_molgenis_test_TypeTest", baseUrl);
 		Assert.assertEquals("TypeTest", model.getSelectedEntityTitle());
+
+		WebElement next = model.getNext();
+		Assert.assertEquals(next.getText(), "Next");
 	}
 
 	@AfterMethod

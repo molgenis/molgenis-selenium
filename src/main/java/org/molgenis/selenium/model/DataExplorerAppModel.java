@@ -5,6 +5,7 @@ import org.molgenis.selenium.util.Select2Util;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,6 @@ public class DataExplorerAppModel
 	private final WebDriver driver;
 
 	public static String ENTITY_SELECT_ID = "dataset-select";
-	public static String ENTITY_TITLE_ID = "entity-class-name";
 	public static String MENU_ITEM_TEXT = "Data Explorer";
 
 	public DataExplorerAppModel(WebDriver driver)
@@ -25,7 +25,7 @@ public class DataExplorerAppModel
 		this.driver = driver;
 	}
 
-	public void openDataExplorerPageByClickOnMenu() throws InterruptedException
+	public void openDataExplorerPlugin() throws InterruptedException
 	{
 		MenuUtil.openPageByClickOnMenuItem(MENU_ITEM_TEXT, driver);
 	}
@@ -35,7 +35,7 @@ public class DataExplorerAppModel
 		driver.get(baseUrl + "/menu/main/dataexplorer?entity=org_molgenis_test_TypeTest");
 	}
 
-	public void selectEntityFromSelect2PullDown(String entityLabel)
+	public void selectEntity(String entityLabel)
 			throws InterruptedException
 	{
 		Select2Util.select("dataset-select-container", entityLabel, driver, LOG);
@@ -43,17 +43,22 @@ public class DataExplorerAppModel
 
 	public String getSelectedEntityTitle() throws InterruptedException
 	{
-		SeleniumUtils.waitForElement(By.id(ENTITY_TITLE_ID), driver);
-		String datasetTitle = driver.findElement(By.id(ENTITY_TITLE_ID)).getText();
-		LOG.info("Entity title: " + datasetTitle);
-		return datasetTitle;
+		By selector = By.id("entity-class-name");
+		SeleniumUtils.waitForElement(selector, driver);
+		return driver.findElement(selector).getText();
 	}
 
-	/**
-	 * @return the driver
-	 */
-	public WebDriver getDriver()
+	public WebElement getPrevious() throws InterruptedException
 	{
-		return driver;
+		By selector = By.cssSelector(".page-prev");
+		SeleniumUtils.waitForElement(selector, driver);
+		return driver.findElement(selector);
+	}
+
+	public WebElement getNext() throws InterruptedException
+	{
+		By selector = By.cssSelector(".page-next");
+		SeleniumUtils.waitForElement(selector, driver);
+		return driver.findElement(selector);
 	}
 }
