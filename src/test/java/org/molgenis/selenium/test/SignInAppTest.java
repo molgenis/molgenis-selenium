@@ -1,16 +1,26 @@
 package org.molgenis.selenium.test;
 
-import org.molgenis.AbstractSeleniumTests;
 import org.molgenis.DriverType;
+import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.SignInAppModel;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class SignInAppTest extends AbstractSeleniumTests
+@ContextConfiguration(classes = JenkinsConfig.class)
+public class SignInAppTest extends AbstractTestNGSpringContextTests
 {
-	private WebDriver driver = DriverType.FIREFOX.getDriver();
+	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
+	private WebDriver driver;
+	private SignInAppModel model;
 
 	@Value("${test.baseurl}")
 	private String baseUrl;
@@ -21,35 +31,49 @@ public class SignInAppTest extends AbstractSeleniumTests
 	@Value("${test.pwd}")
 	private String pwd;
 
-	@Test
-	public void test1()
+	@BeforeClass
+	public void beforeSuite() throws InterruptedException
 	{
-		driver.get(baseUrl);
-		SignInAppModel signin = new SignInAppModel(driver);
-
-		// open the signin
-		signin.open();
-		// should result in a popup where we type username and password
-
-		signin.signIn(uid, "blaat");
-
-		// should show error messages
-		Assert.assertTrue(signin.shows("The username or password you entered is incorrect"));
-
-		signin.signIn(uid, pwd);
-
-		// should show sign out button
-		Assert.assertTrue(signin.shows("Sign out"));
-
-		signin.signOut();
-
-		// should show sign in button again
-		Assert.assertTrue(signin.shows("Sign in"));
+		driver = DriverType.FIREFOX.getDriver();
+		model = new SignInAppModel(driver);
 	}
 
-	@Override
-	public WebDriver getDriver()
+	@Test
+	public void test1() throws InterruptedException
 	{
-		return this.driver;
+		driver.get(baseUrl);
+
+		// open the signin
+		model.open();
+		// should result in a popup where we type username and password
+
+		model.signIn(uid, "blaat");
+
+		// should show error messages
+		Assert.assertTrue(model.shows("The username or password you entered is incorrect"));
+
+		model.signIn(uid, pwd);
+
+		// should show sign out button
+		Assert.assertTrue(model.shows("Sign out"));
+
+		model.signOut();
+
+		// should show sign in button again
+		Assert.assertTrue(model.shows("Sign in"));
+	}
+
+	@AfterMethod
+	public void clearCookies()
+	{
+		// Clear cookies
+		this.driver.manage().deleteAllCookies();
+	}
+
+	@AfterClass
+	public void closeDriverObject()
+	{
+		// Close driver
+		this.driver.close();
 	}
 }

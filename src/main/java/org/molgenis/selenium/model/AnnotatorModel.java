@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.molgenis.data.rest.client.MolgenisClient;
+import org.molgenis.selenium.util.MenuUtil;
 import org.molgenis.selenium.util.RuntimePropertyUtil;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
@@ -56,10 +57,8 @@ public class AnnotatorModel
 	{
 		LOG.info("upload datafile");
 		driver.get(baseUrl + "/");
-		String uploadLinkText = "Import data";
-		uploadLinkText = "Upload";
-		SeleniumUtils.waitForElement(By.linkText(uploadLinkText), driver);
-		driver.findElement(By.linkText(uploadLinkText)).click();
+		String uploadLinkText = "Upload";
+		MenuUtil.openPageByClickOnMenuItem(uploadLinkText, driver);
 		SeleniumUtils.waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(1).active"), driver);
 		SeleniumUtils.waitForElement(By.name("upload"), driver);
 
@@ -186,14 +185,5 @@ public class AnnotatorModel
 	{
 		return token;
 	}
-
-	/**
-	 * @return the driver
-	 */
-	public WebDriver getDriver()
-	{
-		return driver;
-	}
-
 }
 

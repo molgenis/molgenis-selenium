@@ -2,6 +2,7 @@ package org.molgenis.selenium.util;
 
 import static org.testng.Assert.fail;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
 import org.openqa.selenium.By;
@@ -52,5 +53,17 @@ public class SeleniumUtils
 		{
 			return false;
 		}
+	}
+
+	public static void setPageTimeout(WebDriver driver, long seconds)
+	{
+		// Set loading pages timeout
+		driver.manage().timeouts().pageLoadTimeout(seconds, TimeUnit.SECONDS);
+	}
+
+	public static void setScriptTimeout(WebDriver driver, long seconds)
+	{
+		// Set asynchronous scripts timeout
+		driver.manage().timeouts().setScriptTimeout(seconds, TimeUnit.SECONDS);
 	}
 }

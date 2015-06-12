@@ -1,10 +1,10 @@
 package org.molgenis.selenium.test;
 
+import junit.framework.Assert;
+
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
-import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.model.AnnotatorModel;
-import org.molgenis.selenium.util.RestApiV1Util;
+import org.molgenis.selenium.model.DataExplorerAppModel;
 import org.molgenis.selenium.util.SignInUtil;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -15,13 +15,14 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @ContextConfiguration(classes = JenkinsConfig.class)
-public class AnnotatorTest extends AbstractTestNGSpringContextTests
+public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 {
-	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
-	private AnnotatorModel model;
+	private static final Logger LOG = LoggerFactory.getLogger(DataExplorerAppTest.class);
+	private DataExplorerAppModel model;
 	private WebDriver driver;
 
 	@Value("${test.baseurl}")
@@ -34,28 +35,32 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	private String pwd;
 
 	@BeforeClass
-	public void beforeSuite() throws InterruptedException
+	public void beforeClass()
 	{
-		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseUrl, LOG);
-		driver = DriverType.FIREFOX.getDriver();
-		this.model = new AnnotatorModel(driver, molgenisClient, RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd,
-				LOG));
-		SignInUtil.signIn(driver, baseUrl, uid, pwd, LOG);
+		this.driver = DriverType.FIREFOX.getDriver();
+		this.model = new DataExplorerAppModel(this.driver);
+	}
+
+	@BeforeMethod
+	public void beforeMethod() throws InterruptedException
+	{
+		SignInUtil.signIn(this.driver, baseUrl, uid, pwd, LOG);
 	}
 
 	@Test
-	public void testAnnotateAll() throws Exception
+	public void test1() throws InterruptedException
 	{
-		model.enableAnnotatorsOnDataExplorer();
-		model.deleteTestEntity();
-		model.uploadDataFile(baseUrl);
-		model.openDataset(baseUrl);
-		model.clickAnnotators();
-		model.clickHGNC();
-		model.clickOMIM();
-		model.clickAnnotateButton();
-		model.clickShowResults();
-		model.checkResults();
+		this.driver.get(baseUrl);
+		model.openDataExplorerPageByClickOnMenu();
+		model.selectEntityFromSelect2PullDown("TypeTest");
+		Assert.assertEquals(model.getSelectedEntityTitle(), "TypeTest");
+	}
+
+	@Test
+	public void test2_openViaUrl() throws InterruptedException
+	{
+		model.selectEntityFromUrl("org_molgenis_test_TypeTest", baseUrl);
+		Assert.assertEquals("TypeTest", model.getSelectedEntityTitle());
 	}
 
 	@AfterMethod
