@@ -29,7 +29,7 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 	private UploadAppModel uploadAppModel;
 	private WebDriver driver;
 
-	@Value("${test.baseURL}")
+	@Value("${test.baseurl}")
 	private String baseURL;
 
 	@Value("${test.uid}")
@@ -86,12 +86,6 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 	@AfterClass
 	public void afterClass() throws InterruptedException
 	{
-		// // Delete Test Entity
-		// DataExplorerAppModel
-		// .deleteEntity(driver, baseURL, "org_molgenis_test_TypeTest", DeleteOption.DATA_AND_METADATA);
-		// DataExplorerAppModel.deleteEntity(driver, baseURL, "org_molgenis_test_TypeTestRef",
-		// DeleteOption.DATA_AND_METADATA);
-
 		// Clear cookies
 		this.driver.manage().deleteAllCookies();
 
@@ -101,4 +95,5 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 		// Close driver
 		this.driver.close();
 	}
+
 }
