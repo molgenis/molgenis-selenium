@@ -5,7 +5,7 @@ import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.AnnotatorModel;
 import org.molgenis.selenium.util.RestApiV1Util;
-import org.molgenis.selenium.util.SignInUtil;
+import org.molgenis.selenium.util.SignUtil;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +21,12 @@ import org.testng.annotations.Test;
 public class AnnotatorTest extends AbstractTestNGSpringContextTests
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
+
 	private AnnotatorModel model;
 	private WebDriver driver;
 
 	@Value("${test.baseurl}")
-	private String baseUrl;
+	private String baseURL;
 
 	@Value("${test.uid}")
 	private String uid;
@@ -36,11 +37,11 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	@BeforeClass
 	public void beforeSuite() throws InterruptedException
 	{
-		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseUrl, LOG);
+		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
 		driver = DriverType.FIREFOX.getDriver();
 		this.model = new AnnotatorModel(driver, molgenisClient, RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd,
 				LOG));
-		SignInUtil.signIn(driver, baseUrl, uid, pwd, LOG);
+		SignUtil.signIn(driver, baseURL, uid, pwd, LOG);
 	}
 
 	@Test
@@ -48,8 +49,8 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	{
 		model.enableAnnotatorsOnDataExplorer();
 		model.deleteTestEntity();
-		model.uploadDataFile(baseUrl);
-		model.openDataset(baseUrl);
+		model.uploadDataFile(baseURL);
+		model.openDataset(baseURL);
 		model.clickAnnotators();
 		model.clickHGNC();
 		model.clickOMIM();
@@ -65,7 +66,7 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		this.driver.manage().deleteAllCookies();
 
 		// Sign out
-		SignInUtil.signOut(this.driver, LOG);
+		SignUtil.signOut(this.driver, LOG);
 	}
 
 	@AfterClass

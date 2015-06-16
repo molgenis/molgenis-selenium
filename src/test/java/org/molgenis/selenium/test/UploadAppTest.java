@@ -1,27 +1,29 @@
 package org.molgenis.selenium.test;
 
+import java.io.IOException;
+
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
-import org.molgenis.selenium.model.SignInAppModel;
+import org.molgenis.selenium.model.UploadAppModel;
+import org.molgenis.selenium.model.UploadAppModel.EntitiesOptions;
+import org.molgenis.selenium.util.SignUtil;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @ContextConfiguration(classes = JenkinsConfig.class)
-public class SignInAppTest extends AbstractTestNGSpringContextTests
+public class UploadAppTest extends AbstractTestNGSpringContextTests
 {
-	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UploadAppTest.class);
 	private WebDriver driver;
-	private SignInAppModel model;
-
+	private UploadAppModel model;
+	
 	@Value("${test.baseurl}")
 	private String baseURL;
 
@@ -32,47 +34,40 @@ public class SignInAppTest extends AbstractTestNGSpringContextTests
 	private String pwd;
 
 	@BeforeClass
-	public void beforeSuite() throws InterruptedException
+	public void beforeClass() throws InterruptedException
 	{
 		driver = DriverType.FIREFOX.getDriver();
-		model = new SignInAppModel(driver);
+		model = new UploadAppModel(driver);
+
+		// Sign in UI
+		SignUtil.signIn(driver, baseURL, uid, pwd, LOG);
 	}
 
 	@Test
-	public void test1() throws InterruptedException
+	public void xlsx() throws IOException, InterruptedException
 	{
+		// get the upload app
 		driver.get(baseURL);
 
-		// open the signin
+		// Open upload app
 		model.open();
-		// should result in a popup where we type username and password
 
-		model.signIn(uid, "blaat");
+		model.uploadOrgMolgenisTestTypeTest(EntitiesOptions.ADD, LOG);
 
-		// should show error messages
-		Assert.assertTrue(model.shows("The username or password you entered is incorrect"));
+		model.uploadOrgMolgenisTestTypeTest(EntitiesOptions.ADD_UPDATE, LOG);
 
-		model.signIn(uid, pwd);
-
-		// should show sign out button
-		Assert.assertTrue(model.shows("Sign out"));
-
-		model.signOut();
-
-		// should show sign in button again
-		Assert.assertTrue(model.shows("Sign in"));
-	}
-
-	@AfterMethod
-	public void afterMethod()
-	{
-		// Clear cookies
-		this.driver.manage().deleteAllCookies();
+		model.uploadOrgMolgenisTestTypeTest(EntitiesOptions.UPDATE, LOG);
 	}
 
 	@AfterClass
-	public void afterClass()
+	public void afterClass() throws InterruptedException
 	{
+		// Clear cookies
+		this.driver.manage().deleteAllCookies();
+
+		// Sign out
+		SignUtil.signOut(this.driver, LOG);
+
 		// Close driver
 		this.driver.close();
 	}

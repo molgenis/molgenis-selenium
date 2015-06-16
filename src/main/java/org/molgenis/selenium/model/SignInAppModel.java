@@ -9,14 +9,14 @@ import org.openqa.selenium.WebDriver;
  */
 public class SignInAppModel
 {
-	private WebDriver webDriver;
-
 	// Elements references
 	public static String OPEN_BUTTON_ID = "open-button";
 	public static String USERNAME_FIELD_ID = "username-field";
 	public static String PASSWORD_FIELD_ID = "password-field";
 	public static String SIGNIN_BUTTON_ID = "signin-button";
 	public static String SIGNOUT_BUTTON_ID = "signout-button";
+
+	private WebDriver webDriver;
 
 	public SignInAppModel(WebDriver webDriver)
 	{

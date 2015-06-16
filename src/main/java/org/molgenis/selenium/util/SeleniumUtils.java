@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class SeleniumUtils
 {
@@ -48,6 +49,19 @@ public class SeleniumUtils
 		{
 			webDriver.findElement(by);
 			return true;
+		}
+		catch (NoSuchElementException e)
+		{
+			return false;
+		}
+	}
+
+	public static boolean isElementEnabled(By by, WebDriver webDriver)
+	{
+		try
+		{
+			WebElement webElement = webDriver.findElement(by.cssSelector("not:([disabled])"));
+			return webElement.isEnabled();
 		}
 		catch (NoSuchElementException e)
 		{

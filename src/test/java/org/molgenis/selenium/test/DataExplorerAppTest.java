@@ -1,11 +1,14 @@
 package org.molgenis.selenium.test;
 
-import junit.framework.Assert;
+import java.util.Arrays;
+import java.util.List;
 
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.DataExplorerAppModel;
-import org.molgenis.selenium.util.SignInUtil;
+import org.molgenis.selenium.model.UploadAppModel;
+import org.molgenis.selenium.model.UploadAppModel.EntitiesOptions;
+import org.molgenis.selenium.util.SignUtil;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
@@ -13,10 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @ContextConfiguration(classes = JenkinsConfig.class)
@@ -24,39 +26,41 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 {
 	private static final Logger LOG = LoggerFactory.getLogger(DataExplorerAppTest.class);
 	private DataExplorerAppModel model;
+	private UploadAppModel uploadAppModel;
 	private WebDriver driver;
 
-	@Value("${test.baseurl}")
-	private String baseUrl;
+	@Value("${test.baseURL}")
+	private String baseURL = "http://localhost:8080";
 
-	@Value("${test.uid}")
-	private String uid;
+	// @Value("${test.uid}")
+	private String uid = "admin";
 
-	@Value("${test.pwd}")
-	private String pwd;
+	// @Value("${test.pwd}")
+	private String pwd = "admin";
 
 	@BeforeClass
-	public void beforeClass()
+	public void beforeClass() throws InterruptedException
 	{
 		this.driver = DriverType.FIREFOX.getDriver();
 		this.model = new DataExplorerAppModel(this.driver);
-	}
-
-	@BeforeMethod
-	public void beforeMethod() throws InterruptedException
-	{
-		SignInUtil.signIn(this.driver, baseUrl, uid, pwd, LOG);
+		this.uploadAppModel = new UploadAppModel(this.driver);
 	}
 
 	@Test
-	public void test1() throws InterruptedException
+	public void test() throws InterruptedException
 	{
-		this.driver.get(baseUrl);
-		model.openDataExplorerPlugin();
+		this.driver.get(baseURL);
+		SignUtil.signIn(this.driver, baseURL, uid, pwd, LOG);
 
+		// Open upload app
+		uploadAppModel.open();
+		uploadAppModel.uploadOrgMolgenisTestTypeTest(EntitiesOptions.ADD_UPDATE, LOG);
+
+		// Test 1
+		model.open();
 		model.selectEntity("TypeTest");
 		Assert.assertEquals(model.getSelectedEntityTitle(), "TypeTest");
-		
+
 		WebElement next = model.getNext();
 		Assert.assertEquals(next.getText(), "Next");
 
@@ -65,32 +69,36 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 
 		WebElement previous = model.getPrevious();
 		Assert.assertEquals(previous.getText(), "Previous");
-	}
 
-	@Test
-	public void test2_openViaUrl() throws InterruptedException
-	{
-		model.selectEntityFromUrl("org_molgenis_test_TypeTest", baseUrl);
+		// Test 2
+		model.selectEntityFromUrl(baseURL, "org_molgenis_test_TypeTest");
 		Assert.assertEquals("TypeTest", model.getSelectedEntityTitle());
 
-		WebElement next = model.getNext();
-		Assert.assertEquals(next.getText(), "Next");
+		WebElement next2 = model.getNext();
+		Assert.assertEquals(next2.getText(), "Next");
+
+		// Test 3
+		List<String> entitiesNames = Arrays.asList("org_molgenis_test_TypeTest", "org_molgenis_test_TypeTestRef",
+				"org_molgenis_test_Person", "org_molgenis_test_Location");
+		model.deleteEntitiesByFullName(driver, baseURL, entitiesNames, LOG);
 	}
 
-	@AfterMethod
-	public void clearCookies() throws InterruptedException
+	@AfterClass
+	public void afterClass() throws InterruptedException
 	{
+		// // Delete Test Entity
+		// DataExplorerAppModel
+		// .deleteEntity(driver, baseURL, "org_molgenis_test_TypeTest", DeleteOption.DATA_AND_METADATA);
+		// DataExplorerAppModel.deleteEntity(driver, baseURL, "org_molgenis_test_TypeTestRef",
+		// DeleteOption.DATA_AND_METADATA);
+
 		// Clear cookies
 		this.driver.manage().deleteAllCookies();
 
 		// Sign out
-		SignInUtil.signOut(this.driver, LOG);
-	}
+		SignUtil.signOut(this.driver, LOG);
 
-	@AfterClass
-	public void closeDriverObject()
-	{
 		// Close driver
-		driver.close();
+		this.driver.close();
 	}
 }

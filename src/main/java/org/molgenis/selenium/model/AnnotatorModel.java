@@ -57,8 +57,7 @@ public class AnnotatorModel
 	{
 		LOG.info("upload datafile");
 		driver.get(baseUrl + "/");
-		String uploadLinkText = "Upload";
-		MenuUtil.openPageByClickOnMenuItem(uploadLinkText, driver);
+		MenuUtil.openPageByClickOnMenuItem(UploadAppModel.MENUITEM, driver);
 		SeleniumUtils.waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(1).active"), driver);
 		SeleniumUtils.waitForElement(By.name("upload"), driver);
 

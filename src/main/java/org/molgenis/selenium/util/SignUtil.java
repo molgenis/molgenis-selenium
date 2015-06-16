@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 /**
  * This is a model of the MOLGENIS login user interface
  */
-public class SignInUtil
+public class SignUtil
 {
 	public static void signIn(WebDriver driver, String baseURL, String uid, String pwd, Logger logger)
 			throws InterruptedException
