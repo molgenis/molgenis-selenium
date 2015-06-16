@@ -30,13 +30,13 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 	private WebDriver driver;
 
 	@Value("${test.baseURL}")
-	private String baseURL = "http://localhost:8080";
+	private String baseURL;
 
-	// @Value("${test.uid}")
-	private String uid = "admin";
+	@Value("${test.uid}")
+	private String uid;
 
-	// @Value("${test.pwd}")
-	private String pwd = "admin";
+	@Value("${test.pwd}")
+	private String pwd;
 
 	@BeforeClass
 	public void beforeClass() throws InterruptedException
