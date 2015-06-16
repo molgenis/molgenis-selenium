@@ -1,5 +1,6 @@
 package org.molgenis.selenium.model;
 
+import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -8,49 +9,50 @@ import org.openqa.selenium.WebDriver;
  */
 public class SignInAppModel
 {
-	private WebDriver driver;
+	// Elements references
+	public static String OPEN_BUTTON_ID = "open-button";
+	public static String USERNAME_FIELD_ID = "username-field";
+	public static String PASSWORD_FIELD_ID = "password-field";
+	public static String SIGNIN_BUTTON_ID = "signin-button";
+	public static String SIGNOUT_BUTTON_ID = "signout-button";
 
-	// IDs of user interface elements
-	// TODO: ease testing by giving all relevant elements an ID value
-	public static String OPEN_BUTTON = "open-button";
-	public static String USERNAME_FIELD = "username-field";
-	public static String PASSWORD_FIELD = "password-field";
-	public static String SIGNIN_BUTTON = "signin-button";
-	public static String SIGNOUT_BUTTON = "signout-button";
+	private WebDriver webDriver;
 
-	public SignInAppModel(WebDriver driver)
+	public SignInAppModel(WebDriver webDriver)
 	{
-		this.driver = driver;
+		this.webDriver = webDriver;
 	}
 
-	public void open()
+	public void open() throws InterruptedException
 	{
 		// click the sign in button on home page
-		driver.findElement(By.id(OPEN_BUTTON)).click();
+		SeleniumUtils.waitForElement(By.id(OPEN_BUTTON_ID), webDriver);
+		webDriver.findElement(By.id(OPEN_BUTTON_ID)).click();
 	}
 
 	public void signIn(String user, String password)
 	{
 		// fill in the user name
-		driver.findElement(By.id(USERNAME_FIELD)).clear();
-		driver.findElement(By.id(USERNAME_FIELD)).sendKeys(user);
+		webDriver.findElement(By.id(USERNAME_FIELD_ID)).clear();
+		webDriver.findElement(By.id(USERNAME_FIELD_ID)).sendKeys(user);
 
 		// fill in the password
-		driver.findElement(By.id(PASSWORD_FIELD)).clear();
-		driver.findElement(By.id(PASSWORD_FIELD)).sendKeys(password);
+		webDriver.findElement(By.id(PASSWORD_FIELD_ID)).clear();
+		webDriver.findElement(By.id(PASSWORD_FIELD_ID)).sendKeys(password);
 
 		// click the sign in button on login page
-		driver.findElement(By.id(SIGNIN_BUTTON)).click();
+		webDriver.findElement(By.id(SIGNIN_BUTTON_ID)).click();
 	}
 
 	public boolean shows(String s)
 	{
-		return driver.getPageSource().contains(s);
+		return webDriver.getPageSource().contains(s);
 	}
 
-	public void signOut()
+	public void signOut() throws InterruptedException
 	{
-		driver.findElement(By.id(SIGNOUT_BUTTON)).click();
+		SeleniumUtils.waitForElement(By.id(SIGNOUT_BUTTON_ID), webDriver);
+		webDriver.findElement(By.id(SIGNOUT_BUTTON_ID)).click();
 	}
 }
 

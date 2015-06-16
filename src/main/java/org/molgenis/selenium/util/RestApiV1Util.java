@@ -10,10 +10,10 @@ import org.springframework.web.client.RestTemplate;
 
 public class RestApiV1Util
 {
-	public static MolgenisClient createMolgenisClientApiV1(String baseUrl, Logger logger)
+	public static MolgenisClient createMolgenisClientApiV1(String baseURL, Logger logger)
 	{
-		logger.info("RestApiV1Util -- apiURL = " + baseUrl);
-		String apiURL = String.format("%s/api/v1", baseUrl);
+		logger.info("RestApiV1Util -- apiURL = " + baseURL);
+		String apiURL = String.format("%s/api/v1", baseURL);
 		RestTemplate template = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 		template.setMessageConverters(asList(new GsonHttpMessageConverter(true)));
 		return new MolgenisClient(template, apiURL);

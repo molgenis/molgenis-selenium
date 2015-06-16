@@ -2,11 +2,13 @@ package org.molgenis.selenium.util;
 
 import static org.testng.Assert.fail;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class SeleniumUtils
 {
@@ -52,5 +54,36 @@ public class SeleniumUtils
 		{
 			return false;
 		}
+	}
+
+	public static boolean isElementEnabled(By by, WebDriver webDriver)
+	{
+		try
+		{
+			WebElement webElement = webDriver.findElement(by.cssSelector("not:([disabled])"));
+			return webElement.isEnabled();
+		}
+		catch (NoSuchElementException e)
+		{
+			return false;
+		}
+	}
+
+	public static void setPageTimeout(WebDriver webDriver, long seconds)
+	{
+		// Set loading pages timeout
+		webDriver.manage().timeouts().pageLoadTimeout(seconds, TimeUnit.SECONDS);
+	}
+
+	public static void setScriptTimeout(WebDriver webDriver, long seconds)
+	{
+		// Set asynchronous scripts timeout
+		webDriver.manage().timeouts().setScriptTimeout(seconds, TimeUnit.SECONDS);
+	}
+
+	public static void setImplicitlyWaitTimeout(WebDriver webDriver, long seconds)
+	{
+		// Set asynchronous scripts timeout
+		webDriver.manage().timeouts().implicitlyWait(seconds, TimeUnit.SECONDS);
 	}
 }

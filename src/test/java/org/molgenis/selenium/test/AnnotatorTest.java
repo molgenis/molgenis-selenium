@@ -1,25 +1,32 @@
 package org.molgenis.selenium.test;
 
-import org.molgenis.AbstractSeleniumTests;
 import org.molgenis.DriverType;
+import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.AnnotatorModel;
 import org.molgenis.selenium.util.RestApiV1Util;
-import org.molgenis.selenium.util.SignInUtil;
+import org.molgenis.selenium.util.SignUtil;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class AnnotatorTest extends AbstractSeleniumTests
+@ContextConfiguration(classes = JenkinsConfig.class)
+public class AnnotatorTest extends AbstractTestNGSpringContextTests
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
+
 	private AnnotatorModel model;
+	private WebDriver driver;
 
 	@Value("${test.baseurl}")
-	private String baseUrl;
+	private String baseURL;
 
 	@Value("${test.uid}")
 	private String uid;
@@ -28,12 +35,13 @@ public class AnnotatorTest extends AbstractSeleniumTests
 	private String pwd;
 
 	@BeforeClass
-	public void beforeSuite()
+	public void beforeSuite() throws InterruptedException
 	{
-		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseUrl, LOG);
-		WebDriver driver = DriverType.FIREFOX.getDriver();
+		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
+		driver = DriverType.FIREFOX.getDriver();
 		this.model = new AnnotatorModel(driver, molgenisClient, RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd,
 				LOG));
+		SignUtil.signIn(driver, baseURL, uid, pwd, LOG);
 	}
 
 	@Test
@@ -41,11 +49,8 @@ public class AnnotatorTest extends AbstractSeleniumTests
 	{
 		model.enableAnnotatorsOnDataExplorer();
 		model.deleteTestEntity();
-
-		SignInUtil.login(model.getDriver(), baseUrl, uid, pwd, LOG);
-
-		model.uploadDataFile(baseUrl);
-		model.openDataset(baseUrl);
+		model.uploadDataFile(baseURL);
+		model.openDataset(baseURL);
 		model.clickAnnotators();
 		model.clickHGNC();
 		model.clickOMIM();
@@ -54,9 +59,20 @@ public class AnnotatorTest extends AbstractSeleniumTests
 		model.checkResults();
 	}
 
-	@Override
-	public WebDriver getDriver()
+	@AfterMethod
+	public void clearCookies() throws InterruptedException
 	{
-		return this.model.getDriver();
+		// Clear cookies
+		this.driver.manage().deleteAllCookies();
+
+		// Sign out
+		SignUtil.signOut(this.driver, LOG);
+	}
+
+	@AfterClass
+	public void closeDriverObject()
+	{
+		// Close driver
+		driver.close();
 	}
 }
