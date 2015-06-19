@@ -54,7 +54,7 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 
 		// Open upload app
 		uploadAppModel.open();
-		uploadAppModel.uploadOrgMolgenisTestTypeTest(EntitiesOptions.ADD_UPDATE, LOG);
+		uploadAppModel.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD_UPDATE, LOG);
 
 		// Test 1
 		model.open();

@@ -37,11 +37,11 @@ public class UploadAppModel
 		this.driver = driver;
 	}
 
-	public void uploadOrgMolgenisTestTypeTest(EntitiesOptions entitiesOption, Logger logger)
+	public void uploadXlsxEmxAllDatatypes(EntitiesOptions entitiesOption, Logger logger)
 	{
 		try
 		{
-			uploadFile("org/molgenis/selenium/emx/emx_all_datatypes.xlsx", entitiesOption,
+			uploadFile("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx", entitiesOption,
 					"org_molgenis_test");
 
 			// Success message header
@@ -53,8 +53,29 @@ public class UploadAppModel
 		}
 		catch (IOException | InterruptedException e)
 		{
-			logger.error("Importing org/molgenis/selenium/emx/emx_all_datatypes.xlsx with option: " + entitiesOption
+			logger.error("Importing org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx with option: "
+					+ entitiesOption
 					+ " failed");
+		}
+	}
+
+	public void uploadCsvZipEmxAllDatatypes(EntitiesOptions entitiesOption, Logger logger)
+	{
+		String filePath = "org/molgenis/selenium/emx/csv.zip/emx_all_datatypes_csv.zip";
+		try
+		{
+			uploadFile(filePath, entitiesOption, "org_molgenis_test");
+
+			// Success message header
+			Assert.assertEquals(this.isImportedSuccess(), true);
+
+			// Success message body
+			Assert.assertEquals(this.getValidationError(logger),
+					"Imported 5 org_molgenis_test_TypeTestRefCSV entities.<br>Imported 38 org_molgenis_test_TypeTestCSV entities.<br>");
+		}
+		catch (IOException | InterruptedException e)
+		{
+			logger.error(filePath + " with option: " + entitiesOption + " failed");
 		}
 	}
 

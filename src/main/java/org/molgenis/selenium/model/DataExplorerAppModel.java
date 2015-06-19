@@ -76,7 +76,7 @@ public class DataExplorerAppModel
 		WebElement applyButton = driver.findElement(apply);
 		applyButton.click();
 
-		Thread.sleep(6000);
+		Thread.sleep(3000);
 	}
 
 	public static WebElement getDeleteEntityButton(WebDriver driver) throws InterruptedException
