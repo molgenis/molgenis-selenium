@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,10 +37,10 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	public void beforeSuite() throws InterruptedException
 	{
 		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
-		driver = DriverType.FIREFOX.getDriver();
+		this.driver = DriverType.FIREFOX.getDriver();
 		this.model = new AnnotatorModel(driver, molgenisClient, RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd,
 				LOG));
-		SignUtil.signIn(driver, baseURL, uid, pwd, LOG);
+		SignUtil.signIn(this.driver, baseURL, uid, pwd, LOG);
 	}
 
 	@Test
@@ -59,20 +58,16 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		model.checkResults();
 	}
 
-	@AfterMethod
-	public void clearCookies() throws InterruptedException
+	@AfterClass
+	public void afterClass() throws InterruptedException
 	{
+		// Sign out
+		SignUtil.signOut(this.driver, LOG);
+
 		// Clear cookies
 		this.driver.manage().deleteAllCookies();
 
-		// Sign out
-		SignUtil.signOut(this.driver, LOG);
-	}
-
-	@AfterClass
-	public void closeDriverObject()
-	{
-		// Close driver
-		driver.close();
+		// Clear cookies
+		this.driver.close();
 	}
 }

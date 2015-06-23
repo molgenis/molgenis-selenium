@@ -110,16 +110,20 @@ public class AnnotatorModel
 		Thread.sleep(1000);
 	}
 
-	public void clickHGNC()
+	public void clickHGNC() throws InterruptedException
 	{
 		LOG.info("click HGNC");
-		driver.findElement(By.cssSelector("#enabled-annotator-selection-container input[value=HGNC-Symbol]")).click();
+		By hGNCSymbolCheckbox = By.cssSelector("#enabled-annotator-selection-container input[value=HGNC-Symbol]");
+		SeleniumUtils.waitForElement(hGNCSymbolCheckbox, driver);
+		driver.findElement(hGNCSymbolCheckbox).click();
 	}
 
-	public void clickOMIM()
+	public void clickOMIM() throws InterruptedException
 	{
 		LOG.info("click OMIM");
-		driver.findElement(By.cssSelector("#enabled-annotator-selection-container input[value=OmimHpo]")).click();
+		By omimHpoCheckbox = By.cssSelector("#enabled-annotator-selection-container input[value=OmimHpo]");
+		SeleniumUtils.waitForElement(omimHpoCheckbox, driver);
+		driver.findElement(omimHpoCheckbox).click();
 	}
 
 	public void clickAnnotateButton() throws InterruptedException
