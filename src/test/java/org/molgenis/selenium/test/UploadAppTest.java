@@ -48,28 +48,43 @@ public class UploadAppTest extends AbstractTestNGSpringContextTests
 		SignUtil.signIn(driver, baseURL, uid, pwd, LOG);
 	}
 
+	/**
+	 * Test the upload plugin
+	 * 
+	 * Upload and remove files
+	 * 
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	@Test
+	public void testTheUploadPlugin() throws IOException, InterruptedException
+	{
+		// Xlsx
+		this.xlsx();
+
+		// csvZip
+		this.csvZip();
+	}
+
 	public void xlsx() throws IOException, InterruptedException
 	{
-		// get the upload app
 		driver.get(baseURL);
 
 		// Open upload app
 		model.open();
-	
+
 		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD, LOG);
-	
+
 		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD_UPDATE, LOG);
-	
+
 		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.UPDATE, LOG);
-	
+
 		// TODO implement remove package functionality remove all package when is available
 		List<String> entitiesNames = Arrays.asList("org_molgenis_test_TypeTest", "org_molgenis_test_TypeTestRef",
 				"org_molgenis_test_Person", "org_molgenis_test_Location");
 		dataExplorerAppModel.deleteEntitiesByFullName(driver, baseURL, entitiesNames, LOG);
 	}
 
-	@Test
 	public void csvZip() throws IOException, InterruptedException
 	{
 		// get the upload app
@@ -84,6 +99,7 @@ public class UploadAppTest extends AbstractTestNGSpringContextTests
 
 		model.uploadCsvZipEmxAllDatatypes(EntitiesOptions.UPDATE, LOG);
 
+		// TODO implement remove package functionality remove all package when is available
 		List<String> entitiesNames = Arrays.asList("org_molgenis_test_TypeTestCSV", "org_molgenis_test_TypeTestRefCSV",
 				"org_molgenis_test_PersonCSV", "org_molgenis_test_LocationCSV");
 		dataExplorerAppModel.deleteEntitiesByFullName(driver, baseURL, entitiesNames, LOG);
@@ -92,13 +108,16 @@ public class UploadAppTest extends AbstractTestNGSpringContextTests
 	@AfterClass
 	public void afterClass() throws InterruptedException
 	{
-		// Clear cookies
-		this.driver.manage().deleteAllCookies();
-
 		// Sign out
 		SignUtil.signOut(this.driver, LOG);
 
+		// Clear cookies
+		this.driver.manage().deleteAllCookies();
+
 		// Close driver
 		this.driver.close();
+
+		// Close driver
+		this.driver.quit();
 	}
 }

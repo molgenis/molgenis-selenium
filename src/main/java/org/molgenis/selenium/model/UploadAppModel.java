@@ -3,7 +3,6 @@ package org.molgenis.selenium.model;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.molgenis.selenium.util.MenuUtil;
 import org.molgenis.selenium.util.SeleniumUtils;
@@ -41,17 +40,35 @@ public class UploadAppModel
 	{
 		try
 		{
-			uploadFile("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx", entitiesOption,
-					"org_molgenis_test");
+			// Step 1: UploadFile
+			this.uploadFile("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
+			this.next();
 
+			// Step 2: Options
+			this.setEntityOptions(entitiesOption);
+			this.next();
+
+			// Step 3: packages
+			this.addToPackage("org_molgenis_test");
+			this.next();
+
+			// Step 4: validation
+			this.next();
+
+			SeleniumUtils.waitForElement(By.cssSelector("li.next:not(.disabled)"), driver);
+			
 			// Success message header
 			Assert.assertEquals(this.isImportedSuccess(), true);
 
 			// Success message body
 			Assert.assertEquals(this.getValidationError(logger),
 					"Imported 5 org_molgenis_test_TypeTestRef entities.<br>Imported 38 org_molgenis_test_TypeTest entities.<br>");
+
+			// Step 5
+			this.finish();
+
 		}
-		catch (IOException | InterruptedException e)
+		catch (InterruptedException e)
 		{
 			logger.error("Importing org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx with option: "
 					+ entitiesOption
@@ -64,7 +81,22 @@ public class UploadAppModel
 		String filePath = "org/molgenis/selenium/emx/csv.zip/emx_all_datatypes_csv.zip";
 		try
 		{
-			uploadFile(filePath, entitiesOption, "org_molgenis_test");
+			// Step 1: UploadFile
+			this.uploadFile(filePath);
+			this.next();
+
+			// Step 2: Options
+			this.setEntityOptions(entitiesOption);
+			this.next();
+
+			// Step 3: packages
+			this.addToPackage("org_molgenis_test");
+			this.next();
+
+			// Step 4: validation
+			this.next();
+
+			SeleniumUtils.waitForElement(By.cssSelector("li.next:not(.disabled)"), driver);
 
 			// Success message header
 			Assert.assertEquals(this.isImportedSuccess(), true);
@@ -72,33 +104,14 @@ public class UploadAppModel
 			// Success message body
 			Assert.assertEquals(this.getValidationError(logger),
 					"Imported 5 org_molgenis_test_TypeTestRefCSV entities.<br>Imported 38 org_molgenis_test_TypeTestCSV entities.<br>");
+
+			// Step 5
+			this.finish();
 		}
-		catch (IOException | InterruptedException e)
+		catch (InterruptedException e)
 		{
 			logger.error(filePath + " with option: " + entitiesOption + " failed");
 		}
-	}
-
-	public void uploadFile(String filePath, EntitiesOptions entitiesOption,
-			String addToPackage) throws IOException, InterruptedException
-	{
-		// Step 1: UploadFile
-		this.uploadFile(filePath);
-		this.next();
-
-		// Step 2: Options
-		this.setEntityOptions(entitiesOption);
-		this.next();
-
-		// Step 3: packages
-		this.addToPackage(addToPackage);
-		this.next();
-
-		// Step 4: validation
-		this.next();
-
-		// Step 5
-		this.finish();
 	}
 
 	public void open() throws InterruptedException
@@ -158,7 +171,7 @@ public class UploadAppModel
 
 	public void next() throws InterruptedException
 	{
-		By next = By.partialLinkText("Next");
+		By next = By.id("wizard-next-button");
 		driver.findElement(next).click();
 
 		// To accommodate for Ajax stuff
@@ -169,10 +182,14 @@ public class UploadAppModel
 	{
 		By finish = By.cssSelector("li.next:not(.disabled)");
 		SeleniumUtils.waitForElement(finish, driver);
-		
-		By click = By.cssSelector("li.next [href=\\/menu\\/main\\/importwizard\\/restart]");
+
+		By click = By.id("wizard-finish-button");
 		SeleniumUtils.waitForElement(click, driver);
 		driver.findElement(click).click();
+
+		// Wait until the upload page is completely loaded
+		By selectAFile = By.name("upload");
+		SeleniumUtils.waitForElement(selectAFile, driver);
 	}
 
 	public void addToPackage(String packageName)
