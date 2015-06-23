@@ -44,14 +44,14 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 		this.driver = DriverType.FIREFOX.getDriver();
 		this.model = new DataExplorerAppModel(this.driver);
 		this.uploadAppModel = new UploadAppModel(this.driver);
+
+		this.driver.get(baseURL);
+		SignUtil.signIn(this.driver, baseURL, uid, pwd, LOG);
 	}
 
 	@Test
 	public void test() throws InterruptedException
 	{
-		this.driver.get(baseURL);
-		SignUtil.signIn(this.driver, baseURL, uid, pwd, LOG);
-
 		// Open upload app
 		uploadAppModel.open();
 		uploadAppModel.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD_UPDATE, LOG);
@@ -86,11 +86,11 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 	@AfterClass
 	public void afterClass() throws InterruptedException
 	{
-		// Clear cookies
-		this.driver.manage().deleteAllCookies();
-
 		// Sign out
 		SignUtil.signOut(this.driver, LOG);
+
+		// Clear cookies
+		this.driver.manage().deleteAllCookies();
 
 		// Close driver
 		this.driver.close();

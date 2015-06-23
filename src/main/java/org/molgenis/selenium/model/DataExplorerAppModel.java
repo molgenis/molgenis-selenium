@@ -46,6 +46,7 @@ public class DataExplorerAppModel
 	public static void deleteEntity(WebDriver driver, String baseURL, String entityFullName, DeleteOption deleteOption)
 			throws InterruptedException
 	{
+		Thread.sleep(3000);
 		driver.get(baseURL + "/menu/main/dataexplorer?entity=" + entityFullName);
 		
 		By deleteButtonSelector = By.id("dropdownMenu1");
@@ -75,8 +76,6 @@ public class DataExplorerAppModel
 		SeleniumUtils.waitForElement(apply, driver);
 		WebElement applyButton = driver.findElement(apply);
 		applyButton.click();
-
-		Thread.sleep(3000);
 	}
 
 	public static WebElement getDeleteEntityButton(WebDriver driver) throws InterruptedException
