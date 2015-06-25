@@ -1,9 +1,12 @@
 package org.molgenis.selenium.test;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
+import org.molgenis.selenium.model.DataExplorerAppModel;
 import org.molgenis.selenium.model.UploadAppModel;
 import org.molgenis.selenium.model.UploadAppModel.EntitiesOptions;
 import org.molgenis.selenium.util.SignUtil;
@@ -23,6 +26,7 @@ public class UploadAppTest extends AbstractTestNGSpringContextTests
 	private static final Logger LOG = LoggerFactory.getLogger(UploadAppTest.class);
 	private WebDriver driver;
 	private UploadAppModel model;
+	private DataExplorerAppModel dataExplorerAppModel;
 	
 	@Value("${test.baseurl}")
 	private String baseURL;
@@ -38,13 +42,50 @@ public class UploadAppTest extends AbstractTestNGSpringContextTests
 	{
 		driver = DriverType.FIREFOX.getDriver();
 		model = new UploadAppModel(driver);
+		dataExplorerAppModel = new DataExplorerAppModel(driver);
 
 		// Sign in UI
 		SignUtil.signIn(driver, baseURL, uid, pwd, LOG);
 	}
 
+	/**
+	 * Test the upload plugin
+	 * 
+	 * Upload and remove files
+	 * 
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	@Test
+	public void testTheUploadPlugin() throws IOException, InterruptedException
+	{
+		// Xlsx
+		this.xlsx();
+
+		// csvZip
+		this.csvZip();
+	}
+
 	public void xlsx() throws IOException, InterruptedException
+	{
+		driver.get(baseURL);
+
+		// Open upload app
+		model.open();
+
+		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD, LOG);
+
+		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD_UPDATE, LOG);
+
+		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.UPDATE, LOG);
+
+		// TODO implement remove package functionality remove all package when is available
+		List<String> entitiesNames = Arrays.asList("org_molgenis_test_TypeTest", "org_molgenis_test_TypeTestRef",
+				"org_molgenis_test_Person", "org_molgenis_test_Location");
+		dataExplorerAppModel.deleteEntitiesByFullName(driver, baseURL, entitiesNames, LOG);
+	}
+
+	public void csvZip() throws IOException, InterruptedException
 	{
 		// get the upload app
 		driver.get(baseURL);
@@ -52,23 +93,31 @@ public class UploadAppTest extends AbstractTestNGSpringContextTests
 		// Open upload app
 		model.open();
 
-		model.uploadOrgMolgenisTestTypeTest(EntitiesOptions.ADD, LOG);
+		model.uploadCsvZipEmxAllDatatypes(EntitiesOptions.ADD, LOG);
 
-		model.uploadOrgMolgenisTestTypeTest(EntitiesOptions.ADD_UPDATE, LOG);
+		model.uploadCsvZipEmxAllDatatypes(EntitiesOptions.ADD_UPDATE, LOG);
 
-		model.uploadOrgMolgenisTestTypeTest(EntitiesOptions.UPDATE, LOG);
+		model.uploadCsvZipEmxAllDatatypes(EntitiesOptions.UPDATE, LOG);
+
+		// TODO implement remove package functionality remove all package when is available
+		List<String> entitiesNames = Arrays.asList("org_molgenis_test_TypeTestCSV", "org_molgenis_test_TypeTestRefCSV",
+				"org_molgenis_test_PersonCSV", "org_molgenis_test_LocationCSV");
+		dataExplorerAppModel.deleteEntitiesByFullName(driver, baseURL, entitiesNames, LOG);
 	}
 
 	@AfterClass
 	public void afterClass() throws InterruptedException
 	{
-		// Clear cookies
-		this.driver.manage().deleteAllCookies();
-
 		// Sign out
 		SignUtil.signOut(this.driver, LOG);
 
+		// Clear cookies
+		this.driver.manage().deleteAllCookies();
+
 		// Close driver
 		this.driver.close();
+
+		// Close driver
+		this.driver.quit();
 	}
 }
