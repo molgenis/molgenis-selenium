@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.molgenis.data.rest.client.MolgenisClient;
@@ -113,7 +114,7 @@ public class AnnotatorModel
 	public void clickHGNC() throws InterruptedException
 	{
 		LOG.info("click HGNC");
-		By hGNCSymbolCheckbox = By.cssSelector("#enabled-annotator-selection-container input[value=HGNC-Symbol]");
+		By hGNCSymbolCheckbox = By.cssSelector("#enabled-annotator-selection-container input[value=HGNC_Symbol]");
 		SeleniumUtils.waitForElement(hGNCSymbolCheckbox, driver);
 		driver.findElement(hGNCSymbolCheckbox).click();
 	}
@@ -153,22 +154,24 @@ public class AnnotatorModel
 		driver.findElements(By.cssSelector("div.molgenis-tree span.fancytree-has-children span.fancytree-checkbox"))
 				.forEach(WebElement::click);
 
+		Thread.sleep(1000);
+
 		List<WebElement> elements = new ArrayList<WebElement>(driver.findElements(By
 				.cssSelector(".molgenis-table-container tr")));
-		Set<String> expected = new TreeSet<String>();
-		expected.addAll(Arrays
-				.asList("edit\ntrash\nsearch\nABCA4 601691 Fundus flavimaculatus,Macular degeneration, age...   3 ABCA4,ABCR,STGD1,FFM,RP19,CORD3,ARMD2 1p22.1 153800,248200,604116,601718 HP:0008736,HP:0007703,HP:0007868,HP:0000551,HP:... ABCA4 Glaucoma,Hyperinsulinemia,Retinitis pigmentosa,... ORPHANET,OMIM 1872,791,153800,248200,604116,601718 24",
-						"edit\ntrash\nsearch\nESPN 606351 Deafness, autosomal recessive 36   3 ESPN 1p36.31 609006 HP:0000407,HP:0000007,HP:0008568 ESPN Sensorineural hearing impairment,Autosomal rece... OMIM 609006 83715",
-						"edit\ntrash\nsearch\nH6PD 138090 Cortisone reductase deficiency 1   3 H6PD,GDH,G6PDH,CORTRD1 1p36.22 604931 HP:0001061,HP:0000007,HP:0000876,HP:0001513,HP:... H6PD Obesity,Infertility,Acne,Hirsutism,Autosomal re... OMIM 604931 9563",
-						"edit\ntrash\nsearch\nHSPG2 142461 Dyssegmental dysplasia, Silverman-Handmaker typ...   3 HSPG2,PLC,SJS,SJA,SJS1 1p36.12 224410,255800 HP:0002673,HP:0000252,HP:0010978,HP:0004298,HP:... HSPG2 Abnormality of the pharynx,Wrist flexion contra... OMIM 224410,255800 3339",
-						"plus\nHGNC_SYMBOL OMIM_Causal_ID OMIM_Disorders OMIM_IDs OMIM_Type OMIM_HGNC_IDs OMIM_Cytogenic_Location OMIM_Entry HPO_IDs HPO_Gene_Name HPO_Descriptions HPO_Disease_Database HPO_Disease_Database_Entry HPO_Entrez_ID"));
+		List<String> expected = Arrays
+				.asList("edit\ntrash\nsearch\nABCA4",
+						"edit\ntrash\nsearch\nESPN",
+						"edit\ntrash\nsearch\nH6PD",
+						"edit\ntrash\nsearch\nHSPG2",
+						"plus\nOMIM_Causal_ID OMIM_Disorders OMIM_IDs OMIM_Type OMIM_HGNC_IDs OMIM_Cytogenic_Location OMIM_Entry HPO_IDs HPO_Gene_Name HPO_Descriptions HPO_Disease_Database HPO_Disease_Database_Entry HPO_Entrez_ID HGNC_SYMBOL");
 
 		Set<String> rows = elements.stream().map(WebElement::getText)
 				.collect(Collectors.toCollection(TreeSet::new));
 
 		LOG.info("Data table rows:\n" + Joiner.on('\n').join(rows));
 
-		Assert.assertEquals(rows, expected);
+		AtomicInteger index = new AtomicInteger();
+		rows.stream().forEachOrdered(row -> Assert.assertEquals(row, expected.get(index.getAndIncrement())));
 
 		LOG.info("output is as expected");
 	}
