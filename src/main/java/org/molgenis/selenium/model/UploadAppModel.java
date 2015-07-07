@@ -3,18 +3,25 @@ package org.molgenis.selenium.model;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
+import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.util.MenuUtil;
+import org.molgenis.selenium.util.RestApiV1Util;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
 public class UploadAppModel
 {
-	public static String MENUITEM = "Upload";
-	private WebDriver driver;
+	public final static String MENUITEM = "Upload";
+	private static final Logger LOG = LoggerFactory.getLogger(UploadAppModel.class);
+	private final WebDriver driver;
+	private final MolgenisClient molgenisClient;
 	
 	public static enum EntitiesOptions
 	{
@@ -31,9 +38,32 @@ public class UploadAppModel
 		UPDATE;
 	}
 
-	public UploadAppModel(WebDriver driver)
+	public UploadAppModel(WebDriver driver, MolgenisClient molgenisClient)
 	{
 		this.driver = driver;
+		this.molgenisClient = molgenisClient;
+	}
+
+	public void deleteDataAndMetadata(String uid, String pwd, List<String> entityFullName) throws InterruptedException
+	{
+		String token = RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd, LOG);
+		entityFullName.stream().forEachOrdered(e -> this.deleteDataAndMetadata(token, e));
+		Thread.sleep(5000); // Important!
+		molgenisClient.logout(token);
+	}
+
+	private void deleteDataAndMetadata(String token, String entityFullName)
+	{
+		try
+		{
+			molgenisClient.get(token, entityFullName);
+			molgenisClient.deleteMetadata(entityFullName);
+			LOG.info("Delete " + entityFullName);
+		}
+		catch (Exception e)
+		{
+			LOG.info(e.getMessage() + " " + entityFullName + " is not deleted");
+		}
 	}
 
 	public void uploadXlsxEmxAllDatatypes(EntitiesOptions entitiesOption, Logger logger)
@@ -49,7 +79,7 @@ public class UploadAppModel
 			this.next();
 
 			// Step 3: packages
-			this.addToPackage("org_molgenis_test");
+			this.addToPackage("base");
 			this.next();
 
 			// Step 4: validation
@@ -75,6 +105,23 @@ public class UploadAppModel
 					+ " failed");
 		}
 	}
+	
+	public void deleteXlsxEmxAllDatatypes(String uid, String pwd) throws InterruptedException
+	{
+		// TODO implement remove package functionality remove all package when is available
+		List<String> entitiesFullNames = Arrays.asList("org_molgenis_test_TypeTest", "TypeTestRef",
+				"Person",
+				"Location");
+		this.deleteDataAndMetadata(uid, pwd, entitiesFullNames);
+	}
+
+	public void deleteCsvZipEmxAllDatatypes(String uid, String pwd) throws InterruptedException
+	{
+		// TODO implement remove package functionality remove all package when is available
+		List<String> entitiesFullNames = Arrays.asList("org_molgenis_test_TypeTestCSV",
+				"org_molgenis_test_TypeTestRefCSV", "org_molgenis_test_PersonCSV", "org_molgenis_test_LocationCSV");
+		this.deleteDataAndMetadata(uid, pwd, entitiesFullNames);
+	}
 
 	public void uploadCsvZipEmxAllDatatypes(EntitiesOptions entitiesOption, Logger logger)
 	{
@@ -90,7 +137,7 @@ public class UploadAppModel
 			this.next();
 
 			// Step 3: packages
-			this.addToPackage("org_molgenis_test");
+			this.addToPackage("base");
 			this.next();
 
 			// Step 4: validation
@@ -114,6 +161,11 @@ public class UploadAppModel
 		}
 	}
 
+	/**
+	 * Open upload app
+	 * 
+	 * @throws InterruptedException
+	 */
 	public void open() throws InterruptedException
 	{
 		MenuUtil.openPageByClickOnMenuItem("Upload", driver);
