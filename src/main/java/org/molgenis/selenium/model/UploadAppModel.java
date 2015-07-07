@@ -92,7 +92,7 @@ public class UploadAppModel
 
 			// Success message body
 			Assert.assertEquals(this.getValidationError(logger),
-					"Imported 5 org_molgenis_test_TypeTestRef entities.<br>Imported 38 org_molgenis_test_TypeTest entities.<br>");
+					"Imported 5 TypeTestRef entities.<br>Imported 38 org_molgenis_test_TypeTest entities.<br>");
 
 			// Step 5
 			this.finish();
