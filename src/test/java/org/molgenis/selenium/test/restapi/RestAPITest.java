@@ -232,10 +232,10 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		System.out.println("login test user");
 		String token = client.login("test", "secret").getToken();
 		QueryResponse response = client.get(token, "LoggingEvent");
-		Object id = response.getItems().get(0).get("id");
-		client.delete(token, "LoggingEvent", id);
-		Map<String, Object> event = client.get(token, "LoggingEvent", id);
-		assertEquals(event.get("total"), 0.0);
+		Object identifier = response.getItems().get(0).get("identifier");
+		client.delete(token, "LoggingEvent", identifier);
+		Map<String, Object> loggingEvent = client.get(token, "LoggingEvent", identifier);
+		assertEquals(loggingEvent.get("total"), 0.0);
 	}
 
 	@Test
