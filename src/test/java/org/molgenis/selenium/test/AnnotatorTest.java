@@ -40,7 +40,7 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		this.driver = DriverType.FIREFOX.getDriver();
 		this.model = new AnnotatorModel(driver, molgenisClient, RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd,
 				LOG));
-		SignUtil.signIn(this.driver, baseURL, uid, pwd, LOG);
+		SignUtil.signIn(this.driver, baseURL, uid, pwd);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	public void afterClass() throws InterruptedException
 	{
 		// Sign out
-		SignUtil.signOut(this.driver, LOG);
+		SignUtil.signOut(this.driver);
 
 		// Clear cookies
 		this.driver.manage().deleteAllCookies();

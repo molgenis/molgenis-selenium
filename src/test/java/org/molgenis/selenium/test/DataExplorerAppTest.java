@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
+import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.DataExplorerAppModel;
 import org.molgenis.selenium.model.UploadAppModel;
 import org.molgenis.selenium.model.UploadAppModel.EntitiesOptions;
+import org.molgenis.selenium.util.RestApiV1Util;
 import org.molgenis.selenium.util.SignUtil;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -43,18 +45,20 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 	{
 		this.driver = DriverType.FIREFOX.getDriver();
 		this.model = new DataExplorerAppModel(this.driver);
-		this.uploadAppModel = new UploadAppModel(this.driver);
-
-		this.driver.get(baseURL);
-		SignUtil.signIn(this.driver, baseURL, uid, pwd, LOG);
+		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
+		this.uploadAppModel = new UploadAppModel(driver, molgenisClient);
 	}
 
 	@Test
 	public void test() throws InterruptedException
 	{
+		uploadAppModel.deleteXlsxEmxAllDatatypes(uid, pwd);
+
+		SignUtil.signIn(this.driver, baseURL, uid, pwd);
+
 		// Open upload app
 		uploadAppModel.open();
-		uploadAppModel.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD_UPDATE, LOG);
+		uploadAppModel.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD, LOG);
 
 		// Test 1
 		model.open();
@@ -78,17 +82,17 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 		Assert.assertEquals(next2.getText(), "Next");
 
 		// Test 3
-		List<String> entitiesNames = Arrays.asList("org_molgenis_test_TypeTest", "org_molgenis_test_TypeTestRef",
-				"org_molgenis_test_Person", "org_molgenis_test_Location");
+		List<String> entitiesNames = Arrays.asList("org_molgenis_test_TypeTest", "TypeTestRef",
+				"Person", "Location");
 		model.deleteEntitiesByFullName(driver, baseURL, entitiesNames, LOG);
+
+		// Sign out
+		SignUtil.signOut(this.driver);
 	}
 
 	@AfterClass
 	public void afterClass() throws InterruptedException
 	{
-		// Sign out
-		SignUtil.signOut(this.driver, LOG);
-
 		// Clear cookies
 		this.driver.manage().deleteAllCookies();
 

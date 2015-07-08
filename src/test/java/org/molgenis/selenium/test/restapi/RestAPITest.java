@@ -2,6 +2,7 @@ package org.molgenis.selenium.test.restapi;
 
 import static java.util.Arrays.asList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
@@ -232,10 +233,17 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		System.out.println("login test user");
 		String token = client.login("test", "secret").getToken();
 		QueryResponse response = client.get(token, "LoggingEvent");
-		Object id = response.getItems().get(0).get("id");
-		client.delete(token, "LoggingEvent", id);
-		Map<String, Object> event = client.get(token, "LoggingEvent", id);
-		assertEquals(event.get("total"), 0.0);
+		Object identifier = response.getItems().get(0).get("identifier");
+		client.delete(token, "LoggingEvent", identifier);
+		try
+		{
+			client.get(token, "LoggingEvent", identifier);
+		}
+		catch (HttpClientErrorException hcee)
+		{
+			assertEquals(hcee.getStatusCode(), NOT_FOUND);
+			assertEquals(parseErrorMessage(hcee), "LoggingEvent " + identifier + " not found");
+		}
 	}
 
 	@Test
