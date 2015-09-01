@@ -20,7 +20,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 
 import com.google.common.base.Joiner;
@@ -35,8 +34,6 @@ public class AnnotatorModel
 	private final MolgenisClient molgenisClient;
 	private final String token;
 	private final WebDriver driver;
-	@Autowired
-	private SettingsUtil settingsUtil;
 
 	public AnnotatorModel(WebDriver driver, MolgenisClient molgenisClient, String token)
 	{
@@ -47,7 +44,7 @@ public class AnnotatorModel
 
 	public void enableAnnotatorsOnDataExplorer()
 	{
-		settingsUtil.updateDataExplorerSettings(token, "mod_aggregates", true, LOG);
+		SettingsUtil.updateDataExplorerSettings(molgenisClient, token, "mod_aggregates", true, LOG);
 	}
 
 	public void deleteTestEntity()
