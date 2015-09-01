@@ -4,3 +4,5 @@ target/
 .project
 .classpath
 .settings
+src/test/resources/molgenis01.properties
+src/test/resources/molgenis62.properties
