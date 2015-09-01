@@ -13,13 +13,14 @@ import java.util.stream.Collectors;
 
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.util.MenuUtil;
-import org.molgenis.selenium.util.RuntimePropertyUtil;
 import org.molgenis.selenium.util.SeleniumUtils;
+import org.molgenis.selenium.util.SettingsUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 
 import com.google.common.base.Joiner;
@@ -34,6 +35,8 @@ public class AnnotatorModel
 	private final MolgenisClient molgenisClient;
 	private final String token;
 	private final WebDriver driver;
+	@Autowired
+	private SettingsUtil settingsUtil;
 
 	public AnnotatorModel(WebDriver driver, MolgenisClient molgenisClient, String token)
 	{
@@ -44,8 +47,7 @@ public class AnnotatorModel
 
 	public void enableAnnotatorsOnDataExplorer()
 	{
-		RuntimePropertyUtil.updateRuntimePropertyValue(molgenisClient, token,
-				"plugin.dataexplorer.mod.annotators", "true", LOG);
+		settingsUtil.updateDataExplorerSettings(token, "mod_aggregates", true, LOG);
 	}
 
 	public void deleteTestEntity()
@@ -165,8 +167,7 @@ public class AnnotatorModel
 						"edit\ntrash\nsearch\nHSPG2",
 						"plus\nOMIM_Causal_ID OMIM_Disorders OMIM_IDs OMIM_Type OMIM_HGNC_IDs OMIM_Cytogenic_Location OMIM_Entry HPO_IDs HPO_Gene_Name HPO_Descriptions HPO_Disease_Database HPO_Disease_Database_Entry HPO_Entrez_ID HGNC_SYMBOL");
 
-		Set<String> rows = elements.stream().map(WebElement::getText)
-				.collect(Collectors.toCollection(TreeSet::new));
+		Set<String> rows = elements.stream().map(WebElement::getText).collect(Collectors.toCollection(TreeSet::new));
 
 		LOG.info("Data table rows:\n" + Joiner.on('\n').join(rows));
 
@@ -192,4 +193,3 @@ public class AnnotatorModel
 		return token;
 	}
 }
-
