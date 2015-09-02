@@ -51,8 +51,8 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 		model.uploadDataFile(baseURL);
 		model.openDataset(baseURL);
 		model.clickAnnotators();
-		model.clickHGNC();
-		model.clickOMIM();
+		model.clickSnpEff();
+		model.clickCADD();
 		model.clickAnnotateButton();
 		model.clickShowResults();
 		model.checkResults();

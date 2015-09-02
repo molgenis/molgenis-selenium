@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.util.MenuUtil;
-import org.molgenis.selenium.util.RuntimePropertyUtil;
 import org.molgenis.selenium.util.SeleniumUtils;
+import org.molgenis.selenium.util.SettingsUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -44,8 +44,7 @@ public class AnnotatorModel
 
 	public void enableAnnotatorsOnDataExplorer()
 	{
-		RuntimePropertyUtil.updateRuntimePropertyValue(molgenisClient, token,
-				"plugin.dataexplorer.mod.annotators", "true", LOG);
+		SettingsUtil.updateDataExplorerSettings(molgenisClient, token, "mod_aggregates", true, LOG);
 	}
 
 	public void deleteTestEntity()
@@ -111,18 +110,18 @@ public class AnnotatorModel
 		Thread.sleep(1000);
 	}
 
-	public void clickHGNC() throws InterruptedException
+	public void clickSnpEff() throws InterruptedException
 	{
-		LOG.info("click HGNC");
-		By hGNCSymbolCheckbox = By.cssSelector("#enabled-annotator-selection-container input[value=HGNC_Symbol]");
+		LOG.info("click snpEff");
+		By hGNCSymbolCheckbox = By.cssSelector("#enabled-annotator-selection-container input[value=snpEff]");
 		SeleniumUtils.waitForElement(hGNCSymbolCheckbox, driver);
 		driver.findElement(hGNCSymbolCheckbox).click();
 	}
 
-	public void clickOMIM() throws InterruptedException
+	public void clickCADD() throws InterruptedException
 	{
-		LOG.info("click OMIM");
-		By omimHpoCheckbox = By.cssSelector("#enabled-annotator-selection-container input[value=OmimHpo]");
+		LOG.info("click CADD");
+		By omimHpoCheckbox = By.cssSelector("#enabled-annotator-selection-container input[value=cadd]");
 		SeleniumUtils.waitForElement(omimHpoCheckbox, driver);
 		driver.findElement(omimHpoCheckbox).click();
 	}
@@ -159,14 +158,13 @@ public class AnnotatorModel
 		List<WebElement> elements = new ArrayList<WebElement>(driver.findElements(By
 				.cssSelector(".molgenis-table-container tr")));
 		List<String> expected = Arrays
-				.asList("edit\ntrash\nsearch\nABCA4",
-						"edit\ntrash\nsearch\nESPN",
-						"edit\ntrash\nsearch\nH6PD",
-						"edit\ntrash\nsearch\nHSPG2",
-						"plus\nOMIM_Causal_ID OMIM_Disorders OMIM_IDs OMIM_Type OMIM_HGNC_IDs OMIM_Cytogenic_Location OMIM_Entry HPO_IDs HPO_Gene_Name HPO_Descriptions HPO_Disease_Database HPO_Disease_Database_Entry HPO_Entrez_ID HGNC_SYMBOL");
+				.asList("edit\ntrash\nsearch\n3.852093 23.4 missense_variant MODERATE ABCA4 ABCA4 transcript NM_000350.2 Coding 33/50 c.4685T>C p.Ile1562Thr 4789/7325 4685/6822 1562/2273",
+						"edit\ntrash\nsearch\nmissense_variant MODERATE ESPN ESPN transcript NM_031475.2 Coding 9/13 c.2044G>A p.Gly682Arg 2212/3531 2044/2565 682/854",
+						"edit\ntrash\nsearch\nmissense_variant MODERATE H6PD H6PD transcript NM_001282587.1 Coding 5/5 c.1763G>A p.Arg588Gln 1915/9027 1763/2409 588/802",
+						"edit\ntrash\nsearch\nmissense_variant MODERATE HSPG2 HSPG2 transcript NM_001291860.1 Coding 86/97 c.11728A>C p.Thr3910Pro 11808/14343 11728/13179 3910/4392",
+						"plus\nCADDABS CADDSCALED Annotation Putative_impact Gene_Name Gene_ID Feature_type Feature_ID Transcript_biotype Rank_total HGVS_c HGVS_p cDNA_position CDS_position Protein_position Distance_to_feature Errors LOF NMD");
 
-		Set<String> rows = elements.stream().map(WebElement::getText)
-				.collect(Collectors.toCollection(TreeSet::new));
+		Set<String> rows = elements.stream().map(WebElement::getText).collect(Collectors.toCollection(TreeSet::new));
 
 		LOG.info("Data table rows:\n" + Joiner.on('\n').join(rows));
 
@@ -192,4 +190,3 @@ public class AnnotatorModel
 		return token;
 	}
 }
-
