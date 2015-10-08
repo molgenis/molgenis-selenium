@@ -1,6 +1,10 @@
 package org.molgenis.selenium.model;
 
 import org.molgenis.data.rest.client.MolgenisClient;
+import org.molgenis.selenium.model.mappingservice.AttributeMappingScreenModel;
+import org.molgenis.selenium.model.mappingservice.MappingProjectAddSourceDataModel;
+import org.molgenis.selenium.model.mappingservice.MappingProjectImportDataModel;
+import org.molgenis.selenium.model.mappingservice.MappingProjectOverviewModel;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +14,7 @@ public class MappingServiceAppModel
 	private MappingProjectOverviewModel mappingProjectOverviewModel;
 	private MappingProjectImportDataModel mappingProjectImportDataModel;
 	private MappingProjectAddSourceDataModel mappingProjectAddSourceDataModel;
+	private AttributeMappingScreenModel attributeMappingScreenModel;
 
 	public static final Logger LOG = LoggerFactory.getLogger(MappingServiceAppModel.class);
 
@@ -24,6 +29,7 @@ public class MappingServiceAppModel
 		this.mappingProjectOverviewModel = new MappingProjectOverviewModel(webDriver);
 		this.mappingProjectImportDataModel = new MappingProjectImportDataModel(webDriver, molgenisClient);
 		this.mappingProjectAddSourceDataModel = new MappingProjectAddSourceDataModel(webDriver);
+		this.attributeMappingScreenModel = new AttributeMappingScreenModel(webDriver);
 	}
 
 	public void removeTestMappingProject() throws InterruptedException
@@ -56,11 +62,6 @@ public class MappingServiceAppModel
 		mappingProjectOverviewModel.addOneMappingProject();
 	}
 
-	public void openOneMappingProject() throws InterruptedException
-	{
-		mappingProjectAddSourceDataModel.openOneMappingProject();
-	}
-
 	public void addLifeLinesSourceToMappingProject() throws InterruptedException
 	{
 		mappingProjectAddSourceDataModel.addLifeLinesSourceToMappingProject();
@@ -81,23 +82,35 @@ public class MappingServiceAppModel
 		mappingProjectAddSourceDataModel.removeLifeLinesSourceToMappingProject();
 	}
 
-	public void clickGenderAttributeForLifeLinesSource() throws InterruptedException
+	public void removeFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
 	{
-		mappingProjectAddSourceDataModel.clickGenderAttributeForLifeLinesSource();
+		mappingProjectAddSourceDataModel.removeFastingGlucoseAttributeForLifeLinesSource();
 	}
 
-	public void removeGenderAttributeForLifeLinesSource() throws InterruptedException
+	public void cancelRemoveFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
 	{
-		mappingProjectAddSourceDataModel.removeGenderAttributeForLifeLinesSource();
-	}
-
-	public void cancelRemoveGenderAttributeForLifeLinesSource() throws InterruptedException
-	{
-		mappingProjectAddSourceDataModel.cancelRemoveGenderAttributeForLifeLinesSource();
+		mappingProjectAddSourceDataModel.cancelRemoveFastingGlucoseAttributeForLifeLinesSource();
 	}
 
 	public void integrateSourceData() throws InterruptedException
 	{
 		mappingProjectAddSourceDataModel.integrateSourceData();
+	}
+
+	public void openOneMappingProject() throws InterruptedException
+	{
+		attributeMappingScreenModel.openOneMappingProject();
+	}
+
+	public void clickGenderAttributeForLifeLinesSource() throws InterruptedException
+	{
+		attributeMappingScreenModel.clickGenderAttributeForLifeLinesSource();
+		attributeMappingScreenModel.goBackToMappingOneMappingProject();
+	}
+
+	public void clickFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
+	{
+		attributeMappingScreenModel.clickFastingGlucoseAttributeForLifeLinesSource();
+		attributeMappingScreenModel.goBackToMappingOneMappingProject();
 	}
 }

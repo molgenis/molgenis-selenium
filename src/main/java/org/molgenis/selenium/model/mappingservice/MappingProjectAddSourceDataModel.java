@@ -1,22 +1,17 @@
-package org.molgenis.selenium.model;
+package org.molgenis.selenium.model.mappingservice;
 
 import static org.molgenis.selenium.model.MappingServiceAppModel.INTEGRATED_DATASET_ENTITY_NAME;
-import static org.molgenis.selenium.model.MappingServiceAppModel.MAPPING_PROJECT_NAME;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButonById;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonForAddingNewSourceToMappingProject;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonForRemoveOneAttributeMapping;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButtonForRemoveSourceColumms;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOKButonByXpathExpression;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnCreateIntegratedDataSetButton;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickOnEditAttributeMappingTableByIndex;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickOnGoBackToMappingProjectOverView;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnRmoveAttributeMappingTableByIndex;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickRemoveButtonForRemoveSourceColumns;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickToOpenOneMappingProject;
 import static org.molgenis.selenium.util.MappingServiceUtil.getAnWebElementById;
 import static org.molgenis.selenium.util.MappingServiceUtil.getColumnHeadersInOneMappingProject;
 import static org.molgenis.selenium.util.MappingServiceUtil.getOneCellFromAttributeMappingTableByIndex;
-import static org.molgenis.selenium.util.MappingServiceUtil.getPageTitleInAttributeMappingPage;
 import static org.molgenis.selenium.util.MappingServiceUtil.setValueToTextFieldByName;
 
 import java.util.Objects;
@@ -31,6 +26,7 @@ import org.testng.Assert;
 
 public class MappingProjectAddSourceDataModel
 {
+
 	private WebDriver driver;
 
 	public static final Logger LOG = LoggerFactory.getLogger(MappingProjectAddSourceDataModel.class);
@@ -40,48 +36,34 @@ public class MappingProjectAddSourceDataModel
 	private static final String ADD_NEW_SOURCE_MODAL_CONTAINER = "create-new-source-column-modal";
 	private static final String ADD_NEW_SOURCE_SUBMIT_BUTTON_ID = "submit-new-source-column-btn";
 	private static final String SOURCE_LIFELINES_COLUMN_HEADER = "Source: lifelines_test";
-	private static final String MAPPING_GENDER_TO_LIFELINES_TITLE_IN_ATTRIBUTE_MAPPING_SCREEN = "Mapping to HOP_selenium.HOP_GENDER from lifelines_test";
 	private static final String INTEGRATED_DATASET_TEXTFIELD = "newEntityName";
 	private static final String CREATED_INTEGRATED_DATA_CONFIRM_BUTTON = "create-integrated-entity-btn";
-
 	private static final String DATA_EXPLORER_ENTITY_HEADER_ELEMENT_ID = "entity-class-name";
+
+	private static final String GENERATED_ALGORITHM_FOR_FASTING_GLUCOSE = "If the participant fasting?, Glucose";
 
 	public MappingProjectAddSourceDataModel(WebDriver webDriver)
 	{
 		this.driver = Objects.requireNonNull(webDriver);
 	}
 
-	public void openOneMappingProject() throws InterruptedException
+	public void cancelRemoveFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
 	{
-		clickToOpenOneMappingProject(MAPPING_PROJECT_NAME, driver);
-	}
-
-	public void clickGenderAttributeForLifeLinesSource() throws InterruptedException
-	{
-		clickOnEditAttributeMappingTableByIndex(1, 2, driver);
-
-		Assert.assertEquals(getPageTitleInAttributeMappingPage(driver).getText(),
-				MAPPING_GENDER_TO_LIFELINES_TITLE_IN_ATTRIBUTE_MAPPING_SCREEN);
-
-		clickOnGoBackToMappingProjectOverView(driver);
-	}
-
-	public void cancelRemoveGenderAttributeForLifeLinesSource() throws InterruptedException
-	{
-		clickOnRmoveAttributeMappingTableByIndex(1, 2, driver);
+		clickOnRmoveAttributeMappingTableByIndex(6, 2, driver);
 
 		clickCancelButonForRemoveOneAttributeMapping(driver);
 
-		Assert.assertEquals(getOneCellFromAttributeMappingTableByIndex(1, 2, driver).getText(), "Sex");
+		Assert.assertEquals(getOneCellFromAttributeMappingTableByIndex(6, 2, driver).getText(),
+				GENERATED_ALGORITHM_FOR_FASTING_GLUCOSE);
 	}
 
-	public void removeGenderAttributeForLifeLinesSource() throws InterruptedException
+	public void removeFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
 	{
-		clickOnRmoveAttributeMappingTableByIndex(1, 2, driver);
+		clickOnRmoveAttributeMappingTableByIndex(6, 2, driver);
 
 		clickOKButonByXpathExpression(driver);
 
-		Assert.assertTrue(StringUtils.isBlank(getOneCellFromAttributeMappingTableByIndex(1, 2, driver).getText()));
+		Assert.assertTrue(StringUtils.isBlank(getOneCellFromAttributeMappingTableByIndex(6, 2, driver).getText()));
 	}
 
 	public void addLifeLinesSourceToMappingProject() throws InterruptedException
@@ -145,18 +127,6 @@ public class MappingProjectAddSourceDataModel
 		Assert.assertEquals(getAnWebElementById(DATA_EXPLORER_ENTITY_HEADER_ELEMENT_ID, driver).getText(),
 				INTEGRATED_DATASET_ENTITY_NAME);
 	}
-
-	// public void integrateSourceData() throws InterruptedException
-	// {
-	// clickOnCreateIntegratedDataSetButton(driver);
-	//
-	// setValueToTextFieldByName(INTEGRATED_DATASET_TEXTFIELD, INTEGRATED_DATASET_ENTITY_NAME, driver);
-	//
-	// clickButonById(CREATED_INTEGRATED_DATA_CONFIRM_BUTTON, driver);
-	//
-	// Assert.assertEquals(getAnWebElementById(DATA_EXPLORER_ENTITY_HEADER_ELEMENT_ID, driver).getText(),
-	// INTEGRATED_DATASET_ENTITY_NAME);
-	// }
 
 	private boolean headerContainsSoucenEntity(String entityName) throws InterruptedException
 	{

@@ -4,6 +4,7 @@ import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.MappingServiceAppModel;
+import org.molgenis.selenium.model.mappingservice.TagWizardScreenModel;
 import org.molgenis.selenium.util.RestApiV1Util;
 import org.molgenis.selenium.util.SignUtil;
 import org.openqa.selenium.WebDriver;
@@ -23,6 +24,7 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 
 	private WebDriver driver;
 	private MappingServiceAppModel model;
+	private TagWizardScreenModel tagWizardScreenModel;
 
 	@Value("${test.baseurl}")
 	private String baseURL;
@@ -39,6 +41,7 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		driver = DriverType.FIREFOX.getDriver();
 		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
 		model = new MappingServiceAppModel(driver, molgenisClient);
+		tagWizardScreenModel = new TagWizardScreenModel(driver);
 	}
 
 	@Test
@@ -49,6 +52,16 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		SignUtil.signIn(driver, baseURL, uid, pwd);
 
 		model.importMappingServiceTestData();
+
+		SignUtil.signOut(this.driver);
+	}
+
+	@Test
+	public void testTagWizard() throws InterruptedException
+	{
+		SignUtil.signIn(driver, baseURL, uid, pwd);
+
+		tagWizardScreenModel.tagAllBodyMassIndexAttributesManually();
 
 		SignUtil.signOut(this.driver);
 	}
@@ -92,7 +105,7 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 	}
 
 	@Test
-	public void testOneAttributeMappingInLifeLines() throws InterruptedException
+	public void testBasicFunctionalitiesInAttributeMappingScreen() throws InterruptedException
 	{
 		SignUtil.signIn(driver, baseURL, uid, pwd);
 
@@ -100,9 +113,11 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 
 		model.clickGenderAttributeForLifeLinesSource();
 
-		model.cancelRemoveGenderAttributeForLifeLinesSource();
+		model.cancelRemoveFastingGlucoseAttributeForLifeLinesSource();
 
-		model.removeGenderAttributeForLifeLinesSource();
+		model.removeFastingGlucoseAttributeForLifeLinesSource();
+
+		model.clickFastingGlucoseAttributeForLifeLinesSource();
 
 		SignUtil.signOut(this.driver);
 	}
@@ -115,16 +130,6 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		model.openOneMappingProject();
 
 		model.integrateSourceData();
-
-		SignUtil.signOut(this.driver);
-	}
-
-	@Test
-	public void testBasicFunctionalitiesInAttributeMappingScreen() throws InterruptedException
-	{
-		SignUtil.signIn(driver, baseURL, uid, pwd);
-
-		model.openOneMappingProject();
 
 		SignUtil.signOut(this.driver);
 	}

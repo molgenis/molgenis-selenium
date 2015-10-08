@@ -1,13 +1,13 @@
-package org.molgenis.selenium.model;
+package org.molgenis.selenium.model.mappingservice;
 
 import static java.util.Objects.requireNonNull;
 import static org.molgenis.selenium.model.MappingServiceAppModel.MAPPING_PROJECT_NAME;
 import static org.molgenis.selenium.model.MappingServiceAppModel.TARGET_ENTITY_NAME;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickButonByCssSelector;
+import static org.molgenis.selenium.util.MappingServiceUtil.getAnElementByCssSelector;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButonById;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickButonWithInSpecifiedElementByClassName;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickButtonWithInSpecifiedElementByClassName;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonInAddNewMappingProjectModal;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickGoBackButton;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickGoBackButtonToMappingProjectOverView;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOKButonByXpathExpression;
 import static org.molgenis.selenium.util.MappingServiceUtil.openMappingService;
 import static org.molgenis.selenium.util.MappingServiceUtil.setValueToTextFieldByName;
@@ -55,7 +55,7 @@ public class MappingProjectOverviewModel
 
 		clickButonById("submit-new-mapping-project-btn", driver);
 
-		String errorMessage = clickButonByCssSelector("label", "for", "mapping-project-name", driver).getText();
+		String errorMessage = getAnElementByCssSelector("label", "for", "mapping-project-name", driver).getText();
 
 		Assert.assertEquals(errorMessage, "This field is required.");
 	}
@@ -74,7 +74,7 @@ public class MappingProjectOverviewModel
 
 		clickButonById("submit-new-mapping-project-btn", driver);
 
-		clickGoBackButton(driver);
+		clickGoBackButtonToMappingProjectOverView(driver);
 	}
 
 	public void removeTestMappingProject() throws InterruptedException
@@ -86,7 +86,7 @@ public class MappingProjectOverviewModel
 
 		Assert.assertTrue(webElement != null);
 
-		clickButonWithInSpecifiedElementByClassName(webElement, "btn-danger", driver);
+		clickButtonWithInSpecifiedElementByClassName(webElement, "btn-danger", driver);
 
 		clickOKButonByXpathExpression(driver);
 	}

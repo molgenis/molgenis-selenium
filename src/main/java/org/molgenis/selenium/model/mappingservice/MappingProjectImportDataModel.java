@@ -1,4 +1,4 @@
-package org.molgenis.selenium.model;
+package org.molgenis.selenium.model.mappingservice;
 
 import static java.util.Objects.requireNonNull;
 import static org.molgenis.selenium.model.MappingServiceAppModel.INTEGRATED_DATASET_ENTITY_NAME;

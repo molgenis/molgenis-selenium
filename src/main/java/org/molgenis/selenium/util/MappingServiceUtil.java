@@ -4,7 +4,10 @@ import static org.molgenis.selenium.model.MappingServiceAppModel.MAPPING_SERVICE
 
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -14,89 +17,40 @@ public class MappingServiceUtil
 	private static final String SUB_MENU = "Mapping Service";
 	private static final int BUTTON_CLICK_SLEEP_TIME = 3000;
 
-	// ##################################### Mapping Project Overview related event handlers
-	public static void openMappingService(WebDriver driver) throws InterruptedException
+	// ############################################################################################################
+	// ############################################################################################################
+	// ##################################### General helper functions
+	public static void refreshCurrentPage(WebDriver driver) throws InterruptedException
 	{
-		MenuUtil.openPageByClickOnSubMenuItem(MAIN_MENU, SUB_MENU, driver);
+		driver.navigate().refresh();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
-	public static WebElement clickButonById(String buttonId, WebDriver driver) throws InterruptedException
+	public static String getAlertMessageInCurrentPage(WebDriver driver)
 	{
-		WebElement buttonElement = driver.findElement(By.id(buttonId));
-		buttonElement.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return buttonElement;
+		return driver.findElement(By.xpath("//div[@class='alerts']/div")).getText();
 	}
 
-	public static WebElement clickButonByCssSelector(String tagName, String attributeName, String Value,
-			WebDriver driver) throws InterruptedException
+	public static String getModalHeaderTitle(String modalContainerId, WebDriver driver)
 	{
-		WebElement buttonElement = driver.findElement(By.cssSelector(createCssSelector(tagName, attributeName, Value)));
-		buttonElement.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return buttonElement;
+		WebElement modalHeaderElement = driver.findElement(By.xpath("//div[@id='" + modalContainerId
+				+ "']//div[@class='modal-header']/h4"));
+		return modalHeaderElement.getText();
 	}
 
-	public static WebElement clickCancelButonInAddNewMappingProjectModal(WebDriver driver) throws InterruptedException
+	public static String getModalBodyContent(String modalContainerId, WebDriver driver)
 	{
-		WebElement buttonElement = driver.findElement(By
-				.xpath("//div[@id='create-new-mapping-project-modal']//button[contains(text(), 'Cancel')]"));
-		buttonElement.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return buttonElement;
+		WebElement modalBodyElement = driver.findElement(By.xpath("//div[@id='" + modalContainerId
+				+ "']//div[@class='modal-body']"));
+		return modalBodyElement.getText();
 	}
 
-	public static WebElement clickOKButonByXpathExpression(WebDriver driver) throws InterruptedException
+	public static void clickOnCloseModalButton(String modalContainerId, WebDriver driver) throws InterruptedException
 	{
-		WebElement confirmButton = driver.findElement(By.xpath("//button[contains(text(), 'OK')]"));
-		confirmButton.click();
+		WebElement closeModalButtonElement = driver.findElement(By.xpath("//div[@id='" + modalContainerId
+				+ "']//div[@class='modal-header']/button[@class='close']"));
+		closeModalButtonElement.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return confirmButton;
-	}
-
-	public static WebElement clickButonWithInSpecifiedElementByClassName(WebElement webElement, String className,
-			WebDriver driver) throws InterruptedException
-	{
-		WebElement buttonElement = webElement.findElement(By.className("btn-danger"));
-		buttonElement.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return buttonElement;
-	}
-
-	public static WebElement clickButonWithInSpecifiedElementByTagName(WebElement webElement, String tagName,
-			WebDriver driver) throws InterruptedException
-	{
-		WebElement buttonElement = webElement.findElement(By.tagName(tagName));
-		buttonElement.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return buttonElement;
-	}
-
-	public static WebElement clickGoBackButton(WebDriver driver) throws InterruptedException
-	{
-		WebElement goBackToProjectOverviewButton = driver.findElement(By
-				.xpath("//a[contains(@class, 'btn-default') and contains(@href, '" + MAPPING_SERVICE_BASE_URL + "')]"));
-		goBackToProjectOverviewButton.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return goBackToProjectOverviewButton;
-	}
-
-	public static WebElement clickCancelButtonForRemoveSourceColumms(WebDriver driver) throws InterruptedException
-	{
-		WebElement cancelButton = driver.findElement(By
-				.xpath("//button[contains(text(), 'Cancel') and contains(@data-bb-handler, 'cancel')]"));
-		cancelButton.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return cancelButton;
-	}
-
-	public static WebElement clickRemoveButtonForRemoveSourceColumns(WebElement webElement, WebDriver driver)
-			throws InterruptedException
-	{
-		WebElement removeSourceColumnButton = webElement.findElement(By.tagName("button"));
-		removeSourceColumnButton.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return removeSourceColumnButton;
 	}
 
 	public static WebElement setValueToTextFieldByName(String textFieldName, String value, WebDriver driver)
@@ -118,6 +72,13 @@ public class MappingServiceUtil
 		return webElement;
 	}
 
+	public static WebElement getAnElementByCssSelector(String tagName, String attributeName, String Value,
+			WebDriver driver) throws InterruptedException
+	{
+		WebElement webElement = driver.findElement(By.cssSelector(createCssSelector(tagName, attributeName, Value)));
+		return webElement;
+	}
+
 	private static String createCssSelector(String tagName, String attributeName, String Value)
 	{
 		StringBuilder stringBuilder = new StringBuilder();
@@ -126,10 +87,64 @@ public class MappingServiceUtil
 		return stringBuilder.toString();
 	}
 
+	public static void clickButonById(String buttonId, WebDriver driver) throws InterruptedException
+	{
+		WebElement buttonElement = driver.findElement(By.id(buttonId));
+		buttonElement.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
 	// ############################################################################################################
 	// ############################################################################################################
-	// ##################################### Attribute Mapping related event handlers
-	public static WebElement clickToOpenOneMappingProject(String mappingProjectName, WebDriver driver)
+	// ##################################### View the Mapping Project Overview related event handlers
+	public static void openMappingService(WebDriver driver) throws InterruptedException
+	{
+		MenuUtil.openPageByClickOnSubMenuItem(MAIN_MENU, SUB_MENU, driver);
+	}
+
+	public static void clickCancelButonInAddNewMappingProjectModal(WebDriver driver) throws InterruptedException
+	{
+		WebElement buttonElement = driver.findElement(By
+				.xpath("//div[@id='create-new-mapping-project-modal']//button[contains(text(), 'Cancel')]"));
+		buttonElement.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickOKButonByXpathExpression(WebDriver driver) throws InterruptedException
+	{
+		WebElement confirmButton = driver.findElement(By.xpath("//button[contains(text(), 'OK')]"));
+		confirmButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickButtonWithInSpecifiedElementByClassName(WebElement webElement, String className,
+			WebDriver driver) throws InterruptedException
+	{
+		WebElement buttonElement = webElement.findElement(By.className("btn-danger"));
+		buttonElement.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickButonWithInSpecifiedElementByTagName(WebElement webElement, String tagName, WebDriver driver)
+			throws InterruptedException
+	{
+		WebElement buttonElement = webElement.findElement(By.tagName(tagName));
+		buttonElement.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickGoBackButtonToMappingProjectOverView(WebDriver driver) throws InterruptedException
+	{
+		WebElement goBackToProjectOverviewButton = driver.findElement(By
+				.xpath("//a[contains(@class, 'btn-default') and contains(@href, '" + MAPPING_SERVICE_BASE_URL + "')]"));
+		goBackToProjectOverviewButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	// ############################################################################################################
+	// ############################################################################################################
+	// ##################################### View One Mapping Project screen related event handlers
+	public static void clickToOpenOneMappingProject(String mappingProjectName, WebDriver driver)
 			throws InterruptedException
 	{
 		openMappingService(driver);
@@ -137,31 +152,33 @@ public class MappingServiceUtil
 				+ mappingProjectName + "']"));
 		mappingProjectLinkButton.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return mappingProjectLinkButton;
 	}
 
-	public static WebElement clickCancelButonForAddingNewSourceToMappingProject(WebDriver driver)
-			throws InterruptedException
+	public static void clickCancelButonForAddingNewSourceToMappingProject(WebDriver driver) throws InterruptedException
 	{
 		WebElement cancelButtonElement = driver.findElement(By
 				.xpath("//div[@id='create-new-source-column-modal']//button[contains(text(), 'Cancel')]"));
 		cancelButtonElement.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return cancelButtonElement;
 	}
 
-	public static WebElement clickOnEditAttributeMappingTableByIndex(int rowNumber, int columnNumber, WebDriver driver)
+	public static void clickCancelButtonForRemoveSourceColumms(WebDriver driver) throws InterruptedException
+	{
+		WebElement cancelButton = driver.findElement(By
+				.xpath("//button[contains(text(), 'Cancel') and contains(@data-bb-handler, 'cancel')]"));
+		cancelButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickRemoveButtonForRemoveSourceColumns(WebElement webElement, WebDriver driver)
 			throws InterruptedException
 	{
-		WebElement columnElement = driver.findElement(By.xpath("//table[@id='attribute-mapping-table']/tbody/tr["
-				+ rowNumber + "]/td[" + columnNumber + "]"));
-		WebElement pencilButton = columnElement.findElement(By.cssSelector("span.glyphicon-pencil"));
-		pencilButton.click();
+		WebElement removeSourceColumnButton = webElement.findElement(By.tagName("button"));
+		removeSourceColumnButton.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return pencilButton;
 	}
 
-	public static WebElement clickOnRmoveAttributeMappingTableByIndex(int rowNumber, int columnNumber, WebDriver driver)
+	public static void clickOnRmoveAttributeMappingTableByIndex(int rowNumber, int columnNumber, WebDriver driver)
 			throws InterruptedException
 	{
 		WebElement columnElement = driver.findElement(By.xpath("//table[@id='attribute-mapping-table']/tbody/tr["
@@ -169,7 +186,6 @@ public class MappingServiceUtil
 		WebElement trashButton = columnElement.findElement(By.cssSelector("span.glyphicon-remove"));
 		trashButton.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return trashButton;
 	}
 
 	public static WebElement getOneCellFromAttributeMappingTableByIndex(int rowNumber, int columnNumber,
@@ -180,32 +196,122 @@ public class MappingServiceUtil
 		return cellContentElement;
 	}
 
-	public static WebElement clickCancelButonForRemoveOneAttributeMapping(WebDriver driver) throws InterruptedException
+	public static void clickCancelButonForRemoveOneAttributeMapping(WebDriver driver) throws InterruptedException
 	{
 		WebElement cancelButtonElement = driver
 				.findElement(By
 						.xpath("//div[@class='modal-body']/div[text()='Are you sure?']/../../div[@class = 'modal-footer']/button[text()='Cancel']"));
 		cancelButtonElement.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return cancelButtonElement;
 	}
 
-	public static WebElement clickOnGoBackToMappingProjectOverView(WebDriver driver) throws InterruptedException
-	{
-		WebElement goBackToMappingProjectButton = driver.findElement(By
-				.xpath("//div[@id='attribute-mapping-toolbar']/a[@type='btn']"));
-		goBackToMappingProjectButton.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return goBackToMappingProjectButton;
-	}
-
-	public static WebElement clickOnCreateIntegratedDataSetButton(WebDriver driver) throws InterruptedException
+	public static void clickOnCreateIntegratedDataSetButton(WebDriver driver) throws InterruptedException
 	{
 		WebElement createIntegratedDataButton = driver.findElement(By
 				.xpath("//a[@data-target='#create-integrated-entity-modal' and contains(@Class, btn)]"));
 		createIntegratedDataButton.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-		return createIntegratedDataButton;
+	}
+
+	public static List<WebElement> getColumnHeadersInOneMappingProject(WebDriver driver) throws InterruptedException
+	{
+		return driver.findElements(By.xpath("//table[not(tbody)][1]/thead/tr/th"));
+	}
+
+	// ############################################################################################################
+	// ############################################################################################################
+	// ##################################### The Attribute Mapping related event handlers
+	public static void clickOnGoBackToMappingProjectOverView(WebDriver driver) throws InterruptedException
+	{
+		WebElement goBackToMappingProjectButton = driver.findElement(By
+				.xpath("//div[@id='attribute-mapping-toolbar']/a[@type='btn']"));
+		goBackToMappingProjectButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickOnEditAttributeMappingTableByIndex(int rowNumber, int columnNumber, WebDriver driver)
+			throws InterruptedException
+	{
+		WebElement columnElement = driver.findElement(By.xpath("//table[@id='attribute-mapping-table']/tbody/tr["
+				+ rowNumber + "]/td[" + columnNumber + "]"));
+		WebElement pencilButton = columnElement.findElement(By.cssSelector("span.glyphicon-pencil"));
+		pencilButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void executeMouseEnterEventForHoverAttributeSection(String containerId, WebDriver driver)
+			throws InterruptedException
+	{
+		Assert.assertTrue(driver instanceof JavascriptExecutor);
+
+		((JavascriptExecutor) driver).executeScript("$('#" + containerId + " i:eq(0)').trigger('mouseenter')");
+
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void executeMouseOutEventForHoverAttributeSection(String containerId, WebDriver driver)
+			throws InterruptedException
+	{
+		Assert.assertTrue(driver instanceof JavascriptExecutor);
+
+		((JavascriptExecutor) driver).executeScript("$('#" + containerId + " i:eq(0)').trigger('mouseout')");
+
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void setValueToAlgorithmEditorInAttributeMapping(String value, WebDriver driver)
+			throws InterruptedException
+	{
+		Assert.assertTrue(driver instanceof JavascriptExecutor);
+		String script = "$('#ace-editor-text-area').data('ace').editor.setValue(\"" + value + "\")";
+		((JavascriptExecutor) driver).executeScript(script);
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static String getValueToAlgorithmEditorInAttributeMapping(WebDriver driver) throws InterruptedException
+	{
+		WebElement aceEditorValueContainerElements = driver.findElement(By
+				.xpath("//div[@class='ace-editor-container']//div[@class='ace_line']"));
+		return aceEditorValueContainerElements.getText();
+	}
+
+	public static void toggleCheckBoxInSuggestedAttributeByRowIndex(int index, WebDriver driver)
+			throws InterruptedException
+	{
+		WebElement checkBox = driver.findElement(By.xpath("//table[@id='attribute-mapping-table']/tbody/tr[" + index
+				+ "]//input[@type='checkbox']"));
+		checkBox.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static boolean isCheckBoxSelectedInSuggestedAttributeByRowIndex(int index, WebDriver driver)
+			throws InterruptedException
+	{
+		WebElement checkBox = driver.findElement(By.xpath("//table[@id='attribute-mapping-table']/tbody/tr[" + index
+				+ "]//input[@type='checkbox']"));
+		return checkBox.isSelected();
+	}
+
+	public static boolean isResultContainerVisiableInAttributeMapping(WebDriver driver) throws InterruptedException
+	{
+		WebElement previewResultTableContainer = driver.findElement(By.id("result-container"));
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+		return previewResultTableContainer.isDisplayed();
+	}
+
+	public static WebElement getCellFromThePreviewResultTableInAttributeMappingScreen(int row, int column,
+			WebDriver driver) throws InterruptedException
+	{
+		WebElement previewTableCellElement = driver.findElement(By
+				.xpath("//div[@id='algorithm-result-feedback-container']//table/tbody/tr[" + row + "]/td[" + ++column
+						+ "]"));
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+		return previewTableCellElement;
+	}
+
+	public static List<WebElement> getMappingCategoryEditorElement(WebDriver driver) throws InterruptedException
+	{
+		return driver.findElements(By.id("map-tab"));
 	}
 
 	public static WebElement getPageTitleInAttributeMappingPage(WebDriver driver) throws InterruptedException
@@ -214,14 +320,76 @@ public class MappingServiceUtil
 		return pageTitleElement;
 	}
 
-	public static List<WebElement> getColumnHeadersInOneMappingProject(WebDriver driver) throws InterruptedException
+	public static List<WebElement> getRowsFromAttributeMappingTable(WebDriver driver) throws InterruptedException
 	{
-		return driver.findElements(By.xpath("//table[not(tbody)][1]/thead/tr/th"));
+		List<WebElement> rowElementsFromAttributeMappingTable = driver.findElements(By
+				.xpath("//table[@id='attribute-mapping-table']/tbody/tr"));
+		return rowElementsFromAttributeMappingTable;
 	}
 
 	public static WebElement getToolTipElementInThePage(WebDriver driver) throws InterruptedException
 	{
 		return driver.findElement(By
 				.xpath("//div[contains(@class, 'tooltip') and @role='tooltip']/div[@class='tooltip-inner']"));
+	}
+
+	public static void switchToAlgorithmCategoryMappingEditor(WebDriver driver) throws InterruptedException
+	{
+		WebElement categoryMappingEditorButton = driver.findElement(By.xpath("//li[@id='map-tab']/a"));
+		categoryMappingEditorButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void switchToAlgorithmScriptEditor(WebDriver driver) throws InterruptedException
+	{
+		WebElement categoryMappingEditorButton = driver.findElement(By.xpath("//li[@id='script-tab']/a"));
+		categoryMappingEditorButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void mapCategoriesForGenderinLifeLines(WebDriver driver) throws InterruptedException
+	{
+		WebElement selectInFirstSourceCategoryElement = driver.findElement(By
+				.xpath("//table[@id='advanced-mapping-table']/tbody/tr[1]//select"));
+		selectInFirstSourceCategoryElement.sendKeys("Male");
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+
+		WebElement selectInSecondSourceCategoryElement = driver.findElement(By
+				.xpath("//table[@id='advanced-mapping-table']/tbody/tr[2]//select"));
+		selectInSecondSourceCategoryElement.sendKeys("Female");
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickOnSaveButtonInAttributeMapping(WebDriver driver) throws InterruptedException
+	{
+		WebElement saveAlgorithmButton = driver.findElement(By.id("save-mapping-btn"));
+		saveAlgorithmButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickOnSaveToDiscussButtonInAttributeMapping(WebDriver driver) throws InterruptedException
+	{
+		WebElement saveAlgorithmButton = driver.findElement(By.id("save-discuss-mapping-btn"));
+		saveAlgorithmButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static String getAlgorithmStateInAttributeMapping(WebDriver driver) throws InterruptedException
+	{
+		return getAnWebElementById("algorithmState", driver).getText();
+	}
+
+	public static boolean isNextButtonToUncuratedAttributeMappingVisible(WebDriver driver)
+	{
+		List<WebElement> findElements = driver.findElements(By.id("find-first-to-curate-attribute-btn"));
+		return findElements.size() > 0;
+	}
+
+	public static void clickOnNextButtonToUncuratedAttributeMapping(WebDriver driver) throws InterruptedException
+	{
+		WebElement NextButtonToUncuratedAttributeMapping = driver.findElement(By
+				.id("find-first-to-curate-attribute-btn"));
+		NextButtonToUncuratedAttributeMapping.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 }
