@@ -22,12 +22,6 @@ public class MappingServiceUtil
 	// ############################################################################################################
 	// ############################################################################################################
 	// ##################################### General helper functions
-	public static void refreshCurrentPage(WebDriver driver) throws InterruptedException
-	{
-		driver.navigate().refresh();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-	}
-
 	public static String getAlertMessageInCurrentPage(WebDriver driver)
 	{
 		return driver.findElement(By.xpath("//div[@class='alerts']/div")).getText();
@@ -179,7 +173,8 @@ public class MappingServiceUtil
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
-	public static void clickCancelButonForAddingNewSourceToMappingProject(WebDriver driver) throws InterruptedException
+	public static void clickCancelButtonForAddingNewSourceToMappingProject(WebDriver driver)
+			throws InterruptedException
 	{
 		WebElement cancelButtonElement = driver.findElement(By
 				.xpath("//div[@id='create-new-source-column-modal']//button[contains(text(), 'Cancel')]"));
@@ -229,7 +224,7 @@ public class MappingServiceUtil
 	// ############################################################################################################
 	// ############################################################################################################
 	// ##################################### The Attribute Mapping related event handlers
-	public static void clickOnGoBackToMappingProjectOverView(WebDriver driver) throws InterruptedException
+	public static void clickOnGoBackToOneMappingProject(WebDriver driver) throws InterruptedException
 	{
 		WebElement goBackToMappingProjectButton = driver.findElement(By
 				.xpath("//div[@id='attribute-mapping-toolbar']/a[@type='btn']"));

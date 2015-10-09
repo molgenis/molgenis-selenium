@@ -3,7 +3,7 @@ package org.molgenis.selenium.model.mappingservice;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButonByElementId;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnCloseModalButton;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnEditAttributeMappingTableByIndex;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickOnGoBackToMappingProjectOverView;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickOnGoBackToOneMappingProject;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnNextButtonToUncuratedAttributeMapping;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnSaveButtonInAttributeMapping;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnSaveToDiscussButtonInAttributeMapping;
@@ -24,7 +24,6 @@ import static org.molgenis.selenium.util.MappingServiceUtil.isCheckBoxSelectedIn
 import static org.molgenis.selenium.util.MappingServiceUtil.isNextButtonToUncuratedAttributeMappingVisible;
 import static org.molgenis.selenium.util.MappingServiceUtil.isResultContainerVisiableInAttributeMapping;
 import static org.molgenis.selenium.util.MappingServiceUtil.mapCategoriesForGenderinLifeLines;
-import static org.molgenis.selenium.util.MappingServiceUtil.refreshCurrentPage;
 import static org.molgenis.selenium.util.MappingServiceUtil.setValueToAlgorithmEditorInAttributeMapping;
 import static org.molgenis.selenium.util.MappingServiceUtil.switchToAlgorithmCategoryMappingEditor;
 import static org.molgenis.selenium.util.MappingServiceUtil.switchToAlgorithmScriptEditor;
@@ -119,8 +118,11 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		Assert.assertEquals(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 1, driver).getText(),
 				PREVIEW_ALGORITHM_RESULT_TARGET_ERROR_MESSAGE);
 
-		// Refresh the page to get back the previous algorithm
-		refreshCurrentPage(driver);
+		// go back to the one mapping project page
+		clickOnGoBackToOneMappingProject(driver);
+
+		// come back to the attribute mapping for the target gender attribute in lifelines
+		clickOnEditAttributeMappingTableByIndex(1, 2, driver);
 
 		// Switch to the category mapping editor
 		switchToAlgorithmCategoryMappingEditor(driver);
@@ -161,7 +163,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 				MAPPING_NEXT_ATTRIBUTE_FOR_LIFELINES_TITLE_IN_ATTRIBUTE_MAPPING_SCREEN);
 
 		// Go back to the mapping project
-		goBackToMappingOneMappingProject();
+		clickOnGoBackToOneMappingProject(driver);
 	}
 
 	public void clickFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
@@ -238,7 +240,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		Assert.assertFalse(isResultContainerVisiableInAttributeMapping(driver));
 
 		// Go back to the mapping project
-		goBackToMappingOneMappingProject();
+		clickOnGoBackToOneMappingProject(driver);
 	}
 
 	public void hoverAttributeQuestionMarkInAttributeMapping() throws InterruptedException
@@ -266,11 +268,6 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		Assert.assertEquals(getToolTipElementInThePage(driver).getText(), PREVIEW_QUESTION_MARK_TOOL_TIP_MESSAGE);
 
 		executeMouseOutEventForHoverAttributeSection(PREVIEW_SECTION_CONTAINER, driver);
-	}
-
-	public void goBackToMappingOneMappingProject() throws InterruptedException
-	{
-		clickOnGoBackToMappingProjectOverView(driver);
 	}
 
 	private void checkAvailableJavascriptFunctions() throws InterruptedException

@@ -1,7 +1,7 @@
 package org.molgenis.selenium.model.mappingservice;
 
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButonByElementId;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonForAddingNewSourceToMappingProject;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButtonForAddingNewSourceToMappingProject;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonInConfirmationModal;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOKButonInConfirmationModal;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnCreateIntegratedDataSetButton;
@@ -82,7 +82,7 @@ public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppM
 
 		Select2Util.select(ADD_NEW_SOURCE_MODAL_CONTAINER, LIFELINES_ENTITY_NAME, driver, LOG);
 
-		clickCancelButonForAddingNewSourceToMappingProject(driver);
+		clickCancelButtonForAddingNewSourceToMappingProject(driver);
 
 		Assert.assertFalse(headerContainsSoucenEntity(LIFELINES_ENTITY_NAME));
 	}
