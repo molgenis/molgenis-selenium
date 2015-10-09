@@ -119,7 +119,7 @@ public class MappingServiceUtil
 	{
 		for (WebElement webElement : getRowWebElementsFromMappingProjectTable(driver))
 		{
-			if (webElement.findElement(By.tagName("td")).getText().equals(MAPPING_PROJECT_NAME))
+			if (webElement.getText().contains(MAPPING_PROJECT_NAME))
 			{
 				return webElement;
 			}
