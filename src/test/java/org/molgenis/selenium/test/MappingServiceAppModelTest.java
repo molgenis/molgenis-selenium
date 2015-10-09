@@ -45,32 +45,39 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 	}
 
 	@Test
+	public void test() throws InterruptedException
+	{
+		SignUtil.signIn(driver, baseURL, uid, pwd);
+
+		this.testImportMappingServiceData();
+
+		this.testTagWizard();
+
+		this.testAddOneProject();
+
+		this.testAddLifeLinesSourceToMappingProject();
+
+		this.testBasicFunctionalitiesInAttributeMappingScreen();
+
+		this.testIntegrateDataForLifeLines();
+
+		SignUtil.signOut(driver);
+	}
+
 	public void testImportMappingServiceData() throws InterruptedException
 	{
 		model.deleteMappingServiceTestData(uid, pwd);
 
-		SignUtil.signIn(driver, baseURL, uid, pwd);
-
 		model.importMappingServiceTestData();
-
-		SignUtil.signOut(this.driver);
 	}
 
-	@Test
 	public void testTagWizard() throws InterruptedException
 	{
-		SignUtil.signIn(driver, baseURL, uid, pwd);
-
 		tagWizardScreenModel.tagAllBodyMassIndexAttributesManually();
-
-		SignUtil.signOut(this.driver);
 	}
 
-	@Test
 	public void testAddOneProject() throws InterruptedException
 	{
-		SignUtil.signIn(driver, baseURL, uid, pwd);
-
 		model.addOneMappingProject();
 
 		model.cancelAddMappingProject();
@@ -80,15 +87,10 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		model.removeTestMappingProject();
 
 		model.addOneMappingProject();
-
-		SignUtil.signOut(this.driver);
 	}
 
-	@Test
 	public void testAddLifeLinesSourceToMappingProject() throws InterruptedException
 	{
-		SignUtil.signIn(driver, baseURL, uid, pwd);
-
 		model.openOneMappingProject();
 
 		model.cancelAddLifeLinesSourceToMappingProject();
@@ -100,15 +102,10 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		model.removeLifeLinesSourceToMappingProject();
 
 		model.addLifeLinesSourceToMappingProject();
-
-		SignUtil.signOut(this.driver);
 	}
 
-	@Test
 	public void testBasicFunctionalitiesInAttributeMappingScreen() throws InterruptedException
 	{
-		SignUtil.signIn(driver, baseURL, uid, pwd);
-
 		model.openOneMappingProject();
 
 		model.clickGenderAttributeForLifeLinesSource();
@@ -118,20 +115,13 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		model.removeFastingGlucoseAttributeForLifeLinesSource();
 
 		model.clickFastingGlucoseAttributeForLifeLinesSource();
-
-		SignUtil.signOut(this.driver);
 	}
 
-	@Test
 	public void testIntegrateDataForLifeLines() throws InterruptedException
 	{
-		SignUtil.signIn(driver, baseURL, uid, pwd);
-
 		model.openOneMappingProject();
 
 		model.integrateSourceData();
-
-		SignUtil.signOut(this.driver);
 	}
 
 	@AfterClass
