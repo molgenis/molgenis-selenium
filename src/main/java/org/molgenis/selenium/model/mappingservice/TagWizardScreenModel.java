@@ -30,6 +30,7 @@ public class TagWizardScreenModel
 	private static final String SEARCH_TAG_INPUTFIELD_ID = "tag-dropdown";
 	private static final String GENDER_TAG_NAME = "Gender";
 	private static final String HEIGHT_TAG_NAME = "(Height and meter)";
+	private static final String WEIGHT_TAG_NAME = "(Weight and gram)";
 	private static final int GENDER_ROW_INDEX = 2;
 	private static final int HEIGHT_ROW_INDEX = 3;
 	private static final int WEIGHT_ROW_INDEX = 5;
@@ -103,7 +104,7 @@ public class TagWizardScreenModel
 	private void checkWeightTagContentAfterRemovingOneTag() throws InterruptedException
 	{
 		// Remove the Weight tag from the Weight attribute
-		clickOnTheExistingTagBasedOnName(WEIGHT_ROW_INDEX, WEIGHT_ONTOLOGY_TERM_LABEL, driver);
+		clickOnTheExistingTagBasedOnName(WEIGHT_ROW_INDEX, WEIGHT_TAG_NAME, driver);
 
 		List<String> weighTagNames = getExistingTagNamesByRowIndex(WEIGHT_ROW_INDEX, driver);
 		// There should be only one tag
