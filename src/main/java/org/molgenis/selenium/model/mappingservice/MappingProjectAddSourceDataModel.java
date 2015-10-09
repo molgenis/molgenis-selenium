@@ -1,10 +1,9 @@
 package org.molgenis.selenium.model.mappingservice;
 
-import static org.molgenis.selenium.util.MappingServiceUtil.clickButonById;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickButonByElementId;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonForAddingNewSourceToMappingProject;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonForRemoveOneAttributeMapping;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButtonForRemoveSourceColumms;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickOKButonByXpathExpression;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonInConfirmationModal;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickOKButonInConfirmationModal;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnCreateIntegratedDataSetButton;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnRmoveAttributeMappingTableByIndex;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickRemoveButtonForRemoveSourceColumns;
@@ -24,6 +23,7 @@ import org.testng.Assert;
 
 public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppModel
 {
+
 	public static final Logger LOG = LoggerFactory.getLogger(MappingProjectAddSourceDataModel.class);
 
 	public static final String LIFELINES_ENTITY_NAME = "lifelines_test";
@@ -34,8 +34,9 @@ public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppM
 	private static final String INTEGRATED_DATASET_TEXTFIELD = "newEntityName";
 	private static final String CREATED_INTEGRATED_DATA_CONFIRM_BUTTON = "create-integrated-entity-btn";
 	private static final String DATA_EXPLORER_ENTITY_HEADER_ELEMENT_ID = "entity-class-name";
-
 	private static final String GENERATED_ALGORITHM_FOR_FASTING_GLUCOSE = "If the participant fasting?, Glucose";
+	private static final int FASTING_GLUCOSE_COLUMN_INDEX = 2;
+	private static final int FASTING_GLUCOSE_ROW_INDEX = 6;
 
 	public MappingProjectAddSourceDataModel(WebDriver driver, MolgenisClient molgenisClient)
 	{
@@ -44,30 +45,31 @@ public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppM
 
 	public void cancelRemoveFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
 	{
-		clickOnRmoveAttributeMappingTableByIndex(6, 2, driver);
+		clickOnRmoveAttributeMappingTableByIndex(FASTING_GLUCOSE_ROW_INDEX, FASTING_GLUCOSE_COLUMN_INDEX, driver);
 
-		clickCancelButonForRemoveOneAttributeMapping(driver);
+		clickCancelButonInConfirmationModal(driver);
 
-		Assert.assertEquals(getOneCellFromAttributeMappingTableByIndex(6, 2, driver).getText(),
-				GENERATED_ALGORITHM_FOR_FASTING_GLUCOSE);
+		Assert.assertEquals(
+				getOneCellFromAttributeMappingTableByIndex(FASTING_GLUCOSE_ROW_INDEX, FASTING_GLUCOSE_COLUMN_INDEX,
+						driver).getText(), GENERATED_ALGORITHM_FOR_FASTING_GLUCOSE);
 	}
 
 	public void removeFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
 	{
-		clickOnRmoveAttributeMappingTableByIndex(6, 2, driver);
+		clickOnRmoveAttributeMappingTableByIndex(FASTING_GLUCOSE_ROW_INDEX, FASTING_GLUCOSE_COLUMN_INDEX, driver);
 
-		clickOKButonByXpathExpression(driver);
+		clickOKButonInConfirmationModal(driver);
 
 		Assert.assertTrue(StringUtils.isBlank(getOneCellFromAttributeMappingTableByIndex(6, 2, driver).getText()));
 	}
 
 	public void addLifeLinesSourceToMappingProject() throws InterruptedException
 	{
-		clickButonById(ADD_NEW_SOURCE_BUTTON_ID, driver);
+		clickButonByElementId(ADD_NEW_SOURCE_BUTTON_ID, driver);
 
 		Select2Util.select(ADD_NEW_SOURCE_MODAL_CONTAINER, LIFELINES_ENTITY_NAME, driver, LOG);
 
-		clickButonById(ADD_NEW_SOURCE_SUBMIT_BUTTON_ID, driver);
+		clickButonByElementId(ADD_NEW_SOURCE_SUBMIT_BUTTON_ID, driver);
 
 		Assert.assertTrue(getColumnHeadersInOneMappingProject(driver).size() > 1);
 
@@ -76,7 +78,7 @@ public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppM
 
 	public void cancelAddLifeLinesSourceToMappingProject() throws InterruptedException
 	{
-		clickButonById(ADD_NEW_SOURCE_BUTTON_ID, driver);
+		clickButonByElementId(ADD_NEW_SOURCE_BUTTON_ID, driver);
 
 		Select2Util.select(ADD_NEW_SOURCE_MODAL_CONTAINER, LIFELINES_ENTITY_NAME, driver, LOG);
 
@@ -93,7 +95,7 @@ public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppM
 
 		clickRemoveButtonForRemoveSourceColumns(lifelinesColumnHeaderElement, driver);
 
-		clickCancelButtonForRemoveSourceColumms(driver);
+		clickCancelButonInConfirmationModal(driver);
 
 		Assert.assertTrue(headerContainsSoucenEntity(LIFELINES_ENTITY_NAME));
 	}
@@ -106,7 +108,7 @@ public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppM
 
 		clickRemoveButtonForRemoveSourceColumns(lifelinesColumnHeaderElement, driver);
 
-		clickOKButonByXpathExpression(driver);
+		clickOKButonInConfirmationModal(driver);
 
 		Assert.assertFalse(headerContainsSoucenEntity(LIFELINES_ENTITY_NAME));
 	}
@@ -117,7 +119,7 @@ public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppM
 
 		setValueToTextFieldByName(INTEGRATED_DATASET_TEXTFIELD, INTEGRATED_DATASET_ENTITY_NAME, driver);
 
-		clickButonById(CREATED_INTEGRATED_DATA_CONFIRM_BUTTON, driver);
+		clickButonByElementId(CREATED_INTEGRATED_DATA_CONFIRM_BUTTON, driver);
 
 		Assert.assertEquals(getAnWebElementById(DATA_EXPLORER_ENTITY_HEADER_ELEMENT_ID, driver).getText(),
 				INTEGRATED_DATASET_ENTITY_NAME);

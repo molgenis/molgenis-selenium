@@ -101,6 +101,8 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 
 	public void testAddLifeLinesSourceToMappingProject() throws InterruptedException
 	{
+		mappingProjectOverviewModel.openOneMappingProject();
+
 		mappingProjectAddSourceDataModel.cancelAddLifeLinesSourceToMappingProject();
 
 		mappingProjectAddSourceDataModel.addLifeLinesSourceToMappingProject();
@@ -118,6 +120,8 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 
 	public void testBasicFunctionalitiesInAttributeMappingScreen() throws InterruptedException
 	{
+		mappingProjectOverviewModel.openOneMappingProject();
+
 		attributeMappingScreenModel.clickGenderAttributeForLifeLinesSource();
 
 		attributeMappingScreenModel.clickFastingGlucoseAttributeForLifeLinesSource();

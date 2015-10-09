@@ -1,18 +1,19 @@
 package org.molgenis.selenium.model.mappingservice;
 
-import static org.molgenis.selenium.util.MappingServiceUtil.clickButonById;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickButtonWithInSpecifiedElementByClassName;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickButonByElementId;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonInAddNewMappingProjectModal;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickGoBackButtonToMappingProjectOverView;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickOKButonByXpathExpression;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickOKButonInConfirmationModal;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickRemoveMappingProjectButtonForCurrentRowElement;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickToOpenOneMappingProject;
-import static org.molgenis.selenium.util.MappingServiceUtil.getAnElementByCssSelector;
+import static org.molgenis.selenium.util.MappingServiceUtil.getFieldRequiredMessageFromCreateMappingProjectModal;
+import static org.molgenis.selenium.util.MappingServiceUtil.getRowWebElementsFromMappingProjectTable;
+import static org.molgenis.selenium.util.MappingServiceUtil.getTestMappingProjectFromTable;
 import static org.molgenis.selenium.util.MappingServiceUtil.openMappingService;
 import static org.molgenis.selenium.util.MappingServiceUtil.setValueToTextFieldByName;
 
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.util.Select2Util;
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -22,6 +23,11 @@ import org.testng.Assert;
 
 public class MappingProjectOverviewModel extends AbstractMappingServiceAppModel
 {
+	private static final String MAPPING_PROJECT_TEXT_FIELD_NAME = "mapping-project-name";
+	private static final String THIS_FIELD_IS_REQUIRED_MESSAGE = "This field is required.";
+	private static final String CREATE_NEW_MAPPING_PROJECT_MODAL = "create-new-mapping-project-modal";
+	private static final String ADD_NEW_MAPPING_PROJECT_BUTTON = "submit-new-source-column-btn";
+	private static final String SUBMIT_NEW_MAPPING_PROJECT_CONFIRMATION_BUTTON = "submit-new-mapping-project-btn";
 	public static final Logger LOG = LoggerFactory.getLogger(MappingProjectOverviewModel.class);
 
 	public MappingProjectOverviewModel(WebDriver driver, MolgenisClient molgenisClient)
@@ -38,13 +44,13 @@ public class MappingProjectOverviewModel extends AbstractMappingServiceAppModel
 	{
 		openMappingService(driver);
 
-		int previousNumberOfRows = driver.findElements(By.xpath("//table[contains(@class, 'table')]/tbody/tr")).size();
+		int previousNumberOfRows = getRowWebElementsFromMappingProjectTable(driver).size();
 
-		clickButonById("submit-new-source-column-btn", driver);
+		clickButonByElementId(ADD_NEW_MAPPING_PROJECT_BUTTON, driver);
 
 		clickCancelButonInAddNewMappingProjectModal(driver);
 
-		int rowCount = driver.findElements(By.xpath("//table[contains(@class, 'table')]/tbody/tr")).size();
+		int rowCount = getRowWebElementsFromMappingProjectTable(driver).size();
 
 		Assert.assertEquals(rowCount, previousNumberOfRows);
 	}
@@ -53,28 +59,27 @@ public class MappingProjectOverviewModel extends AbstractMappingServiceAppModel
 	{
 		openMappingService(driver);
 
-		clickButonById("submit-new-source-column-btn", driver);
+		clickButonByElementId(ADD_NEW_MAPPING_PROJECT_BUTTON, driver);
 
-		clickButonById("submit-new-mapping-project-btn", driver);
+		clickButonByElementId(SUBMIT_NEW_MAPPING_PROJECT_CONFIRMATION_BUTTON, driver);
 
-		String errorMessage = getAnElementByCssSelector("label", "for", "mapping-project-name", driver).getText();
-
-		Assert.assertEquals(errorMessage, "This field is required.");
+		Assert.assertEquals(getFieldRequiredMessageFromCreateMappingProjectModal(driver),
+				THIS_FIELD_IS_REQUIRED_MESSAGE);
 	}
 
 	public void addOneMappingProject() throws InterruptedException
 	{
 		openMappingService(driver);
 
-		clickButonById("submit-new-source-column-btn", driver);
+		clickButonByElementId(ADD_NEW_MAPPING_PROJECT_BUTTON, driver);
 
-		setValueToTextFieldByName("mapping-project-name", MAPPING_PROJECT_NAME, driver);
+		setValueToTextFieldByName(MAPPING_PROJECT_TEXT_FIELD_NAME, MAPPING_PROJECT_NAME, driver);
 
 		Assert.assertTrue(driver instanceof JavascriptExecutor);
 
-		Select2Util.select("create-new-mapping-project-modal", TARGET_ENTITY_NAME, driver, LOG);
+		Select2Util.select(CREATE_NEW_MAPPING_PROJECT_MODAL, TARGET_ENTITY_NAME, driver, LOG);
 
-		clickButonById("submit-new-mapping-project-btn", driver);
+		clickButonByElementId(SUBMIT_NEW_MAPPING_PROJECT_CONFIRMATION_BUTTON, driver);
 
 		clickGoBackButtonToMappingProjectOverView(driver);
 	}
@@ -83,18 +88,12 @@ public class MappingProjectOverviewModel extends AbstractMappingServiceAppModel
 	{
 		openMappingService(driver);
 
-		WebElement webElement = driver.findElements(By.xpath("//table[contains(@class, 'table')]/tbody/tr")).stream()
-				.filter(this::ifMappingProjectTest).findFirst().orElseGet(null);
+		WebElement webElement = getTestMappingProjectFromTable(driver);
 
 		Assert.assertTrue(webElement != null);
 
-		clickButtonWithInSpecifiedElementByClassName(webElement, "btn-danger", driver);
+		clickRemoveMappingProjectButtonForCurrentRowElement(webElement, driver);
 
-		clickOKButonByXpathExpression(driver);
-	}
-
-	private boolean ifMappingProjectTest(WebElement webElement)
-	{
-		return webElement.findElements(By.tagName("td")).get(1).getText().equals(MAPPING_PROJECT_NAME);
+		clickOKButonInConfirmationModal(driver);
 	}
 }

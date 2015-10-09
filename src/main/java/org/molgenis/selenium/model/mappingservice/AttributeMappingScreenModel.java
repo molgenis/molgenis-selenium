@@ -1,6 +1,6 @@
 package org.molgenis.selenium.model.mappingservice;
 
-import static org.molgenis.selenium.util.MappingServiceUtil.clickButonById;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickButonByElementId;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnCloseModalButton;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnEditAttributeMappingTableByIndex;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnGoBackToMappingProjectOverView;
@@ -275,7 +275,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 
 	private void checkAvailableJavascriptFunctions() throws InterruptedException
 	{
-		clickButonById(JS_FUNCTION_MODEL_BUTTON_ID, driver);
+		clickButonByElementId(JS_FUNCTION_MODEL_BUTTON_ID, driver);
 
 		Assert.assertEquals(getModalHeaderTitle(JS_FUNCTION_MODEL_ID, driver), JS_FUNCTION_MODEL_TITLE);
 

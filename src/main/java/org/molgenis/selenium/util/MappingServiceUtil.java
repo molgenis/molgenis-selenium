@@ -1,5 +1,6 @@
 package org.molgenis.selenium.util;
 
+import static org.molgenis.selenium.model.mappingservice.AbstractMappingServiceAppModel.MAPPING_PROJECT_NAME;
 import static org.molgenis.selenium.model.mappingservice.AbstractMappingServiceAppModel.MAPPING_SERVICE_BASE_URL;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class MappingServiceUtil
 {
 	private static final String MAIN_MENU = "Data Integration";
 	private static final String SUB_MENU = "Mapping Service";
+	private final static String CREATE_NEW_MAPPING_PROJECT_MODAL = "create-new-mapping-project-modal";
 	private static final int BUTTON_CLICK_SLEEP_TIME = 3000;
 
 	// ############################################################################################################
@@ -29,6 +31,53 @@ public class MappingServiceUtil
 	public static String getAlertMessageInCurrentPage(WebDriver driver)
 	{
 		return driver.findElement(By.xpath("//div[@class='alerts']/div")).getText();
+	}
+
+	public static WebElement setValueToTextFieldByName(String textFieldName, String value, WebDriver driver)
+	{
+		WebElement textFieldElement = driver.findElement(By.name(textFieldName));
+		textFieldElement.sendKeys(value);
+		return textFieldElement;
+	}
+
+	public static WebElement getAnWebElementById(String elementId, WebDriver driver)
+	{
+		WebElement webElement = driver.findElement(By.id(elementId));
+		return webElement;
+	}
+
+	public static WebElement getAnWebElementByName(String elementName, WebDriver driver)
+	{
+		WebElement webElement = driver.findElement(By.name(elementName));
+		return webElement;
+	}
+
+	public static void clickButonByElementId(String buttonId, WebDriver driver) throws InterruptedException
+	{
+		WebElement buttonElement = driver.findElement(By.id(buttonId));
+		buttonElement.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	// ############################################################################################################
+	// ############################################################################################################
+	// ##################################### functions for manipulating the confirmation modal
+	public static void clickOKButonInConfirmationModal(WebDriver driver) throws InterruptedException
+	{
+		WebElement confirmButton = driver
+				.findElement(By
+						.xpath("//div[@class='modal-body']//div[text()='Are you sure?']/../../div[@class='modal-footer']/button[text()='OK']"));
+		confirmButton.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+	}
+
+	public static void clickCancelButonInConfirmationModal(WebDriver driver) throws InterruptedException
+	{
+		WebElement cancelButtonElement = driver
+				.findElement(By
+						.xpath("//div[@class='modal-body']/div[text()='Are you sure?']/../../div[@class = 'modal-footer']/button[text()='Cancel']"));
+		cancelButtonElement.click();
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
 	public static String getModalHeaderTitle(String modalContainerId, WebDriver driver)
@@ -53,47 +102,6 @@ public class MappingServiceUtil
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
-	public static WebElement setValueToTextFieldByName(String textFieldName, String value, WebDriver driver)
-	{
-		WebElement textFieldElement = driver.findElement(By.name(textFieldName));
-		textFieldElement.sendKeys(value);
-		return textFieldElement;
-	}
-
-	public static WebElement getAnWebElementById(String elementId, WebDriver driver)
-	{
-		WebElement webElement = driver.findElement(By.id(elementId));
-		return webElement;
-	}
-
-	public static WebElement getAnWebElementByName(String elementName, WebDriver driver)
-	{
-		WebElement webElement = driver.findElement(By.name(elementName));
-		return webElement;
-	}
-
-	public static WebElement getAnElementByCssSelector(String tagName, String attributeName, String Value,
-			WebDriver driver) throws InterruptedException
-	{
-		WebElement webElement = driver.findElement(By.cssSelector(createCssSelector(tagName, attributeName, Value)));
-		return webElement;
-	}
-
-	private static String createCssSelector(String tagName, String attributeName, String Value)
-	{
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(tagName).append('[').append(attributeName).append('=').append("'").append(Value)
-				.append("']");
-		return stringBuilder.toString();
-	}
-
-	public static void clickButonById(String buttonId, WebDriver driver) throws InterruptedException
-	{
-		WebElement buttonElement = driver.findElement(By.id(buttonId));
-		buttonElement.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-	}
-
 	// ############################################################################################################
 	// ############################################################################################################
 	// ##################################### View the Mapping Project Overview related event handlers
@@ -102,23 +110,33 @@ public class MappingServiceUtil
 		MenuUtil.openPageByClickOnSubMenuItem(MAIN_MENU, SUB_MENU, driver);
 	}
 
+	public static List<WebElement> getRowWebElementsFromMappingProjectTable(WebDriver driver)
+	{
+		return driver.findElements(By.xpath("//table/tbody/tr"));
+	}
+
+	public static WebElement getTestMappingProjectFromTable(WebDriver driver)
+	{
+		for (WebElement webElement : getRowWebElementsFromMappingProjectTable(driver))
+		{
+			if (webElement.findElement(By.tagName("td")).getText().equals(MAPPING_PROJECT_NAME))
+			{
+				return webElement;
+			}
+		}
+		return null;
+	}
+
 	public static void clickCancelButonInAddNewMappingProjectModal(WebDriver driver) throws InterruptedException
 	{
-		WebElement buttonElement = driver.findElement(By
-				.xpath("//div[@id='create-new-mapping-project-modal']//button[contains(text(), 'Cancel')]"));
+		WebElement buttonElement = driver.findElement(By.xpath("//div[@id='" + CREATE_NEW_MAPPING_PROJECT_MODAL
+				+ "']//button[contains(text(), 'Cancel')]"));
 		buttonElement.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
-	public static void clickOKButonByXpathExpression(WebDriver driver) throws InterruptedException
-	{
-		WebElement confirmButton = driver.findElement(By.xpath("//button[contains(text(), 'OK')]"));
-		confirmButton.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-	}
-
-	public static void clickButtonWithInSpecifiedElementByClassName(WebElement webElement, String className,
-			WebDriver driver) throws InterruptedException
+	public static void clickRemoveMappingProjectButtonForCurrentRowElement(WebElement webElement, WebDriver driver)
+			throws InterruptedException
 	{
 		WebElement buttonElement = webElement.findElement(By.className("btn-danger"));
 		buttonElement.click();
@@ -141,6 +159,13 @@ public class MappingServiceUtil
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
+	public static String getFieldRequiredMessageFromCreateMappingProjectModal(WebDriver driver)
+	{
+		WebElement webElement = driver.findElement(By.xpath("//div[@id='" + CREATE_NEW_MAPPING_PROJECT_MODAL
+				+ "']//label[@for='mapping-project-name']"));
+		return webElement.getText();
+	}
+
 	// ############################################################################################################
 	// ############################################################################################################
 	// ##################################### View One Mapping Project screen related event handlers
@@ -159,14 +184,6 @@ public class MappingServiceUtil
 		WebElement cancelButtonElement = driver.findElement(By
 				.xpath("//div[@id='create-new-source-column-modal']//button[contains(text(), 'Cancel')]"));
 		cancelButtonElement.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
-	}
-
-	public static void clickCancelButtonForRemoveSourceColumms(WebDriver driver) throws InterruptedException
-	{
-		WebElement cancelButton = driver.findElement(By
-				.xpath("//button[contains(text(), 'Cancel') and contains(@data-bb-handler, 'cancel')]"));
-		cancelButton.click();
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
@@ -194,15 +211,6 @@ public class MappingServiceUtil
 		WebElement cellContentElement = driver.findElement(By.xpath("//table[@id='attribute-mapping-table']/tbody/tr["
 				+ rowNumber + "]/td[" + columnNumber + "]/div[not(form)]"));
 		return cellContentElement;
-	}
-
-	public static void clickCancelButonForRemoveOneAttributeMapping(WebDriver driver) throws InterruptedException
-	{
-		WebElement cancelButtonElement = driver
-				.findElement(By
-						.xpath("//div[@class='modal-body']/div[text()='Are you sure?']/../../div[@class = 'modal-footer']/button[text()='Cancel']"));
-		cancelButtonElement.click();
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
 	public static void clickOnCreateIntegratedDataSetButton(WebDriver driver) throws InterruptedException
