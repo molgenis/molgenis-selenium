@@ -1,6 +1,5 @@
 package org.molgenis.selenium.model.mappingservice;
 
-import static org.molgenis.selenium.model.MappingServiceAppModel.MAPPING_PROJECT_NAME;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButonById;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnCloseModalButton;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnEditAttributeMappingTableByIndex;
@@ -8,7 +7,6 @@ import static org.molgenis.selenium.util.MappingServiceUtil.clickOnGoBackToMappi
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnNextButtonToUncuratedAttributeMapping;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnSaveButtonInAttributeMapping;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnSaveToDiscussButtonInAttributeMapping;
-import static org.molgenis.selenium.util.MappingServiceUtil.clickToOpenOneMappingProject;
 import static org.molgenis.selenium.util.MappingServiceUtil.executeMouseEnterEventForHoverAttributeSection;
 import static org.molgenis.selenium.util.MappingServiceUtil.executeMouseOutEventForHoverAttributeSection;
 import static org.molgenis.selenium.util.MappingServiceUtil.getAlertMessageInCurrentPage;
@@ -32,17 +30,15 @@ import static org.molgenis.selenium.util.MappingServiceUtil.switchToAlgorithmCat
 import static org.molgenis.selenium.util.MappingServiceUtil.switchToAlgorithmScriptEditor;
 import static org.molgenis.selenium.util.MappingServiceUtil.toggleCheckBoxInSuggestedAttributeByRowIndex;
 
-import java.util.Objects;
-
 import org.apache.commons.lang3.StringUtils;
+import org.molgenis.data.rest.client.MolgenisClient;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
-public class AttributeMappingScreenModel
+public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 {
-	private WebDriver driver;
 	private static final String ATTRIBUTE_SECTION_CONTAINER = "attribute-mapping-table-container";
 	private static final String ALGORITHM_SECTION_CONTAINER = "attribute-mapping-container";
 	private static final String PREVIEW_SECTION_CONTAINER = "result-container";
@@ -72,14 +68,9 @@ public class AttributeMappingScreenModel
 
 	public static final Logger LOG = LoggerFactory.getLogger(AttributeMappingScreenModel.class);
 
-	public AttributeMappingScreenModel(WebDriver webDriver)
+	public AttributeMappingScreenModel(WebDriver driver, MolgenisClient molgenisClient)
 	{
-		this.driver = Objects.requireNonNull(webDriver);
-	}
-
-	public void openOneMappingProject() throws InterruptedException
-	{
-		clickToOpenOneMappingProject(MAPPING_PROJECT_NAME, driver);
+		super(driver, molgenisClient);
 	}
 
 	public void clickGenderAttributeForLifeLinesSource() throws InterruptedException
@@ -168,6 +159,9 @@ public class AttributeMappingScreenModel
 		// Check the title of the attribute mapping screen
 		Assert.assertEquals(getPageTitleInAttributeMappingPage(driver).getText(),
 				MAPPING_NEXT_ATTRIBUTE_FOR_LIFELINES_TITLE_IN_ATTRIBUTE_MAPPING_SCREEN);
+
+		// Go back to the mapping project
+		goBackToMappingOneMappingProject();
 	}
 
 	public void clickFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException
@@ -242,6 +236,9 @@ public class AttributeMappingScreenModel
 
 		// The preview result table now should be hidden now
 		Assert.assertFalse(isResultContainerVisiableInAttributeMapping(driver));
+
+		// Go back to the mapping project
+		goBackToMappingOneMappingProject();
 	}
 
 	public void hoverAttributeQuestionMarkInAttributeMapping() throws InterruptedException

@@ -1,17 +1,16 @@
 package org.molgenis.selenium.model.mappingservice;
 
-import static java.util.Objects.requireNonNull;
-import static org.molgenis.selenium.model.MappingServiceAppModel.MAPPING_PROJECT_NAME;
-import static org.molgenis.selenium.model.MappingServiceAppModel.TARGET_ENTITY_NAME;
-import static org.molgenis.selenium.util.MappingServiceUtil.getAnElementByCssSelector;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButonById;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButtonWithInSpecifiedElementByClassName;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonInAddNewMappingProjectModal;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickGoBackButtonToMappingProjectOverView;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOKButonByXpathExpression;
+import static org.molgenis.selenium.util.MappingServiceUtil.clickToOpenOneMappingProject;
+import static org.molgenis.selenium.util.MappingServiceUtil.getAnElementByCssSelector;
 import static org.molgenis.selenium.util.MappingServiceUtil.openMappingService;
 import static org.molgenis.selenium.util.MappingServiceUtil.setValueToTextFieldByName;
 
+import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.util.Select2Util;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -21,15 +20,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
-public class MappingProjectOverviewModel
+public class MappingProjectOverviewModel extends AbstractMappingServiceAppModel
 {
-	private WebDriver driver;
-
 	public static final Logger LOG = LoggerFactory.getLogger(MappingProjectOverviewModel.class);
 
-	public MappingProjectOverviewModel(WebDriver webDriver)
+	public MappingProjectOverviewModel(WebDriver driver, MolgenisClient molgenisClient)
 	{
-		this.driver = requireNonNull(webDriver);
+		super(driver, molgenisClient);
+	}
+
+	public void openOneMappingProject() throws InterruptedException
+	{
+		clickToOpenOneMappingProject(MAPPING_PROJECT_NAME, driver);
 	}
 
 	public void cancelAddMappingProject() throws InterruptedException

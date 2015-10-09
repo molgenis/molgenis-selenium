@@ -1,6 +1,5 @@
 package org.molgenis.selenium.model.mappingservice;
 
-import static org.molgenis.selenium.model.MappingServiceAppModel.INTEGRATED_DATASET_ENTITY_NAME;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButonById;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonForAddingNewSourceToMappingProject;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickCancelButonForRemoveOneAttributeMapping;
@@ -14,9 +13,8 @@ import static org.molgenis.selenium.util.MappingServiceUtil.getColumnHeadersInOn
 import static org.molgenis.selenium.util.MappingServiceUtil.getOneCellFromAttributeMappingTableByIndex;
 import static org.molgenis.selenium.util.MappingServiceUtil.setValueToTextFieldByName;
 
-import java.util.Objects;
-
 import org.apache.commons.lang3.StringUtils;
+import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.util.Select2Util;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,11 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
-public class MappingProjectAddSourceDataModel
+public class MappingProjectAddSourceDataModel extends AbstractMappingServiceAppModel
 {
-
-	private WebDriver driver;
-
 	public static final Logger LOG = LoggerFactory.getLogger(MappingProjectAddSourceDataModel.class);
 
 	public static final String LIFELINES_ENTITY_NAME = "lifelines_test";
@@ -42,9 +37,9 @@ public class MappingProjectAddSourceDataModel
 
 	private static final String GENERATED_ALGORITHM_FOR_FASTING_GLUCOSE = "If the participant fasting?, Glucose";
 
-	public MappingProjectAddSourceDataModel(WebDriver webDriver)
+	public MappingProjectAddSourceDataModel(WebDriver driver, MolgenisClient molgenisClient)
 	{
-		this.driver = Objects.requireNonNull(webDriver);
+		super(driver, molgenisClient);
 	}
 
 	public void cancelRemoveFastingGlucoseAttributeForLifeLinesSource() throws InterruptedException

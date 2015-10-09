@@ -1,9 +1,5 @@
 package org.molgenis.selenium.model.mappingservice;
 
-import static java.util.Objects.requireNonNull;
-import static org.molgenis.selenium.model.MappingServiceAppModel.INTEGRATED_DATASET_ENTITY_NAME;
-import static org.molgenis.selenium.model.MappingServiceAppModel.MAPPING_PROJECT_ENTITY_NAME;
-import static org.molgenis.selenium.model.MappingServiceAppModel.MAPPING_PROJECT_NAME;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
@@ -24,11 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
-public class MappingProjectImportDataModel
+public class MappingProjectImportDataModel extends AbstractMappingServiceAppModel
 {
-	private WebDriver driver;
-	private MolgenisClient molgenisClient;
-
 	public static final List<String> FILE_PATHS = Arrays.asList(
 			"org/molgenis/selenium/mappingservice/mappingservice-test.xlsx",
 			"org/molgenis/selenium/mappingservice/test-javascript_magma.xls",
@@ -41,9 +34,9 @@ public class MappingProjectImportDataModel
 			"GENDER_Ref_test", "NUCHTER1_Ref_test");
 
 	public static final List<String> PREVEND_RELATED_ENTITY_NAMES = Arrays.asList("prevend_test", "SEX_Ref_test");
-	public static final List<String> ONTOLOGY_RELATED_ENTITIY_NAMES = Arrays.asList(
+	public static final List<String> ONTOLOGY_RELATED_ENTITIY_NAMES = Arrays.asList("Ontology_OntologyTerm",
 			"Ontology_OntologyTermDynamicAnnotation", "Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym",
-			"Ontology_OntologyTerm", "Ontology_Ontology");
+			"Ontology_Ontology");
 
 	public static final String SCRIPT_ENTITY_NAME = "Script";
 	public static final String PARAMETER_ENTITY_NAME = "ScriptParameter";
@@ -53,10 +46,9 @@ public class MappingProjectImportDataModel
 
 	public static final Logger LOG = LoggerFactory.getLogger(MappingProjectImportDataModel.class);
 
-	public MappingProjectImportDataModel(WebDriver webDriver, MolgenisClient molgenisClient)
+	public MappingProjectImportDataModel(WebDriver driver, MolgenisClient molgenisClient)
 	{
-		this.driver = requireNonNull(webDriver);
-		this.molgenisClient = requireNonNull(molgenisClient);
+		super(driver, molgenisClient);
 	}
 
 	public void deleteMappingServiceTestData(String uid, String pwd) throws InterruptedException

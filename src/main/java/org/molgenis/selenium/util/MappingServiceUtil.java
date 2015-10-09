@@ -1,6 +1,6 @@
 package org.molgenis.selenium.util;
 
-import static org.molgenis.selenium.model.MappingServiceAppModel.MAPPING_SERVICE_BASE_URL;
+import static org.molgenis.selenium.model.mappingservice.AbstractMappingServiceAppModel.MAPPING_SERVICE_BASE_URL;
 
 import java.util.List;
 

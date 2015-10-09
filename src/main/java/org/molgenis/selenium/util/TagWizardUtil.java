@@ -3,7 +3,7 @@ package org.molgenis.selenium.util;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.molgenis.selenium.model.MappingServiceAppModel;
+import org.molgenis.selenium.model.mappingservice.AbstractMappingServiceAppModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -29,7 +29,7 @@ public class TagWizardUtil
 
 	public static void selectEntityName(WebDriver driver) throws InterruptedException
 	{
-		Select2Util.select(TARGET_ENTITY_SELECT2_ELEMENT_ID, MappingServiceAppModel.TARGET_ENTITY_NAME, driver, LOG);
+		Select2Util.select(TARGET_ENTITY_SELECT2_ELEMENT_ID, AbstractMappingServiceAppModel.TARGET_ENTITY_NAME, driver, LOG);
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 

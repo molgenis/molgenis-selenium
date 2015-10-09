@@ -17,7 +17,6 @@ import static org.testng.Assert.assertTrue;
 import java.util.List;
 import java.util.Objects;
 
-import org.molgenis.selenium.model.MappingServiceAppModel;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +52,7 @@ public class TagWizardScreenModel
 		clealAllTagsConfirmationModalAndOK(driver);
 
 		// Check if the selected entity name is same as the test one
-		assertEquals(getSelectedEntityName(driver), MappingServiceAppModel.TARGET_ENTITY_NAME);
+		assertEquals(getSelectedEntityName(driver), AbstractMappingServiceAppModel.TARGET_ENTITY_NAME);
 
 		// Run automatic tagging
 		clickAutomaticTaggingButton(driver);
