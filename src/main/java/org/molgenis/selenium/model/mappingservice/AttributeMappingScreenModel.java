@@ -19,7 +19,7 @@ import static org.molgenis.selenium.util.MappingServiceUtil.getModalHeaderTitle;
 import static org.molgenis.selenium.util.MappingServiceUtil.getPageTitleInAttributeMappingPage;
 import static org.molgenis.selenium.util.MappingServiceUtil.getRowsFromAttributeMappingTable;
 import static org.molgenis.selenium.util.MappingServiceUtil.getToolTipElementInThePage;
-import static org.molgenis.selenium.util.MappingServiceUtil.getValueToAlgorithmEditorInAttributeMapping;
+import static org.molgenis.selenium.util.MappingServiceUtil.getValueFromAlgorithmEditorInAttributeMapping;
 import static org.molgenis.selenium.util.MappingServiceUtil.isCheckBoxSelectedInSuggestedAttributeByRowIndex;
 import static org.molgenis.selenium.util.MappingServiceUtil.isNextButtonToUncuratedAttributeMappingVisible;
 import static org.molgenis.selenium.util.MappingServiceUtil.isResultContainerVisiableInAttributeMapping;
@@ -134,7 +134,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		switchToAlgorithmScriptEditor(driver);
 
 		// Check if the algorithm generated from mapping categories is same as the correct algorithm
-		Assert.assertEquals(getValueToAlgorithmEditorInAttributeMapping(driver),
+		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver),
 				ALGORITHM_FOR_MAPPING_GENDER_IN_LIFELINES);
 
 		// Click save to discuss button to save the algorithm
@@ -175,7 +175,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 				MAPPING_GLUCOSE_TO_LIFELINES_TITLE_IN_ATTRIBUTE_MAPPING_SCREEN);
 
 		// The algorithm here should be empty
-		Assert.assertEquals(getValueToAlgorithmEditorInAttributeMapping(driver), StringUtils.EMPTY);
+		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver), StringUtils.EMPTY);
 
 		// There are two suggested attribute mappings
 		Assert.assertTrue(getRowsFromAttributeMappingTable(driver).size() == 2);
@@ -198,7 +198,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 				LIFELINES_SOURCE_FIRST_ROW_FASTING_VALUE);
 
 		// Check the algorithm in the ace editor
-		Assert.assertEquals(getValueToAlgorithmEditorInAttributeMapping(driver), ALGORITHM_FOR_LIFELINES_FASTING);
+		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver), ALGORITHM_FOR_LIFELINES_FASTING);
 
 		// Select the second suggested source attribute
 		toggleCheckBoxInSuggestedAttributeByRowIndex(2, driver);
@@ -213,7 +213,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
 
 		// Check the algorithm in the ace editor
-		Assert.assertEquals(getValueToAlgorithmEditorInAttributeMapping(driver), ALGORITHM_FOR_LIFELINES_FASTING
+		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver), ALGORITHM_FOR_LIFELINES_FASTING
 				+ ALGORITHM_FOR_LIFELINES_GLUCOSE);
 
 		// Deselect the first suggested source attribute
@@ -224,7 +224,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 				LIFELINES_SOURCE_FIRST_ROW_FASTING_VALUE);
 
 		// Check the algorithm in the ace editor
-		Assert.assertEquals(getValueToAlgorithmEditorInAttributeMapping(driver), ALGORITHM_FOR_LIFELINES_GLUCOSE);
+		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver), ALGORITHM_FOR_LIFELINES_GLUCOSE);
 
 		// Deselect the second suggested source attribute
 		toggleCheckBoxInSuggestedAttributeByRowIndex(2, driver);
@@ -234,7 +234,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
 
 		// Check the algorithm in the ace editor
-		Assert.assertEquals(getValueToAlgorithmEditorInAttributeMapping(driver), StringUtils.EMPTY);
+		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver), StringUtils.EMPTY);
 
 		// The preview result table now should be hidden now
 		Assert.assertFalse(isResultContainerVisiableInAttributeMapping(driver));

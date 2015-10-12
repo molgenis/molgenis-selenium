@@ -57,27 +57,42 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 	@Test
 	public void test() throws InterruptedException
 	{
-		SignUtil.signIn(driver, baseURL, uid, pwd);
+		try
+		{
+			SignUtil.signIn(driver, baseURL, uid, pwd);
 
-		this.testImportMappingServiceData();
+			this.importMappingServiceTestData();
 
-		this.testTagWizard();
+			this.testTagWizard();
 
-		this.testAddOneProject();
+			this.testAddOneProject();
 
-		this.testAddLifeLinesSourceToMappingProject();
+			this.testAddLifeLinesSourceToMappingProject();
 
-		this.testBasicFunctionalitiesInAttributeMappingScreen();
+			this.testBasicFunctionalitiesInAttributeMappingScreen();
 
-		this.testIntegrateDataForLifeLines();
+			this.testIntegrateDataForLifeLines();
 
-		SignUtil.signOut(driver);
+			SignUtil.signOut(driver);
+		}
+		catch (Exception e)
+		{
+			LOG.error("The MappingServiceApp Selenium test failed: " + e.getMessage());
+		}
+		finally
+		{
+			this.deleteAllTestDataSetsFromTheApp();
+		}
 	}
 
-	public void testImportMappingServiceData() throws InterruptedException
+	public void deleteAllTestDataSetsFromTheApp() throws InterruptedException
 	{
 		mappingProjectImportDataModel.deleteMappingServiceTestData(uid, pwd);
 
+	}
+
+	public void importMappingServiceTestData() throws InterruptedException
+	{
 		mappingProjectImportDataModel.importMappingServiceTestData();
 	}
 

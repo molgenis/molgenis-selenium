@@ -271,7 +271,7 @@ public class MappingServiceUtil
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
-	public static String getValueToAlgorithmEditorInAttributeMapping(WebDriver driver) throws InterruptedException
+	public static String getValueFromAlgorithmEditorInAttributeMapping(WebDriver driver) throws InterruptedException
 	{
 		WebElement aceEditorValueContainerElements = driver.findElement(By
 				.xpath("//div[@class='ace-editor-container']//div[@class='ace_line']"));
