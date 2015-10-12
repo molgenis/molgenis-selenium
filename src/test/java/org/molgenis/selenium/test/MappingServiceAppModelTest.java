@@ -61,6 +61,8 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		{
 			SignUtil.signIn(driver, baseURL, uid, pwd);
 
+			this.deleteAllTestDataSetsFromTheApp();
+
 			this.importMappingServiceTestData();
 
 			this.testTagWizard();
