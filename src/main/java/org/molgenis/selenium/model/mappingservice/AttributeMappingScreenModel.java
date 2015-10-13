@@ -29,6 +29,10 @@ import static org.molgenis.selenium.util.MappingServiceUtil.switchToAlgorithmCat
 import static org.molgenis.selenium.util.MappingServiceUtil.switchToAlgorithmScriptEditor;
 import static org.molgenis.selenium.util.MappingServiceUtil.toggleCheckBoxInSuggestedAttributeByRowIndex;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.openqa.selenium.WebDriver;
@@ -38,6 +42,9 @@ import org.testng.Assert;
 
 public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 {
+
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.#",
+			DecimalFormatSymbols.getInstance(Locale.US));
 	private static final String ATTRIBUTE_SECTION_CONTAINER = "attribute-mapping-table-container";
 	private static final String ALGORITHM_SECTION_CONTAINER = "attribute-mapping-container";
 	private static final String PREVIEW_SECTION_CONTAINER = "result-container";
@@ -53,7 +60,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 	private static final String ALGORITHM_QUESTION_MARK_TOOL_TIP_MESSAGE = "Use one of the methods below to map the values of the selected attribute(s) to the target attribute. The script editor offers large control over your algorithm, but javascript knowledge is needed. The Map tab allows you to map the various categorical values or strings to the categorical values of the target attribute.";
 	private static final String PREVIEW_QUESTION_MARK_TOOL_TIP_MESSAGE = "The most right column contains the results of applying the algorithm over the values of the selected source attributes.";
 	private static final String LIFELINES_SOURCE_FIRST_ROW_FASTING_VALUE = "1 = Yes";
-	private static final String LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE = "6.6";
+	private static final String LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE = DECIMAL_FORMAT.format("6.6");
 	private static final String ALGORITHM_FOR_LIFELINES_FASTING = "$('NUCHTER1').value();";
 	private static final String ALGORITHM_FOR_LIFELINES_GLUCOSE = "$('GLU').value();";
 	private static final String INVALID_ALGORITHM_SYNTAX = "3nf";
@@ -205,11 +212,13 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 
 		// Check the value of the first row for the second suggested source attribute (glucose) in the preview result
 		// table
-		Assert.assertEquals(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 2, driver).getText(),
+		Assert.assertEquals(
+				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 2, driver).getText()),
 				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
 
 		// Check the value of the first row for the algorithm result generated for the target attribute
-		Assert.assertEquals(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 3, driver).getText(),
+		Assert.assertEquals(
+				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 3, driver).getText()),
 				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
 
 		// Check the algorithm in the ace editor
@@ -230,7 +239,8 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		toggleCheckBoxInSuggestedAttributeByRowIndex(2, driver);
 
 		// The first column of the preview result in the first row should not be equal to the fasting status anymore
-		Assert.assertNotEquals(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 1, driver).getText(),
+		Assert.assertNotEquals(
+				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 1, driver).getText()),
 				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
 
 		// Check the algorithm in the ace editor
