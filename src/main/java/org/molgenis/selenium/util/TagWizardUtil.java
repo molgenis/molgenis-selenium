@@ -54,7 +54,7 @@ public class TagWizardUtil
 		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
-	public static void clealAllTagsConfirmationModalAndCancel(WebDriver driver) throws InterruptedException
+	public static void clearAllTagsConfirmationModalAndCancel(WebDriver driver) throws InterruptedException
 	{
 		clickClealAllTagsButton(driver);
 

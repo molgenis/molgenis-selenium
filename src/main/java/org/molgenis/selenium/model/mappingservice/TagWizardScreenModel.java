@@ -1,6 +1,6 @@
 package org.molgenis.selenium.model.mappingservice;
 
-import static org.molgenis.selenium.util.TagWizardUtil.clealAllTagsConfirmationModalAndCancel;
+import static org.molgenis.selenium.util.TagWizardUtil.clearAllTagsConfirmationModalAndCancel;
 import static org.molgenis.selenium.util.TagWizardUtil.clealAllTagsConfirmationModalAndOK;
 import static org.molgenis.selenium.util.TagWizardUtil.clickAutomaticTaggingButton;
 import static org.molgenis.selenium.util.TagWizardUtil.clickOnEditTagButtonByRowIndex;
@@ -68,7 +68,7 @@ public class TagWizardScreenModel
 		checkWeightTagContentAfterRemovingOneTag();
 
 		// Cancel the remove tags modal
-		clealAllTagsConfirmationModalAndCancel(driver);
+		clearAllTagsConfirmationModalAndCancel(driver);
 
 		// confirm the remove tags modal
 		clealAllTagsConfirmationModalAndOK(driver);

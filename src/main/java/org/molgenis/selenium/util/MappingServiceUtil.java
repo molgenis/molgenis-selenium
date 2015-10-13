@@ -18,7 +18,6 @@ public class MappingServiceUtil
 	private static final String SUB_MENU = "Mapping Service";
 	private final static String CREATE_NEW_MAPPING_PROJECT_MODAL = "create-new-mapping-project-modal";
 	private static final int BUTTON_CLICK_SLEEP_TIME = 3000;
-	private static final long LONG_SLEEP_TIME = 10000;
 
 	// ############################################################################################################
 	// ############################################################################################################
