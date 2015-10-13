@@ -213,8 +213,8 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
 
 		// Check the algorithm in the ace editor
-		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver), ALGORITHM_FOR_LIFELINES_FASTING
-				+ ALGORITHM_FOR_LIFELINES_GLUCOSE);
+		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver),
+				ALGORITHM_FOR_LIFELINES_FASTING + ALGORITHM_FOR_LIFELINES_GLUCOSE);
 
 		// Deselect the first suggested source attribute
 		toggleCheckBoxInSuggestedAttributeByRowIndex(1, driver);

@@ -61,8 +61,6 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		{
 			SignUtil.signIn(driver, baseURL, uid, pwd);
 
-			this.deleteAllTestDataSetsFromTheApp();
-
 			this.importMappingServiceTestData();
 
 			this.testTagWizard();
@@ -76,6 +74,9 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 			this.testIntegrateDataForLifeLines();
 
 			SignUtil.signOut(driver);
+
+			this.deleteAllTestDataSetsFromTheApp();
+
 		}
 		catch (Exception e)
 		{
@@ -83,7 +84,7 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		}
 		finally
 		{
-			this.deleteAllTestDataSetsFromTheApp();
+
 		}
 	}
 

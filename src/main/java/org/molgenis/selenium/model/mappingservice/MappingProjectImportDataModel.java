@@ -31,9 +31,8 @@ public class MappingProjectImportDataModel extends AbstractMappingServiceAppMode
 	public static final List<String> TARGET_RELATED_ENTITY_NAMES = Arrays.asList("HOP_selenium",
 			"HOP_GENDER_Ref_selenium");
 	public static final List<String> LIFELINES_RELATED_ENTITY_NAMES = Arrays.asList("lifelines_test",
-			"GENDER_Ref_test", "NUCHTER1_Ref_test");
-
-	public static final List<String> PREVEND_RELATED_ENTITY_NAMES = Arrays.asList("prevend_test", "SEX_Ref_test");
+			"test_GENDER_Ref_test", "test_NUCHTER1_Ref_test");
+	public static final List<String> PREVEND_RELATED_ENTITY_NAMES = Arrays.asList("prevend_test", "test_SEX_Ref_test");
 	public static final List<String> ONTOLOGY_RELATED_ENTITIY_NAMES = Arrays.asList("Ontology_OntologyTerm",
 			"Ontology_OntologyTermDynamicAnnotation", "Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym",
 			"Ontology_Ontology");
@@ -230,8 +229,8 @@ public class MappingProjectImportDataModel extends AbstractMappingServiceAppMode
 		try
 		{
 			QueryResponse queryResponse = molgenisClient.get(token, SCRIPT_ENTITY_NAME);
-			Set<String> magmaJavaScriptEntityIds = queryResponse.getItems().stream()
-					.filter(this::isItemMagmaJavaScript).map(this::getEntityId).collect(Collectors.toSet());
+			Set<String> magmaJavaScriptEntityIds = queryResponse.getItems().stream().filter(this::isItemMagmaJavaScript)
+					.map(this::getEntityId).collect(Collectors.toSet());
 			magmaJavaScriptEntityIds.forEach(id -> molgenisClient.delete(token, SCRIPT_ENTITY_NAME, id));
 			LOG.info("Delete all magma javascript entities");
 		}
