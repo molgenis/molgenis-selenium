@@ -213,13 +213,15 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		// Check the value of the first row for the second suggested source attribute (glucose) in the preview result
 		// table
 		Assert.assertEquals(
-				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 2, driver).getText()),
-				DECIMAL_FORMAT.format(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE));
+				DECIMAL_FORMAT.format(Double
+						.parseDouble(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 2, driver).getText())),
+				DECIMAL_FORMAT.format(Double.parseDouble(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE)));
 
 		// Check the value of the first row for the algorithm result generated for the target attribute
 		Assert.assertEquals(
-				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 3, driver).getText()),
-				DECIMAL_FORMAT.format(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE));
+				DECIMAL_FORMAT.format(Double
+						.parseDouble(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 2, driver).getText())),
+				DECIMAL_FORMAT.format(Double.parseDouble(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE)));
 
 		// Check the algorithm in the ace editor
 		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver),
@@ -238,10 +240,9 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		// Deselect the second suggested source attribute
 		toggleCheckBoxInSuggestedAttributeByRowIndex(2, driver);
 
-		// The first column of the preview result in the first row should not be equal to the fasting status anymore
-		Assert.assertNotEquals(
-				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 1, driver).getText()),
-				DECIMAL_FORMAT.format(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE));
+		// The first column of the preview result in the first row should not be equal to the glucose level anymore
+		Assert.assertNotEquals(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 1, driver).getText(),
+				DECIMAL_FORMAT.format(Double.parseDouble(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE)));
 
 		// Check the algorithm in the ace editor
 		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver), StringUtils.EMPTY);
