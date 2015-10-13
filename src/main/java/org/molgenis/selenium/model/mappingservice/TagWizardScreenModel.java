@@ -1,7 +1,7 @@
 package org.molgenis.selenium.model.mappingservice;
 
 import static org.molgenis.selenium.util.TagWizardUtil.clearAllTagsConfirmationModalAndCancel;
-import static org.molgenis.selenium.util.TagWizardUtil.clealAllTagsConfirmationModalAndOK;
+import static org.molgenis.selenium.util.TagWizardUtil.clearAllTagsConfirmationModalAndOK;
 import static org.molgenis.selenium.util.TagWizardUtil.clickAutomaticTaggingButton;
 import static org.molgenis.selenium.util.TagWizardUtil.clickOnEditTagButtonByRowIndex;
 import static org.molgenis.selenium.util.TagWizardUtil.clickOnTheExistingTagBasedOnName;
@@ -50,7 +50,7 @@ public class TagWizardScreenModel
 		selectEntityName(driver);
 
 		// Clear all existing tags
-		clealAllTagsConfirmationModalAndOK(driver);
+		clearAllTagsConfirmationModalAndOK(driver);
 
 		// Check if the selected entity name is same as the test one
 		assertEquals(getSelectedEntityName(driver), AbstractMappingServiceAppModel.TARGET_ENTITY_NAME);
@@ -71,7 +71,7 @@ public class TagWizardScreenModel
 		clearAllTagsConfirmationModalAndCancel(driver);
 
 		// confirm the remove tags modal
-		clealAllTagsConfirmationModalAndOK(driver);
+		clearAllTagsConfirmationModalAndOK(driver);
 
 		// Manually tag body mass index 1
 		addTagsForBodyMadIndexAttributes(9);
