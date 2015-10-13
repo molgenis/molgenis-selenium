@@ -214,12 +214,12 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		// table
 		Assert.assertEquals(
 				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 2, driver).getText()),
-				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
+				DECIMAL_FORMAT.format(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE));
 
 		// Check the value of the first row for the algorithm result generated for the target attribute
 		Assert.assertEquals(
 				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 3, driver).getText()),
-				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
+				DECIMAL_FORMAT.format(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE));
 
 		// Check the algorithm in the ace editor
 		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver),
@@ -241,7 +241,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 		// The first column of the preview result in the first row should not be equal to the fasting status anymore
 		Assert.assertNotEquals(
 				DECIMAL_FORMAT.format(getCellFromThePreviewResultTableInAttributeMappingScreen(1, 1, driver).getText()),
-				LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE);
+				DECIMAL_FORMAT.format(LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE));
 
 		// Check the algorithm in the ace editor
 		Assert.assertEquals(getValueFromAlgorithmEditorInAttributeMapping(driver), StringUtils.EMPTY);
