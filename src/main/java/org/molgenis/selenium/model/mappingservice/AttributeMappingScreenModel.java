@@ -60,7 +60,7 @@ public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 	private static final String ALGORITHM_QUESTION_MARK_TOOL_TIP_MESSAGE = "Use one of the methods below to map the values of the selected attribute(s) to the target attribute. The script editor offers large control over your algorithm, but javascript knowledge is needed. The Map tab allows you to map the various categorical values or strings to the categorical values of the target attribute.";
 	private static final String PREVIEW_QUESTION_MARK_TOOL_TIP_MESSAGE = "The most right column contains the results of applying the algorithm over the values of the selected source attributes.";
 	private static final String LIFELINES_SOURCE_FIRST_ROW_FASTING_VALUE = "1 = Yes";
-	private static final String LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE = DECIMAL_FORMAT.format("6.6");
+	private static final String LIFELINES_SOURCE_FIRST_ROW_GLUCOSE_VALUE = "6.6";
 	private static final String ALGORITHM_FOR_LIFELINES_FASTING = "$('NUCHTER1').value();";
 	private static final String ALGORITHM_FOR_LIFELINES_GLUCOSE = "$('GLU').value();";
 	private static final String INVALID_ALGORITHM_SYNTAX = "3nf";
