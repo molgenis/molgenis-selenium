@@ -9,7 +9,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 
-
 /**
  * This is a util for the use of the Molgenis Menu
  */
@@ -31,7 +30,7 @@ public class Select2Util
 		// Step two: fill in the perfect search parameter
 		By subContainerSelector = By.cssSelector("#select2-drop:not([style*='display:none'])");
 		SeleniumUtils.waitForElement(subContainerSelector, webDriver);
-		
+
 		By inputSelector = By.cssSelector("#select2-drop:not([style*='display:none']) .select2-input");
 		SeleniumUtils.waitForElement(inputSelector, webDriver);
 		WebElement select2searchInput = webDriver.findElement(inputSelector);
@@ -49,4 +48,3 @@ public class Select2Util
 		select2elementsFilterd.get(0).click();
 	}
 }
-
