@@ -42,7 +42,6 @@ import org.testng.Assert;
 
 public class AttributeMappingScreenModel extends AbstractMappingServiceAppModel
 {
-
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.#",
 			DecimalFormatSymbols.getInstance(Locale.US));
 	private static final String ATTRIBUTE_SECTION_CONTAINER = "attribute-mapping-table-container";
