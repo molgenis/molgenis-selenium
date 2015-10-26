@@ -91,7 +91,7 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 
 	public void testTagWizard() throws InterruptedException
 	{
-		tagWizardScreenModel.tagAllBodyMassIndexAttributesManually();
+		tagWizardScreenModel.testAllTagFunctionalities();
 	}
 
 	public void testAddOneProject() throws InterruptedException

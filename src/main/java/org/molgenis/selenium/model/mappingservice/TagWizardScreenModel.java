@@ -42,7 +42,7 @@ public class TagWizardScreenModel
 		this.driver = Objects.requireNonNull(webDriver);
 	}
 
-	public void tagAllBodyMassIndexAttributesManually() throws InterruptedException
+	public void testAllTagFunctionalities() throws InterruptedException
 	{
 		openTagWizard(driver);
 
@@ -72,6 +72,16 @@ public class TagWizardScreenModel
 
 		// confirm the remove tags modal
 		clearAllTagsConfirmationModalAndOK(driver);
+
+		testBodyMaddIndexAttributes();
+	}
+
+	public void testBodyMaddIndexAttributes() throws InterruptedException
+	{
+		openTagWizard(driver);
+
+		// Select the test entity
+		selectEntityName(driver);
 
 		// Manually tag body mass index 1
 		addTagsForBodyMadIndexAttributes(9);

@@ -29,9 +29,9 @@ public class MappingProjectImportDataModel extends AbstractMappingServiceAppMode
 			"org/molgenis/selenium/mappingservice/uo_test.owl.zip");
 
 	public static final List<String> TARGET_RELATED_ENTITY_NAMES = Arrays.asList("HOP_selenium",
-			"HOP_GENDER_Ref_selenium", "FOOD_POTATOES_Ref_selenium");
+			"HOP_GENDER_Ref_selenium", "FOOD_POTATOES_Ref_selenium", "DIS_HBP_Ref_selenium");
 	public static final List<String> LIFELINES_RELATED_ENTITY_NAMES = Arrays.asList("lifelines_test",
-			"test_GENDER_Ref_test", "test_NUCHTER1_Ref_test", "test_FOOD59A1_Ref_test");
+			"test_GENDER_Ref_test", "test_NUCHTER1_Ref_test", "test_FOOD59A1_Ref_test", "test_HEALTH351_Ref_test");
 	public static final List<String> PREVEND_RELATED_ENTITY_NAMES = Arrays.asList("prevend_test", "test_SEX_Ref_test");
 	public static final List<String> ONTOLOGY_RELATED_ENTITIY_NAMES = Arrays.asList("Ontology_OntologyTerm",
 			"Ontology_OntologyTermDynamicAnnotation", "Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym",

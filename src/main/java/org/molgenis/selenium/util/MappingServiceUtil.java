@@ -5,6 +5,7 @@ import static org.molgenis.selenium.model.mappingservice.AbstractMappingServiceA
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -270,9 +271,17 @@ public class MappingServiceUtil
 
 	public static String getValueFromAlgorithmEditorInAttributeMapping(WebDriver driver) throws InterruptedException
 	{
+		SeleniumUtils.isElementPresent(By.xpath("//textarea[@id='ace-editor-text-area']"), driver);
 		WebElement aceEditorValueContainerElements = driver
-				.findElement(By.xpath("//div[@class='ace-editor-container']//div[@class='ace_line']"));
-		return aceEditorValueContainerElements.getText();
+				.findElement(By.xpath("//textarea[@id='ace-editor-text-area']"));
+		while (StringUtils.isBlank(aceEditorValueContainerElements.getAttribute("value")))
+		{
+			Assert.assertTrue(driver instanceof JavascriptExecutor);
+			String script = "var editor = $('#ace-editor-text-area').data('ace').editor; $('#ace-editor-text-area').val(editor.getValue());";
+			((JavascriptExecutor) driver).executeScript(script);
+			aceEditorValueContainerElements = driver.findElement(By.xpath("//textarea[@id='ace-editor-text-area']"));
+		}
+		return aceEditorValueContainerElements.getAttribute("value");
 	}
 
 	public static void toggleCheckBoxInSuggestedAttributeByRowIndex(int index, WebDriver driver)
