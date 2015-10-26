@@ -3,7 +3,7 @@ package org.molgenis.selenium.test;
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.model.mappingservice.AttributeMappingScreenModel;
+import org.molgenis.selenium.model.mappingservice.AttributeMappingScreenAdvancedModel;
 import org.molgenis.selenium.model.mappingservice.MappingProjectAddSourceDataModel;
 import org.molgenis.selenium.model.mappingservice.MappingProjectImportDataModel;
 import org.molgenis.selenium.model.mappingservice.MappingProjectOverviewModel;
@@ -21,12 +21,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @ContextConfiguration(classes = JenkinsConfig.class)
-public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
+public class MappingServiceAdvancedModelTest extends AbstractTestNGSpringContextTests
 {
-	private static final Logger LOG = LoggerFactory.getLogger(MappingServiceAppModelTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MappingServiceAdvancedModelTest.class);
 
 	private WebDriver driver;
-	private AttributeMappingScreenModel attributeMappingScreenModel;
+	private AttributeMappingScreenAdvancedModel attributeMappingScreenAdvancedModel;
 	private MappingProjectAddSourceDataModel mappingProjectAddSourceDataModel;
 	private MappingProjectImportDataModel mappingProjectImportDataModel;
 	private MappingProjectOverviewModel mappingProjectOverviewModel;
@@ -47,7 +47,7 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
 
 		this.driver = DriverType.FIREFOX.getDriver();
-		this.attributeMappingScreenModel = new AttributeMappingScreenModel(driver, molgenisClient);
+		this.attributeMappingScreenAdvancedModel = new AttributeMappingScreenAdvancedModel(driver, molgenisClient);
 		this.mappingProjectAddSourceDataModel = new MappingProjectAddSourceDataModel(driver, molgenisClient);
 		this.mappingProjectImportDataModel = new MappingProjectImportDataModel(driver, molgenisClient);
 		this.mappingProjectOverviewModel = new MappingProjectOverviewModel(driver, molgenisClient);
@@ -63,19 +63,22 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 
 		this.importMappingServiceTestData();
 
-		this.testTagWizard();
+		this.tagBodyMassIndex();
 
 		this.testAddOneProject();
 
 		this.testAddLifeLinesSourceToMappingProject();
 
-		this.testBasicFunctionalitiesInAttributeMappingScreen();
-
-		this.testIntegrateDataForLifeLines();
-
-		SignUtil.signOut(driver);
+		this.testAdvancedFunctionalitiesInAttributeMappingScreen();
 
 		this.deleteAllTestDataSetsFromTheApp();
+
+		SignUtil.signOut(driver);
+	}
+
+	private void tagBodyMassIndex() throws InterruptedException
+	{
+		tagWizardScreenModel.testBodyMaddIndexAttributes();
 	}
 
 	public void deleteAllTestDataSetsFromTheApp() throws InterruptedException
@@ -89,21 +92,8 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		mappingProjectImportDataModel.importMappingServiceTestData();
 	}
 
-	public void testTagWizard() throws InterruptedException
-	{
-		tagWizardScreenModel.testAllTagFunctionalities();
-	}
-
 	public void testAddOneProject() throws InterruptedException
 	{
-		mappingProjectOverviewModel.addOneMappingProject();
-
-		mappingProjectOverviewModel.cancelAddMappingProject();
-
-		mappingProjectOverviewModel.addOneMappingProjectWithoutName();
-
-		mappingProjectOverviewModel.removeTestMappingProject();
-
 		mappingProjectOverviewModel.addOneMappingProject();
 	}
 
@@ -111,33 +101,34 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 	{
 		mappingProjectOverviewModel.openOneMappingProject();
 
-		mappingProjectAddSourceDataModel.cancelAddLifeLinesSourceToMappingProject();
-
 		mappingProjectAddSourceDataModel.addLifeLinesSourceToMappingProject();
-
-		mappingProjectAddSourceDataModel.cancelRemoveLifeLinesSourceToMappingProject();
-
-		mappingProjectAddSourceDataModel.removeLifeLinesSourceToMappingProject();
-
-		mappingProjectAddSourceDataModel.addLifeLinesSourceToMappingProject();
-
-		mappingProjectAddSourceDataModel.cancelRemoveFastingGlucoseAttributeForLifeLinesSource();
-
-		mappingProjectAddSourceDataModel.removeFastingGlucoseAttributeForLifeLinesSource();
 	}
 
-	public void testBasicFunctionalitiesInAttributeMappingScreen() throws InterruptedException
+	public void testAdvancedFunctionalitiesInAttributeMappingScreen() throws InterruptedException
 	{
 		mappingProjectOverviewModel.openOneMappingProject();
 
-		attributeMappingScreenModel.clickGenderAttributeForLifeLinesSource();
+		attributeMappingScreenAdvancedModel.testGenderAlgorithmInLifeLines();
 
-		attributeMappingScreenModel.clickFastingGlucoseAttributeForLifeLinesSource();
-	}
+		attributeMappingScreenAdvancedModel.testHeightAlgorithmMeterSymbolLifeLines();
 
-	public void testIntegrateDataForLifeLines() throws InterruptedException
-	{
-		mappingProjectAddSourceDataModel.integrateSourceData();
+		attributeMappingScreenAdvancedModel.testHeightMeterAlgorithmInLifeLines();
+
+		attributeMappingScreenAdvancedModel.testWeightGramAlgorithmInLifeLines();
+
+		attributeMappingScreenAdvancedModel.testWeightKiloGramAlgorithmInLifeLines();
+
+		attributeMappingScreenAdvancedModel.testTriglyceridesAlgorithmInLifeLines();
+
+		attributeMappingScreenAdvancedModel.testFastingGlucoseAlgorithmInLifeLines();
+
+		attributeMappingScreenAdvancedModel.testBodyMassIndexOneAlgorithmInLifeLines();
+
+		attributeMappingScreenAdvancedModel.testBodyMassIndexTwoAlgorithmInLifeLines();
+
+		attributeMappingScreenAdvancedModel.testBodyMassIndexThreeAlgorithmInLifeLines();
+
+		attributeMappingScreenAdvancedModel.testPotatoConsumptionAlgorithmInLifeLines();
 	}
 
 	@AfterClass
@@ -149,4 +140,5 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 		// Clear cookies
 		this.driver.close();
 	}
+
 }
