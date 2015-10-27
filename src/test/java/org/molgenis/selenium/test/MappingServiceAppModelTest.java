@@ -57,24 +57,34 @@ public class MappingServiceAppModelTest extends AbstractTestNGSpringContextTests
 	@Test
 	public void test() throws InterruptedException
 	{
+		LOG.info("Delete all test data sets.");
 		this.deleteAllTestDataSetsFromTheApp();
 
+		LOG.info("Sign in.");
 		SignUtil.signIn(driver, baseURL, uid, pwd);
 
+		LOG.info("Import mapping service test data.");
 		this.importMappingServiceTestData();
 
+		LOG.info("Test tag wizard.");
 		this.testTagWizard();
 
+		LOG.info("Test add one project.");
 		this.testAddOneProject();
 
+		LOG.info("Test Add Lifelines Source to mapping project.");
 		this.testAddLifeLinesSourceToMappingProject();
 
+		LOG.info("Test basic functionalities in attribute mapping screen.");
 		this.testBasicFunctionalitiesInAttributeMappingScreen();
 
+		LOG.info("Test integrate data for Lifelines.");
 		this.testIntegrateDataForLifeLines();
 
+		LOG.info("Sign out.");
 		SignUtil.signOut(driver);
 
+		LOG.info("Delete all data sets.");
 		this.deleteAllTestDataSetsFromTheApp();
 	}
 
