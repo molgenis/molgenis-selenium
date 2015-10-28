@@ -4,12 +4,17 @@ import static org.molgenis.selenium.model.mappingservice.AbstractMappingServiceA
 import static org.molgenis.selenium.model.mappingservice.AbstractMappingServiceAppModel.MAPPING_SERVICE_BASE_URL;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Stopwatch;
 
 import junit.framework.Assert;
 
@@ -19,6 +24,9 @@ public class MappingServiceUtil
 	private static final String SUB_MENU = "Mapping Service";
 	private final static String CREATE_NEW_MAPPING_PROJECT_MODAL = "create-new-mapping-project-modal";
 	private static final int BUTTON_CLICK_SLEEP_TIME = 3000;
+	private static final int WAIT_FOR_NON_BLANK_SECONDS = 3;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(MappingServiceUtil.class);
 
 	// ############################################################################################################
 	// ############################################################################################################
@@ -271,16 +279,19 @@ public class MappingServiceUtil
 
 	public static String getValueFromAlgorithmEditorInAttributeMapping(WebDriver driver) throws InterruptedException
 	{
+		Stopwatch sw = Stopwatch.createStarted();
 		SeleniumUtils.isElementPresent(By.xpath("//textarea[@id='ace-editor-text-area']"), driver);
 		WebElement aceEditorValueContainerElements = driver
 				.findElement(By.xpath("//textarea[@id='ace-editor-text-area']"));
-		while (StringUtils.isBlank(aceEditorValueContainerElements.getAttribute("value")))
+		while (StringUtils.isBlank(aceEditorValueContainerElements.getAttribute("value")) 
+				&& sw.elapsed(TimeUnit.SECONDS) < WAIT_FOR_NON_BLANK_SECONDS)
 		{
 			Assert.assertTrue(driver instanceof JavascriptExecutor);
 			String script = "var editor = $('#ace-editor-text-area').data('ace').editor; $('#ace-editor-text-area').val(editor.getValue());";
 			((JavascriptExecutor) driver).executeScript(script);
 			aceEditorValueContainerElements = driver.findElement(By.xpath("//textarea[@id='ace-editor-text-area']"));
 		}
+		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 		return aceEditorValueContainerElements.getAttribute("value");
 	}
 
