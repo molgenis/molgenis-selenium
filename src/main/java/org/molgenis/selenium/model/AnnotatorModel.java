@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.util.MenuUtil;
+import org.molgenis.selenium.util.MenuModel;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.molgenis.selenium.util.SettingsUtil;
 import org.openqa.selenium.By;
@@ -25,7 +25,7 @@ import org.testng.Assert;
 import com.google.common.base.Joiner;
 
 /**
- * This is a model of the MOLGENIS login user interface
+ * This is a model of the MOLGENIS Annotator user interface
  */
 public class AnnotatorModel
 {
@@ -50,14 +50,14 @@ public class AnnotatorModel
 	public void deleteTestEntity()
 	{
 		LOG.info("Delete test_entity");
-		molgenisClient.deleteMetadata("test_entity");
+		molgenisClient.deleteMetadata(token, "test_entity");
 	}
 
 	public void uploadDataFile(String baseUrl) throws Exception
 	{
 		LOG.info("upload datafile");
 		driver.get(baseUrl + "/");
-		MenuUtil.openPageByClickOnMenuItem(UploadAppModel.MENUITEM, driver);
+		MenuModel.openPageByClickOnMenuItem(UploadAppModel.MENUITEM, driver);
 		SeleniumUtils.waitForElement(By.cssSelector("ol.bwizard-steps li:nth-child(1).active"), driver);
 		SeleniumUtils.waitForElement(By.name("upload"), driver);
 

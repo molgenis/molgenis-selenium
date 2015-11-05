@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.util.MenuUtil;
+import org.molgenis.selenium.util.MenuModel;
 import org.molgenis.selenium.util.RestApiV1Util;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
@@ -47,8 +47,10 @@ public class UploadAppModel
 	public void deleteDataAndMetadata(String uid, String pwd, List<String> entityFullName) throws InterruptedException
 	{
 		String token = RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd, LOG);
-		entityFullName.stream().forEachOrdered(e -> this.deleteDataAndMetadata(token, e));
-		Thread.sleep(5000); // Important!
+		for(String entity: entityFullName){
+			Thread.sleep(1000);
+			this.deleteDataAndMetadata(token, entity);
+		}		
 		molgenisClient.logout(token);
 	}
 
@@ -56,13 +58,14 @@ public class UploadAppModel
 	{
 		try
 		{
+			LOG.info("Delete {}...",entityFullName);
 			molgenisClient.get(token, entityFullName);
-			molgenisClient.deleteMetadata(entityFullName);
-			LOG.info("Delete " + entityFullName);
+			molgenisClient.deleteMetadata(token, entityFullName);
+			LOG.info("Done.");
 		}
 		catch (Exception e)
 		{
-			LOG.info(e.getMessage() + " " + entityFullName + " is not deleted");
+			LOG.info("{} is not deleted. {}", entityFullName, e.getMessage());
 		}
 	}
 
@@ -168,7 +171,7 @@ public class UploadAppModel
 	 */
 	public void open() throws InterruptedException
 	{
-		MenuUtil.openPageByClickOnMenuItem("Upload", driver);
+		MenuModel.openPageByClickOnMenuItem("Upload", driver);
 	}
 	
 	public void uploadFile(String relativePath) throws InterruptedException

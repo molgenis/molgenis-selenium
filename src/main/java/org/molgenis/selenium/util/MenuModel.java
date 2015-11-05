@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 /**
  * This is a util for the use of the Molgenis Menu
  */
-public class MenuUtil
+public class MenuModel
 {
 	/**
 	 * Opens the page by clicking on a menu item

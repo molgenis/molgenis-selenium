@@ -3,9 +3,7 @@ package org.molgenis.selenium.util;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.molgenis.selenium.model.mappingservice.AbstractMappingServiceAppModel;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
@@ -15,7 +13,6 @@ public class TagWizardUtil
 {
 	private static final String MAIN_MENU = "Data Integration";
 	private static final String SUB_MENU = "Tag Wizard";
-	private static final String TARGET_ENTITY_SELECT2_ELEMENT_ID = "s2id_select-target";
 
 	private static final int BUTTON_CLICK_SLEEP_TIME = 3000;
 	private static final int MANNUALLY_TAGGING_TRANSACTION_TIME = 5000;
@@ -24,13 +21,7 @@ public class TagWizardUtil
 
 	public static void openTagWizard(WebDriver driver) throws InterruptedException
 	{
-		MenuUtil.openPageByClickOnSubMenuItem(MAIN_MENU, SUB_MENU, driver);
-	}
-
-	public static void selectEntityName(WebDriver driver) throws InterruptedException
-	{
-		Select2Util.select(TARGET_ENTITY_SELECT2_ELEMENT_ID, AbstractMappingServiceAppModel.TARGET_ENTITY_NAME, driver, LOG);
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
+		MenuModel.openPageByClickOnSubMenuItem(MAIN_MENU, SUB_MENU, driver);
 	}
 
 	public static String getSelectedEntityName(WebDriver driver) throws InterruptedException
@@ -74,18 +65,6 @@ public class TagWizardUtil
 						.xpath("//div[@class='bootbox-body' and text() = 'Are you sure you want to remove all tags?']/../../div[@class='modal-footer']/button[text()='OK']"));
 		okButton.click();
 		Thread.sleep(TAGGING_TRANSACTION_TIME);
-	}
-
-	public static void sendTextToMultiSelectionElement(String inputFieldId, String label, WebDriver driver)
-			throws InterruptedException
-	{
-		WebElement select2InputText = driver
-				.findElement(By
-						.xpath("//input[@id='tag-dropdown']/../div[contains(@class, 'select2-container')]//input[@type='text']"));
-		select2InputText.sendKeys(Keys.BACK_SPACE);
-		select2InputText.sendKeys(label);
-		select2InputText.sendKeys(Keys.ENTER);
-		Thread.sleep(BUTTON_CLICK_SLEEP_TIME);
 	}
 
 	public static void saveSearchedTags(WebDriver driver) throws InterruptedException

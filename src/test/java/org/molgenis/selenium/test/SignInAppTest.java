@@ -2,8 +2,9 @@ package org.molgenis.selenium.test;
 
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
-import org.molgenis.selenium.model.SignInAppModel;
+import org.molgenis.selenium.model.SignInModel;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,7 @@ public class SignInAppTest extends AbstractTestNGSpringContextTests
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
 	private WebDriver driver;
-	private SignInAppModel model;
+	private SignInModel model;
 
 	@Value("${test.baseurl}")
 	private String baseURL;
@@ -34,14 +35,13 @@ public class SignInAppTest extends AbstractTestNGSpringContextTests
 	public void beforeSuite() throws InterruptedException
 	{
 		driver = DriverType.FIREFOX.getDriver();
-		model = new SignInAppModel(driver);
+		driver.get(baseURL);
+		model = PageFactory.initElements(driver, SignInModel.class);
 	}
 
 	@Test
-	public void test1() throws InterruptedException
+	public void testLoginLogout() throws InterruptedException
 	{
-		driver.get(baseURL);
-
 		// open the signin
 		model.open();
 		// should result in a popup where we type username and password

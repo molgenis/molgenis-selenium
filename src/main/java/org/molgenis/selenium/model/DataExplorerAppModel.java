@@ -2,8 +2,8 @@ package org.molgenis.selenium.model;
 
 import java.util.List;
 
-import org.molgenis.selenium.util.MenuUtil;
-import org.molgenis.selenium.util.Select2Util;
+import org.molgenis.selenium.model.component.Select2Model;
+import org.molgenis.selenium.util.MenuModel;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,11 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is a model of the MOLGENIS login user interface
+ * This is a model of the MOLGENIS Data Explorer user interface
  */
 public class DataExplorerAppModel
 {
-	public static String ENTITY_SELECT_ID = "dataset-select";
 	public static String MENU_ITEM_TEXT = "Data Explorer";
 	private static final Logger LOG = LoggerFactory.getLogger(DataExplorerAppModel.class);
 
@@ -26,16 +25,18 @@ public class DataExplorerAppModel
 		DATA_AND_METADATA;
 	}
 	
+	private final Select2Model entityModel;
 	private final WebDriver driver;
 
 	public DataExplorerAppModel(WebDriver driver)
 	{
 		this.driver = driver;
+		entityModel = new Select2Model(driver, "dataset-select");
 	}
 
 	public void open() throws InterruptedException
 	{
-		MenuUtil.openPageByClickOnMenuItem(MENU_ITEM_TEXT, driver);
+		MenuModel.openPageByClickOnMenuItem(MENU_ITEM_TEXT, driver);
 	}
 
 	public void selectEntityFromUrl(String baseUrl, String entityFullName)
@@ -88,7 +89,7 @@ public class DataExplorerAppModel
 	public void selectEntity(String entityLabel)
 			throws InterruptedException
 	{
-		Select2Util.select("dataset-select-container", entityLabel, driver, LOG);
+		entityModel.select(entityLabel);
 	}
 
 	public String getSelectedEntityTitle() throws InterruptedException

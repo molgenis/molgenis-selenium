@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.data.rest.client.bean.QueryResponse;
-import org.molgenis.selenium.util.MenuUtil;
+import org.molgenis.selenium.util.MenuModel;
 import org.molgenis.selenium.util.RestApiV1Util;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
@@ -95,7 +95,7 @@ public class MappingProjectImportDataModel extends AbstractMappingServiceAppMode
 	{
 		try
 		{
-			MenuUtil.openPageByClickOnMenuItem("Upload", driver);
+			MenuModel.openPageByClickOnMenuItem("Upload", driver);
 			// Step 1: UploadFile
 			this.uploadFile(filePath);
 
@@ -183,7 +183,7 @@ public class MappingProjectImportDataModel extends AbstractMappingServiceAppMode
 		try
 		{
 			molgenisClient.get(token, entityFullName);
-			molgenisClient.deleteMetadata(entityFullName);
+			molgenisClient.deleteMetadata(token, entityFullName);
 			LOG.info("Delete " + entityFullName);
 		}
 		catch (Exception e)

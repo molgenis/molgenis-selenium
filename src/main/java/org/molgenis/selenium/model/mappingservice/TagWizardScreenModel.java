@@ -9,14 +9,14 @@ import static org.molgenis.selenium.util.TagWizardUtil.getExistingTagNamesByRowI
 import static org.molgenis.selenium.util.TagWizardUtil.getSelectedEntityName;
 import static org.molgenis.selenium.util.TagWizardUtil.openTagWizard;
 import static org.molgenis.selenium.util.TagWizardUtil.saveSearchedTags;
-import static org.molgenis.selenium.util.TagWizardUtil.selectEntityName;
-import static org.molgenis.selenium.util.TagWizardUtil.sendTextToMultiSelectionElement;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Objects;
 
+import org.molgenis.selenium.model.component.MultiSelectModel;
+import org.molgenis.selenium.model.component.Select2Model;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,6 @@ public class TagWizardScreenModel
 
 	private static final String HEIGHT_ONTOLOGY_TERM_LABEL = "Height";
 	private static final String WEIGHT_ONTOLOGY_TERM_LABEL = "Weight";
-	private static final String SEARCH_TAG_INPUTFIELD_ID = "tag-dropdown";
 	private static final String GENDER_TAG_NAME = "Gender";
 	private static final String HEIGHT_TAG_NAME = "(Height and meter)";
 	private static final String WEIGHT_TAG_NAME = "(Weight and gram)";
@@ -37,9 +36,19 @@ public class TagWizardScreenModel
 
 	public static final Logger LOG = LoggerFactory.getLogger(TagWizardScreenModel.class);
 
+	private final MultiSelectModel tagSelectionModel;
+
+	private final MultiSelectModel ontologySelectionModel;
+	
+	private final MultiSelectModel entitySelectionModel;
+
 	public TagWizardScreenModel(WebDriver webDriver)
 	{
 		this.driver = Objects.requireNonNull(webDriver);
+		
+		tagSelectionModel = new Select2Model(driver, "tag-dropdown");
+		ontologySelectionModel = new Select2Model(driver, "ontology-select");
+		entitySelectionModel = new Select2Model(driver, "select-target");
 	}
 
 	public void testAllTagFunctionalities() throws InterruptedException
@@ -47,7 +56,7 @@ public class TagWizardScreenModel
 		openTagWizard(driver);
 
 		// Select the test entity
-		selectEntityName(driver);
+		entitySelectionModel.select(AbstractMappingServiceAppModel.TARGET_ENTITY_NAME);
 
 		// Clear all existing tags
 		clearAllTagsConfirmationModalAndOK(driver);
@@ -55,6 +64,9 @@ public class TagWizardScreenModel
 		// Check if the selected entity name is same as the test one
 		assertEquals(getSelectedEntityName(driver), AbstractMappingServiceAppModel.TARGET_ENTITY_NAME);
 
+		ontologySelectionModel.clearSelection();
+		ontologySelectionModel.select("uo_test", "biobank_ontology_test");
+		
 		// Run automatic tagging
 		clickAutomaticTaggingButton(driver);
 
@@ -73,15 +85,15 @@ public class TagWizardScreenModel
 		// confirm the remove tags modal
 		clearAllTagsConfirmationModalAndOK(driver);
 
-		testBodyMaddIndexAttributes();
+		testBodyMassIndexAttributes();
 	}
 
-	public void testBodyMaddIndexAttributes() throws InterruptedException
+	public void testBodyMassIndexAttributes() throws InterruptedException
 	{
 		openTagWizard(driver);
 
 		// Select the test entity
-		selectEntityName(driver);
+		entitySelectionModel.select(AbstractMappingServiceAppModel.TARGET_ENTITY_NAME);
 
 		// Manually tag body mass index 1
 		addTagsForBodyMadIndexAttributes(9);
@@ -125,10 +137,7 @@ public class TagWizardScreenModel
 	{
 		clickOnEditTagButtonByRowIndex(rowIndex, driver);
 
-		sendTextToMultiSelectionElement(SEARCH_TAG_INPUTFIELD_ID, HEIGHT_ONTOLOGY_TERM_LABEL, driver);
-
-		sendTextToMultiSelectionElement(SEARCH_TAG_INPUTFIELD_ID, WEIGHT_ONTOLOGY_TERM_LABEL, driver);
-
+		tagSelectionModel.select(HEIGHT_ONTOLOGY_TERM_LABEL, WEIGHT_ONTOLOGY_TERM_LABEL);
 		saveSearchedTags(driver);
 	}
 }

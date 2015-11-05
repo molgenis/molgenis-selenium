@@ -78,7 +78,7 @@ public class MappingServiceAdvancedModelTest extends AbstractTestNGSpringContext
 
 	private void tagBodyMassIndex() throws InterruptedException
 	{
-		tagWizardScreenModel.testBodyMaddIndexAttributes();
+		tagWizardScreenModel.testBodyMassIndexAttributes();
 	}
 
 	public void deleteAllTestDataSetsFromTheApp() throws InterruptedException

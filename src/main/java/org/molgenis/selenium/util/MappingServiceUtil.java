@@ -108,7 +108,7 @@ public class MappingServiceUtil
 	// ##################################### View the Mapping Project Overview related event handlers
 	public static void openMappingService(WebDriver driver) throws InterruptedException
 	{
-		MenuUtil.openPageByClickOnSubMenuItem(MAIN_MENU, SUB_MENU, driver);
+		MenuModel.openPageByClickOnSubMenuItem(MAIN_MENU, SUB_MENU, driver);
 	}
 
 	public static List<WebElement> getRowWebElementsFromMappingProjectTable(WebDriver driver)
