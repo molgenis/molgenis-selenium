@@ -20,7 +20,7 @@ public class UploadTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod()
 	{
-		model = homepage.selectUpload();
+		model = homepage.selectImporter();
 	}
 	
 	@Test

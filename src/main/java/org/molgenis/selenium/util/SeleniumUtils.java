@@ -27,7 +27,7 @@ public class SeleniumUtils
 		SeleniumUtils.waitFor(p, 60);
 	}
 
-	public static void waitFor(BooleanSupplier p, int timeout) throws InterruptedException
+	public static void waitFor(BooleanSupplier p, int timeout)
 	{
 		for (int second = 0;; second++)
 		{
@@ -35,11 +35,11 @@ public class SeleniumUtils
 			try
 			{
 				if (p.getAsBoolean()) break;
+				Thread.sleep(1000);
 			}
 			catch (Exception e)
 			{
 			}
-			Thread.sleep(1000);
 		}
 	}
 

@@ -95,7 +95,7 @@ public class ImporterModel extends MenuModel
 		return file;
 	}
 
-	public ImporterModel importFile(File file, EntitiesOptions options) throws InterruptedException
+	public ImporterModel importFile(File file, EntitiesOptions options)
 	{
 		LOG.info("uploadFile...");
 		uploadFile(file);
@@ -121,7 +121,7 @@ public class ImporterModel extends MenuModel
 		return message.getText();
 	}
 
-	public ImporterModel uploadFile(File file) throws InterruptedException
+	public ImporterModel uploadFile(File file)
 	{
 		assertTrue(file.exists());
 		stepOne.click();
@@ -171,7 +171,7 @@ public class ImporterModel extends MenuModel
 		return this;
 	}
 
-	public ImporterModel waitForResult() throws InterruptedException
+	public ImporterModel waitForResult()
 	{
 		LOG.info("waitForResult...");
 		stepFive.click();

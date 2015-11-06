@@ -1,5 +1,6 @@
 package org.molgenis.selenium.test;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.molgenis.selenium.model.ImporterModel.EntitiesOptions.ADD;
 
 import java.io.File;
@@ -21,6 +22,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+
+import com.google.common.collect.Lists;
 
 /**
  * Base class that does the general setup and tear down of the tests.
@@ -92,13 +95,17 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		}
 	}
 
-	protected void importFile(String relativePath) throws InterruptedException
+	protected void importFiles(String... relativePaths)
 	{
-		File annotatorTestFile = ImporterModel.getFile(relativePath);
-		driver.get(baseURL);
-		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
-		homePage.openSignInDialog().signIn(uid, pwd).selectUpload().importFile(annotatorTestFile, ADD).finish()
-				.signOut();
+		for (String path : relativePaths)
+		{
+			LOG.info("Import file {}", newArrayList(relativePaths));
+			File annotatorTestFile = ImporterModel.getFile(path);
+			driver.get(baseURL);
+			HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
+			homePage.openSignInDialog().signIn(uid, pwd).selectImporter().importFile(annotatorTestFile, ADD).finish()
+					.signOut();
+		}
 	}
 
 }

@@ -7,8 +7,6 @@ import org.molgenis.rest.model.SettingsModel;
 import org.molgenis.selenium.model.AnnotatorModel;
 import org.molgenis.selenium.model.DataExplorerModel;
 import org.molgenis.selenium.model.DataExplorerModel.DeleteOption;
-import org.molgenis.selenium.model.HomepageModel;
-import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,7 +31,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		tryDeleteEntities("test_entity");
 		new SettingsModel(restClient, token).updateDataExplorerSettings("mod_annotators", true);
 		restClient.logout(token);
-		importFile("test_file.xlsx");
+		importFiles("test_file.xlsx");
 	}
 
 	@AfterClass
