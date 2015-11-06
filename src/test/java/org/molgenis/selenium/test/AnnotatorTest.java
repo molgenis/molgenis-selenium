@@ -1,31 +1,19 @@
 package org.molgenis.selenium.test;
 
-import static org.molgenis.selenium.model.ImporterModel.EntitiesOptions.ADD;
-
-import java.io.File;
 import java.util.Arrays;
 
-import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
-import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.rest.model.SettingsModel;
 import org.molgenis.selenium.model.AnnotatorModel;
 import org.molgenis.selenium.model.DataExplorerModel;
 import org.molgenis.selenium.model.DataExplorerModel.DeleteOption;
 import org.molgenis.selenium.model.HomepageModel;
-import org.molgenis.selenium.model.ImporterModel;
-import org.molgenis.selenium.util.SeleniumUtils;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,28 +24,16 @@ public class AnnotatorTest extends AbstractSeleniumTest
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
 
-	private WebDriver driver;
-	@Value("${test.uid}")
-	private String uid;
-	@Value("${test.pwd}")
-	private String pwd;
-	@Value("${test.baseurl}")
-	private String baseURL;
-	@Autowired
-	private MolgenisClient restClient;
-	private String token;
 	private AnnotatorModel model;
 
 	@BeforeClass
 	public void beforeClass() throws InterruptedException
 	{
+		token = restClient.login(uid, pwd).getToken();
 		tryDeleteEntities("test_entity");
 		new SettingsModel(restClient, token).updateDataExplorerSettings("mod_annotators", true);
-		File annotatorTestFile = ImporterModel.getFile("test_file.xlsx");
-		driver.get(baseURL);
-		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
-		homePage.openSignInDialog().signIn(uid, pwd).selectUpload().importFile(annotatorTestFile, ADD).finish()
-				.signOut();
+		restClient.logout(token);
+		importFile("test_file.xlsx");
 	}
 
 	@AfterClass
@@ -69,8 +45,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		model = PageFactory.initElements(driver, HomepageModel.class).openSignInDialog().signIn(uid, pwd)
-				.selectDataExplorer().selectEntity("test_entity").selectAnnotatorTab();
+		model = homepage.selectDataExplorer().selectEntity("test_entity").selectAnnotatorTab();
 	}
 
 	@Test

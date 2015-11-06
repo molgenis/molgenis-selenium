@@ -1,9 +1,14 @@
 package org.molgenis.selenium.test;
 
+import static org.molgenis.selenium.model.ImporterModel.EntitiesOptions.ADD;
+
+import java.io.File;
+
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.HomepageModel;
+import org.molgenis.selenium.model.ImporterModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
@@ -85,6 +90,15 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 				LOG.info("Failed to delete entity {}. {}", name, ex.getMessage());
 			}
 		}
+	}
+
+	protected void importFile(String relativePath) throws InterruptedException
+	{
+		File annotatorTestFile = ImporterModel.getFile(relativePath);
+		driver.get(baseURL);
+		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
+		homePage.openSignInDialog().signIn(uid, pwd).selectUpload().importFile(annotatorTestFile, ADD).finish()
+				.signOut();
 	}
 
 }
