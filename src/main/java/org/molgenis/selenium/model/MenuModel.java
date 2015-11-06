@@ -65,10 +65,10 @@ public class MenuModel
 		return PageFactory.initElements(driver, ImporterModel.class);
 	}
 
-	public DataExplorerPageModel selectDataExplorer()
+	public DataExplorerModel selectDataExplorer()
 	{
 		dataExplorerMenuItem.click();
-		return PageFactory.initElements(driver, DataExplorerPageModel.class);
+		return PageFactory.initElements(driver, DataExplorerModel.class);
 	}
 
 	public MappingProjectOverviewModel selectMappingService()

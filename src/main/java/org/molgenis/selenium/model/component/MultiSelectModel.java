@@ -9,6 +9,6 @@ public interface MultiSelectModel
 
 	List<String> getSelectedLabels();
 
-	void select(String... terms);
+	void select(String... terms) throws InterruptedException;
 
 }
