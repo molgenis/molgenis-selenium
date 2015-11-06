@@ -3,76 +3,26 @@ package org.molgenis.selenium.test;
 import java.io.File;
 import java.io.IOException;
 
-import org.molgenis.DriverType;
-import org.molgenis.JenkinsConfig;
-import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.model.HomepageModel;
 import org.molgenis.selenium.model.ImporterModel;
 import org.molgenis.selenium.model.ImporterModel.EntitiesOptions;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-@ContextConfiguration(classes =
-{ JenkinsConfig.class, Config.class })
-public class UploadAppTest extends AbstractTestNGSpringContextTests
+public class UploadTest extends AbstractSeleniumTest
 {
-	private static final Logger LOG = LoggerFactory.getLogger(UploadAppTest.class);
-	private WebDriver driver;
-	private String token;
-
-	@Value("${test.baseurl}")
-	private String baseURL;
-
-	@Value("${test.uid}")
-	private String uid;
-
-	@Value("${test.pwd}")
-	private String pwd;
+	private static final Logger LOG = LoggerFactory.getLogger(UploadTest.class);
 
 	private ImporterModel model;
-	@Autowired
-	private MolgenisClient restClient;
-
-	@BeforeClass
-	public void beforeClass()
-	{
-		driver = DriverType.FIREFOX.getDriver();
-	}
-
-	@AfterClass
-	public void afterClass()
-	{
-		this.driver.close();
-	}
 
 	@BeforeMethod
 	public void beforeMethod()
 	{
-		driver.get(baseURL);
-		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
-		model = homePage.openSignInDialog().signIn(uid, pwd).selectUpload();
-		token = restClient.login(uid, pwd).getToken();
+		model = homepage.selectUpload();
 	}
-
-	@AfterMethod
-	public void afterMethod()
-	{
-		model.signOut();
-		restClient.logout(token);
-	}
-
+	
 	@Test
 	public void xlsx() throws IOException, InterruptedException
 	{
@@ -135,20 +85,4 @@ public class UploadAppTest extends AbstractTestNGSpringContextTests
 				"org_molgenis_test_PersonCSV", "org_molgenis_test_LocationCSV");
 	}
 
-	private void tryDeleteEntities(String... names)
-	{
-		LOG.info("Delete entities if present...");
-		for (String name : names)
-		{
-			try
-			{
-				LOG.info("Delete {}...", name);
-				restClient.deleteMetadata(token, name);
-			}
-			catch (Exception ex)
-			{
-				LOG.info("Failed to delete entity {}. {}", name, ex.getMessage());
-			}
-		}
-	}
 }

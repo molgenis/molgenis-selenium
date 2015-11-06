@@ -28,30 +28,17 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(classes =
 { JenkinsConfig.class, Config.class })
-public class DataExplorerTest extends AbstractTestNGSpringContextTests
+public class DataExplorerTest extends AbstractSeleniumTest
 {
 	private static final Logger LOG = LoggerFactory.getLogger(DataExplorerTest.class);
 	private DataExplorerModel model;
-	private WebDriver driver;
-	@Autowired
-	private MolgenisClient restClient;
-	private String token;
-
-	@Value("${test.baseurl}")
-	private String baseURL;
-
-	@Value("${test.uid}")
-	private String uid;
-
-	@Value("${test.pwd}")
-	private String pwd;
 
 	@BeforeClass
 	public void beforeClass() throws InterruptedException
 	{
-		driver = DriverType.FIREFOX.getDriver();
 		token = restClient.login(uid, pwd).getToken();
 		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Person", "Location");
+		restClient.logout(token);
 		File emxAllDatatypes = ImporterModel.getFile("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
 		driver.get(baseURL);
 		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
@@ -62,22 +49,12 @@ public class DataExplorerTest extends AbstractTestNGSpringContextTests
 	public void afterClass()
 	{
 		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Person", "Location");
-		restClient.logout(token);
-		this.driver.close();
 	}
 
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		driver.get(baseURL);
-		model = PageFactory.initElements(driver, HomepageModel.class).openSignInDialog().signIn(uid, pwd)
-				.selectDataExplorer();
-	}
-
-	@AfterMethod
-	public void afterMethod()
-	{
-		model.signOut();
+		model = homepage.selectDataExplorer();
 	}
 
 	@Test
@@ -102,22 +79,4 @@ public class DataExplorerTest extends AbstractTestNGSpringContextTests
 		model.next();
 		assertTrue(driver.getCurrentUrl().endsWith("dataexplorer?entity=org_molgenis_test_TypeTest"));
 	}
-
-	private void tryDeleteEntities(String... names)
-	{
-		LOG.info("Delete entities if present...");
-		for (String name : names)
-		{
-			try
-			{
-				LOG.info("Delete {}...", name);
-				restClient.deleteMetadata(token, name);
-			}
-			catch (Exception ex)
-			{
-				LOG.info("Failed to delete entity {}. {}", name, ex.getMessage());
-			}
-		}
-	}
-
 }

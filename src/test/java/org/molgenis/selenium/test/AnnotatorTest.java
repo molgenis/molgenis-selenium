@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(classes =
 { JenkinsConfig.class, Config.class })
-public class AnnotatorTest extends AbstractTestNGSpringContextTests
+public class AnnotatorTest extends AbstractSeleniumTest
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
 
@@ -51,8 +51,6 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	@BeforeClass
 	public void beforeClass() throws InterruptedException
 	{
-		driver = DriverType.FIREFOX.getDriver();
-		token = restClient.login(uid, pwd).getToken();
 		tryDeleteEntities("test_entity");
 		new SettingsModel(restClient, token).updateDataExplorerSettings("mod_annotators", true);
 		File annotatorTestFile = ImporterModel.getFile("test_file.xlsx");
@@ -66,39 +64,13 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	public void afterClass()
 	{
 		tryDeleteEntities("test_entity");
-		restClient.logout(token);
-		this.driver.close();
 	}
 
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		driver.get(baseURL);
 		model = PageFactory.initElements(driver, HomepageModel.class).openSignInDialog().signIn(uid, pwd)
 				.selectDataExplorer().selectEntity("test_entity").selectAnnotatorTab();
-	}
-
-	@AfterMethod
-	public void afterMethod()
-	{
-		model.signOut();
-	}
-
-	private void tryDeleteEntities(String... names)
-	{
-		LOG.info("Delete entities if present...");
-		for (String name : names)
-		{
-			try
-			{
-				LOG.info("Delete {}...", name);
-				restClient.deleteMetadata(token, name);
-			}
-			catch (Exception ex)
-			{
-				LOG.info("Failed to delete entity {}. {}", name, ex.getMessage());
-			}
-		}
 	}
 
 	@Test

@@ -20,40 +20,18 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(classes =
 { JenkinsConfig.class, Config.class })
-public class SignInAppTest extends AbstractTestNGSpringContextTests
+public class SignInTest extends AbstractSeleniumTest
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
-	private WebDriver driver;
-
-	@Value("${test.baseurl}")
-	private String baseURL;
-
-	@Value("${test.uid}")
-	private String uid;
-
-	@Value("${test.pwd}")
-	private String pwd;
-
-	@BeforeClass
-	public void beforeClass()
-	{
-		driver = DriverType.FIREFOX.getDriver();
-	}
-
-	@AfterClass
-	public void afterClass() throws InterruptedException
-	{
-		this.driver.close();
-	}
 
 	@BeforeMethod
-	public void beforeMethod()
+	public void abstractBeforeMethod()
 	{
 		driver.get(baseURL);
 	}
 
 	@AfterMethod
-	public void afterMethod()
+	public void abstractAfterMethod()
 	{
 		this.driver.manage().deleteAllCookies();
 	}
