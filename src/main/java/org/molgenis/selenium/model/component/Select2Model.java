@@ -47,7 +47,7 @@ public class Select2Model implements MultiSelectModel
 		closeButtonSelector = By
 				.xpath("//div[@id='s2id_" + id + "']//a[contains(@class, 'select2-search-choice-close')]");
 		choiceSelector = By.xpath("//div[@id='s2id_" + id + "']//.[contains(@class, 'select2-choice')]");
-		selectedOptionSelector = By.cssSelector("#s2id_"+id+" a.select2-choice");
+		selectedOptionSelector = By.cssSelector("#s2id_" + id + " a.select2-choice");
 	}
 
 	/**
