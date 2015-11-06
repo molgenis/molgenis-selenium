@@ -6,14 +6,11 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 /**
- * This is a model of the MOLGENIS login user interface.
- * To create it, use the {@link PageFactory#initElements(WebDriver, Class) method.}
+ * This is a model of the MOLGENIS login user interface. To create it, use the
+ * {@link PageFactory#initElements(WebDriver, Class) method.}
  */
 public class SignInModel
 {
-	@FindBy(id = "open-button")
-	WebElement openButton;
-
 	@FindBy(id = "username-field")
 	WebElement usernameField;
 
@@ -23,23 +20,38 @@ public class SignInModel
 	@FindBy(id = "signin-button")
 	WebElement signinButton;
 
-	@FindBy(id = "signout-button")
-	WebElement signoutButton;
+	@FindBy(css = "p.text-error")
+	WebElement errorText;
 
-	private WebDriver webDriver;
+	@FindBy(css = "button.close")
+	WebElement closeButton;
 
-	public SignInModel(WebDriver webDriver)
+	private WebDriver driver;
+
+	public SignInModel(WebDriver driver)
 	{
-		this.webDriver = webDriver;
+		this.driver = driver;
 	}
 
-	public void open() throws InterruptedException
+	public HomepageModel signIn(String user, String password)
 	{
-		// click the sign in button on home page
-		openButton.click();
+		trySignIn(user, password);
+		return PageFactory.initElements(driver, HomepageModel.class);
 	}
 
-	public void signIn(String user, String password)
+	public SignInModel signInFails(String user, String password)
+	{
+		trySignIn(user, password);
+		return this;
+	}
+
+	public HomepageModel close()
+	{
+		closeButton.click();
+		return PageFactory.initElements(driver, HomepageModel.class);
+	}
+
+	private void trySignIn(String user, String password)
 	{
 		// fill in the user name
 		usernameField.clear();
@@ -53,13 +65,8 @@ public class SignInModel
 		signinButton.click();
 	}
 
-	public boolean shows(String s)
+	public boolean showsErrorText(String s)
 	{
-		return webDriver.getPageSource().contains(s);
-	}
-
-	public void signOut() throws InterruptedException
-	{
-		signoutButton.click();
+		return errorText.getText().contains(s);
 	}
 }

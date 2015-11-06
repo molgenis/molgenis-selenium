@@ -1,33 +1,36 @@
 package org.molgenis.selenium.test;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.model.SignInModel;
-import org.molgenis.selenium.model.UploadAppModel;
-import org.molgenis.selenium.model.UploadAppModel.EntitiesOptions;
-import org.molgenis.selenium.util.RestApiV1Util;
+import org.molgenis.selenium.model.HomepageModel;
+import org.molgenis.selenium.model.ImporterModel;
+import org.molgenis.selenium.model.ImporterModel.EntitiesOptions;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-@ContextConfiguration(classes = JenkinsConfig.class)
+@ContextConfiguration(classes =
+{ JenkinsConfig.class, Config.class })
 public class UploadAppTest extends AbstractTestNGSpringContextTests
 {
 	private static final Logger LOG = LoggerFactory.getLogger(UploadAppTest.class);
 	private WebDriver driver;
-	private UploadAppModel model;
-	private SignInModel signInModel;
+	private String token;
 
 	@Value("${test.baseurl}")
 	private String baseURL;
@@ -38,71 +41,114 @@ public class UploadAppTest extends AbstractTestNGSpringContextTests
 	@Value("${test.pwd}")
 	private String pwd;
 
+	private ImporterModel model;
+	@Autowired
+	private MolgenisClient restClient;
+
 	@BeforeClass
-	public void beforeClass() throws InterruptedException
+	public void beforeClass()
 	{
-		this.driver = DriverType.FIREFOX.getDriver();
-		driver.get(baseURL + "/");
-		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
-		signInModel = new SignInModel(driver);
-		this.model = new UploadAppModel(driver, molgenisClient);
+		driver = DriverType.FIREFOX.getDriver();
+	}
+
+	@AfterClass
+	public void afterClass()
+	{
+		this.driver.close();
 	}
 
 	@BeforeMethod
-	public void beforeMethod() throws InterruptedException
+	public void beforeMethod()
 	{
-		signInModel.open();
-		signInModel.signIn(uid, pwd);
+		driver.get(baseURL);
+		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
+		model = homePage.openSignInDialog().signIn(uid, pwd).selectUpload();
+		token = restClient.login(uid, pwd).getToken();
 	}
 
 	@AfterMethod
-	public void afterMethod() throws InterruptedException
+	public void afterMethod()
 	{
-		signInModel.signOut();
+		model.signOut();
+		restClient.logout(token);
 	}
 
 	@Test
 	public void xlsx() throws IOException, InterruptedException
 	{
-		model.deleteXlsxEmxAllDatatypes(uid, pwd);
+		LOG.info("Test XLSX upload...");
+		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Person", "Location");
+		File xlsxFile = ImporterModel.getFile("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
 
-		model.open();
+		LOG.info("Import XLSX file in ADD mode...");
+		model.importFile(xlsxFile, EntitiesOptions.ADD);
+		Assert.assertEquals(model.getMessageHeader(), "Import success");
+		Assert.assertEquals(model.getMessage(),
+				"Imported 5 TypeTestRef entities.\nImported 38 org_molgenis_test_TypeTest entities.");
+		model.finish();
 
-		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD, LOG);
+		LOG.info("Import XLSX file in ADD_UPDATE mode...");
+		model.importFile(xlsxFile, EntitiesOptions.ADD_UPDATE);
+		Assert.assertEquals(model.getMessageHeader(), "Import success");
+		Assert.assertEquals(model.getMessage(),
+				"Imported 5 TypeTestRef entities.\nImported 38 org_molgenis_test_TypeTest entities.");
+		model.finish();
 
-		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.ADD_UPDATE, LOG);
+		LOG.info("Import XLSX file in UPDATE mode...");
+		model.importFile(xlsxFile, EntitiesOptions.UPDATE);
+		Assert.assertEquals(model.getMessageHeader(), "Import success");
+		Assert.assertEquals(model.getMessage(),
+				"Imported 5 TypeTestRef entities.\nImported 38 org_molgenis_test_TypeTest entities.");
+		model.finish();
 
-		model.uploadXlsxEmxAllDatatypes(EntitiesOptions.UPDATE, LOG);
+		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Person", "Location");
 
-		model.deleteXlsxEmxAllDatatypes(uid, pwd);
 	}
 
 	@Test
 	public void csvZip() throws IOException, InterruptedException
 	{
-		model.deleteCsvZipEmxAllDatatypes(uid, pwd);
+		tryDeleteEntities("org_molgenis_test_TypeTestCSV", "org_molgenis_test_TypeTestRefCSV",
+				"org_molgenis_test_PersonCSV", "org_molgenis_test_LocationCSV");
+		File csvZipFile = ImporterModel.getFile("org/molgenis/selenium/emx/csv.zip/emx_all_datatypes_csv.zip");
+		LOG.info("Import CSV Zipfile in ADD mode...");
+		model.importFile(csvZipFile, EntitiesOptions.ADD);
+		Assert.assertEquals(model.getMessageHeader(), "Import success");
+		Assert.assertEquals(model.getMessage(),
+				"Imported 5 org_molgenis_test_TypeTestRefCSV entities.\nImported 38 org_molgenis_test_TypeTestCSV entities.");
+		model.finish();
 
-		model.open();
+		LOG.info("Import CSV Zipfile in ADD_UPDATE mode...");
+		model.importFile(csvZipFile, EntitiesOptions.ADD_UPDATE);
+		Assert.assertEquals(model.getMessageHeader(), "Import success");
+		Assert.assertEquals(model.getMessage(),
+				"Imported 5 org_molgenis_test_TypeTestRefCSV entities.\nImported 38 org_molgenis_test_TypeTestCSV entities.");
+		model.finish();
 
-		model.uploadCsvZipEmxAllDatatypes(EntitiesOptions.ADD, LOG);
-
-		model.uploadCsvZipEmxAllDatatypes(EntitiesOptions.ADD_UPDATE, LOG);
-
-		model.uploadCsvZipEmxAllDatatypes(EntitiesOptions.UPDATE, LOG);
-
-		model.deleteCsvZipEmxAllDatatypes(uid, pwd);
+		LOG.info("Import CSV Zipfile in UPDATE mode...");
+		model.importFile(csvZipFile, EntitiesOptions.UPDATE);
+		Assert.assertEquals(model.getMessageHeader(), "Import success");
+		Assert.assertEquals(model.getMessage(),
+				"Imported 5 org_molgenis_test_TypeTestRefCSV entities.\nImported 38 org_molgenis_test_TypeTestCSV entities.");
+		model.finish();
+		tryDeleteEntities("org_molgenis_test_TypeTestCSV", "org_molgenis_test_TypeTestRefCSV",
+				"org_molgenis_test_PersonCSV", "org_molgenis_test_LocationCSV");
 	}
 
-	@AfterClass
-	public void afterClass() throws InterruptedException
+	private void tryDeleteEntities(String... names)
 	{
-		// Clear cookies
-		this.driver.manage().deleteAllCookies();
-
-		// Close driver
-		this.driver.close();
-
-		// Close driver
-		this.driver.quit();
+		LOG.info("Delete entities if present...");
+		for (String name : names)
+		{
+			try
+			{
+				LOG.info("Delete {}...", name);
+				restClient.deleteMetadata(token, name);
+			}
+			catch (Exception ex)
+			{
+				LOG.info("Failed to delete entity {}. {}", name, ex.getMessage());
+			}
+		}
 	}
 }

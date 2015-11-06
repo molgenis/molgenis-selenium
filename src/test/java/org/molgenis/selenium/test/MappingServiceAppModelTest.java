@@ -9,7 +9,6 @@ import org.molgenis.selenium.model.mappingservice.MappingProjectImportDataModel;
 import org.molgenis.selenium.model.mappingservice.MappingProjectOverviewModel;
 import org.molgenis.selenium.model.mappingservice.TagWizardScreenModel;
 import org.molgenis.selenium.util.RestApiV1Util;
-import org.molgenis.selenium.util.SignUtil;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

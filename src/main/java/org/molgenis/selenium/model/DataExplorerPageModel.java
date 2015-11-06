@@ -3,7 +3,6 @@ package org.molgenis.selenium.model;
 import java.util.List;
 
 import org.molgenis.selenium.model.component.Select2Model;
-import org.molgenis.selenium.util.MenuModel;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -14,10 +13,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This is a model of the MOLGENIS Data Explorer user interface
  */
-public class DataExplorerAppModel
+public class DataExplorerPageModel
 {
-	public static String MENU_ITEM_TEXT = "Data Explorer";
-	private static final Logger LOG = LoggerFactory.getLogger(DataExplorerAppModel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DataExplorerPageModel.class);
 
 	public static enum DeleteOption
 	{
@@ -28,7 +26,7 @@ public class DataExplorerAppModel
 	private final Select2Model entityModel;
 	private final WebDriver driver;
 
-	public DataExplorerAppModel(WebDriver driver)
+	public DataExplorerPageModel(WebDriver driver)
 	{
 		this.driver = driver;
 		entityModel = new Select2Model(driver, "dataset-select");
@@ -117,7 +115,7 @@ public class DataExplorerAppModel
 	{
 		try
 		{
-			DataExplorerAppModel.deleteEntity(driver, baseURL, fullName, DeleteOption.DATA_AND_METADATA);
+			DataExplorerPageModel.deleteEntity(driver, baseURL, fullName, DeleteOption.DATA_AND_METADATA);
 		}
 		catch (InterruptedException e)
 		{

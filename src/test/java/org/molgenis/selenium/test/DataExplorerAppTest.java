@@ -6,10 +6,10 @@ import java.util.List;
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.model.DataExplorerAppModel;
+import org.molgenis.selenium.model.DataExplorerPageModel;
 import org.molgenis.selenium.model.SignInModel;
-import org.molgenis.selenium.model.UploadAppModel;
-import org.molgenis.selenium.model.UploadAppModel.EntitiesOptions;
+import org.molgenis.selenium.model.UploadPageModel;
+import org.molgenis.selenium.model.UploadPageModel.EntitiesOptions;
 import org.molgenis.selenium.util.RestApiV1Util;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -27,9 +27,9 @@ import org.testng.annotations.Test;
 public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 {
 	private static final Logger LOG = LoggerFactory.getLogger(DataExplorerAppTest.class);
-	private DataExplorerAppModel model;
+	private DataExplorerPageModel model;
 	private SignInModel signInModel;
-	private UploadAppModel uploadAppModel;
+	private UploadPageModel uploadAppModel;
 	private WebDriver driver;
 
 	@Value("${test.baseurl}")
@@ -46,9 +46,9 @@ public class DataExplorerAppTest extends AbstractTestNGSpringContextTests
 	{
 		this.driver = DriverType.FIREFOX.getDriver();
 		driver.get(baseURL+"/");
-		this.model = new DataExplorerAppModel(this.driver);
+		this.model = new DataExplorerPageModel(this.driver);
 		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
-		this.uploadAppModel = new UploadAppModel(driver, molgenisClient);
+		this.uploadAppModel = new UploadPageModel(driver, molgenisClient);
 		this.signInModel = new SignInModel(driver);
 	}
 

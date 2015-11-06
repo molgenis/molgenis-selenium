@@ -4,12 +4,14 @@ import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.AnnotatorModel;
-import org.molgenis.selenium.model.SignInModel;
+import org.molgenis.selenium.model.HomepageModel;
+import org.molgenis.selenium.model.UploadAppModel;
 import org.molgenis.selenium.util.RestApiV1Util;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -23,29 +25,21 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotatorTest.class);
 
 	private AnnotatorModel model;
-	private SignInModel signInModel;
+	private HomepageModel homepageModel;
+	@Autowired
 	private WebDriver driver;
-
-	@Value("${test.baseurl}")
-	private String baseURL;
-
 	@Value("${test.uid}")
 	private String uid;
-
 	@Value("${test.pwd}")
 	private String pwd;
 
 	@BeforeClass
-	public void beforeSuite() throws InterruptedException
+	public void beforeClass() throws InterruptedException
 	{
-		MolgenisClient molgenisClient = RestApiV1Util.createMolgenisClientApiV1(baseURL, LOG);
-		driver = DriverType.FIREFOX.getDriver();
-		driver.get(baseURL + "/");
-		this.model = new AnnotatorModel(driver, molgenisClient, RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd,
-				LOG));
-		signInModel = PageFactory.initElements(driver, SignInModel.class);
-		signInModel.open();
-		signInModel.signIn(uid, pwd);
+		String token = RestApiV1Util.loginRestApiV1(molgenisClient, uid, pwd, LOG);
+		this.model = new AnnotatorModel(driver, molgenisClient, token);
+		homepageModel = PageFactory.initElements(driver, HomepageModel.class);
+		homepageModel.clickSignIn().signIn(uid, pwd).selectUpload().upload("test-")
 	}
 
 	@Test
@@ -53,6 +47,7 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	{
 		model.enableAnnotatorsOnDataExplorer();
 		model.deleteTestEntity();
+
 		model.uploadDataFile(baseURL);
 		model.openDataset(baseURL);
 		model.clickAnnotators();
@@ -67,12 +62,11 @@ public class AnnotatorTest extends AbstractTestNGSpringContextTests
 	public void afterClass() throws InterruptedException
 	{
 		// Sign out
-		signInModel.signOut();
+		homepageModel.signOut();
 
 		// Clear cookies
 		this.driver.manage().deleteAllCookies();
 
-		// Clear cookies
 		this.driver.close();
 	}
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.data.rest.client.bean.QueryResponse;
-import org.molgenis.selenium.util.MenuModel;
+import org.molgenis.selenium.model.MenuModel;
 import org.molgenis.selenium.util.RestApiV1Util;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.By;
