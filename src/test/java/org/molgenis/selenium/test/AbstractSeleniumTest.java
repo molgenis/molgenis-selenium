@@ -1,7 +1,6 @@
 package org.molgenis.selenium.test;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.molgenis.selenium.model.ImporterModel.EntitiesOptions.ADD;
 
 import java.io.File;
 
@@ -10,6 +9,7 @@ import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.HomepageModel;
 import org.molgenis.selenium.model.ImporterModel;
+import org.molgenis.selenium.model.ImporterModel.EntitiesOptions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
@@ -22,8 +22,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-
-import com.google.common.collect.Lists;
 
 /**
  * Base class that does the general setup and tear down of the tests.
@@ -78,10 +76,10 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		restClient.logout(token);
 	}
 
-	protected void tryDeleteEntities(String... names)
+	protected void tryDeleteEntities(String... entityNames)
 	{
 		LOG.info("Delete entities if present...");
-		for (String name : names)
+		for (String name : entityNames)
 		{
 			try
 			{
@@ -95,17 +93,35 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		}
 	}
 
+	protected void tryDeleteData(String... entityNames)
+	{
+		LOG.info("Delete entities if present...");
+		for (String name : entityNames)
+		{
+			try
+			{
+				LOG.info("Delete {} data...", name);
+				restClient.deleteData(token, name);
+			}
+			catch (Exception ex)
+			{
+				LOG.info("Failed to delete data for {}. {}", name, ex.getMessage());
+			}
+		}
+	}
+
 	protected void importFiles(String... relativePaths)
 	{
+		driver.get(baseURL);
+		homepage = PageFactory.initElements(driver, HomepageModel.class).openSignInDialog().signIn(uid, pwd);
 		for (String path : relativePaths)
 		{
 			LOG.info("Import file {}", newArrayList(relativePaths));
 			File annotatorTestFile = ImporterModel.getFile(path);
 			driver.get(baseURL);
-			HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
-			homePage.openSignInDialog().signIn(uid, pwd).selectImporter().importFile(annotatorTestFile, ADD).finish()
-					.signOut();
+			homepage.selectImporter().importFile(annotatorTestFile, EntitiesOptions.ADD).finish();
 		}
+		homepage.signOut();
 	}
 
 }
