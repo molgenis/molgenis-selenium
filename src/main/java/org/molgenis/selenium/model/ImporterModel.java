@@ -134,6 +134,7 @@ public class ImporterModel extends MenuModel
 	{
 		LOG.info("finish()");
 		finishButton.click();
+		stepOne.click();
 		return this;
 	}
 
