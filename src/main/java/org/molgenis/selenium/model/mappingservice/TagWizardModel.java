@@ -2,10 +2,8 @@ package org.molgenis.selenium.model.mappingservice;
 
 import static java.util.Arrays.asList;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import org.molgenis.selenium.model.MenuModel;
 import org.molgenis.selenium.model.component.Select2Model;
@@ -18,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 
 public class TagWizardModel extends MenuModel
 {
@@ -70,8 +69,7 @@ public class TagWizardModel extends MenuModel
 
 	public List<List<String>> getAttributeTags()
 	{
-		return attributeTableRows.stream().map(elt -> elt.findElements(By.cssSelector("td")))
-				.map(tds -> Arrays.asList(tds.get(0).getText(), tds.get(1).getText())).collect(Collectors.toList());
+		return Lists.transform(getTableData(attributeTableRows), row -> asList(row.get(0), row.get(3)));
 	}
 
 	public TagWizardModel clearTags()

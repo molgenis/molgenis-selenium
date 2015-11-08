@@ -1,10 +1,15 @@
 package org.molgenis.selenium.model;
 
+import static com.google.common.collect.Lists.transform;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
-import org.molgenis.selenium.model.mappingservice.MappingProjectOverviewModel;
+import java.util.List;
+
+import org.molgenis.selenium.model.mappingservice.MappingProjectsModel;
 import org.molgenis.selenium.model.mappingservice.TagWizardModel;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -12,8 +17,6 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.gargoylesoftware.htmlunit.javascript.host.Console;
 
 /**
  * This is a util for the use of the Molgenis Menu
@@ -93,12 +96,12 @@ public class MenuModel
 		return PageFactory.initElements(driver, DataExplorerModel.class);
 	}
 
-	public MappingProjectOverviewModel selectMappingService()
+	public MappingProjectsModel selectMappingService()
 	{
 		LOG.info("Select Mapping Service...");
 		dataIntegrationMenuItem.click();
 		mappingServiceMenuItem.click();
-		return PageFactory.initElements(driver, MappingProjectOverviewModel.class);
+		return PageFactory.initElements(driver, MappingProjectsModel.class);
 	}
 
 	public TagWizardModel selectTagWizard()
@@ -129,5 +132,11 @@ public class MenuModel
 		catch (InterruptedException ex)
 		{
 		}
+	}
+
+	protected List<List<String>> getTableData(List<WebElement> tableRows)
+	{
+		return tableRows.stream().map(elt -> elt.findElements(By.cssSelector("td")))
+				.map(tds -> transform(tds, WebElement::getText)).collect(toList());
 	}
 }
