@@ -62,7 +62,7 @@ public class DataExplorerModel extends MenuModel
 	public DataExplorerModel(WebDriver driver)
 	{
 		super(driver);
-		entityModel = new Select2Model(driver, "dataset-select");
+		entityModel = new Select2Model(driver, "dataset-select", false);
 	}
 
 	public void deleteEntity(DeleteOption deleteOption) throws InterruptedException

@@ -22,7 +22,7 @@ public class SeleniumUtils
 		SeleniumUtils.waitFor(() -> !webDriver.findElement(by).isDisplayed());
 	}
 
-	public static void waitFor(BooleanSupplier p) throws InterruptedException
+	public static void waitFor(BooleanSupplier p)
 	{
 		SeleniumUtils.waitFor(p, 60);
 	}

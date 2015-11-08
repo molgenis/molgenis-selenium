@@ -2,8 +2,6 @@ package org.molgenis.selenium.test;
 
 import static java.util.Arrays.asList;
 
-import java.util.List;
-
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.mappingservice.TagWizardModel;
 import org.slf4j.Logger;
@@ -22,7 +20,7 @@ public class TagWizardTest extends AbstractSeleniumTest
 	private static final Logger LOG = LoggerFactory.getLogger(TagWizardTest.class);
 	private TagWizardModel model;
 
-	// TODO: reinstate @BeforeClass
+	@BeforeClass
 	public void beforeClass()
 	{
 		token = restClient.login(uid, pwd).getToken();
@@ -37,7 +35,7 @@ public class TagWizardTest extends AbstractSeleniumTest
 				"org/molgenis/selenium/mappingservice/uo_test.owl.zip");
 	}
 
-	// @AfterClass
+	@AfterClass
 	public void afterClass()
 	{
 		token = restClient.login(uid, pwd).getToken();
