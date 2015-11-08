@@ -1,8 +1,6 @@
 package org.molgenis.selenium.model.mappingservice;
 
 import static java.util.Arrays.asList;
-import static org.openqa.selenium.support.ui.ExpectedConditions.not;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +23,6 @@ public class TagWizardModel extends MenuModel
 {
 	private static final Logger LOG = LoggerFactory.getLogger(TagWizardModel.class);
 
-	private WebDriverWait tenSecondWait;
-
 	private Select2Model tagSelectionModel;
 	private Select2Model ontologySelectionModel;
 	private Select2Model entitySelectionModel;
@@ -48,9 +44,6 @@ public class TagWizardModel extends MenuModel
 
 	@FindBy(xpath = "//table[@id='tag-mapping-table']/tbody/tr")
 	List<WebElement> attributeTableRows;
-
-	@FindBy(id = "spinner")
-	WebElement spinner;
 
 	public TagWizardModel(WebDriver driver)
 	{
@@ -86,7 +79,6 @@ public class TagWizardModel extends MenuModel
 		LOG.info("clear tags...");
 		clearTagsButton.click();
 		okButton.click();
-		tenSecondWait.until(visibilityOf(closeSuccessAlert));
 		closeSuccessAlert.click();
 		return this;
 	}
@@ -95,7 +87,6 @@ public class TagWizardModel extends MenuModel
 	{
 		LOG.info("do automated tagging...");
 		automatedTaggingButton.click();
-		tenSecondWait.until(visibilityOf(closeSuccessAlert));
 		closeSuccessAlert.click();
 		return this;
 	}
@@ -109,15 +100,7 @@ public class TagWizardModel extends MenuModel
 		editButton.click();
 		tagSelectionModel.select(terms);
 		saveTagSelectionButton.click();
-		try
-		{
-			// spinner only appears after a little while
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
-		tenSecondWait.until(not(visibilityOf(spinner)));
+		waitForSpinner();
 		return this;
 	}
 
