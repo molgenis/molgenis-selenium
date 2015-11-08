@@ -2,6 +2,8 @@ package org.molgenis.selenium.test;
 
 import static java.util.Arrays.asList;
 
+import java.util.List;
+
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.mappingservice.TagWizardModel;
 import org.slf4j.Logger;
@@ -50,15 +52,14 @@ public class TagWizardTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		model = homepage.selectTagWizard();
+		model = homepage.selectTagWizard().selectEntity("HOP_selenium").clearTags();
 	}
 
 	@Test
 	public void testAutomaticTagging()
 	{
 		LOG.info("testAutomaticTagging()");
-		model.selectEntity("HOP_selenium").clearTags().selectOntologies("biobank_ontology_test", "uo_test")
-				.doAutomatedTagging();
+		model.selectOntologies("biobank_ontology_test", "uo_test").doAutomatedTagging();
 
 		Assert.assertEquals(model.getAttributeTags(),
 				asList(asList("id\nid", ""), asList("HOP_GENDER\nGender", "Gender"),
@@ -77,5 +78,15 @@ public class TagWizardTest extends AbstractSeleniumTest
 						"(kilogram per square meter and kilogram and meter)"),
 				asList("FOOD_POTATOES\nCurrent Consumption Frequency of Potatoes", ""),
 				asList("DIS_HBP\nHistory of Hypertension", "Hypertension")));
+	}
+
+	@Test
+	public void testManualTagging() throws InterruptedException
+	{
+		LOG.info("testAutomaticTagging()");
+		model.selectOntologies("biobank_ontology_test", "uo_test").tagAttributeWithTerms("PM_WEIGHT_MEASURE", "Weight",
+				"Body Weight");
+		Assert.assertEquals(model.getAttributeTags().get(4),
+				asList("PM_WEIGHT_MEASURE\nMeasured Weight in Gram", "(Weight and Body Weight)"));
 	}
 }

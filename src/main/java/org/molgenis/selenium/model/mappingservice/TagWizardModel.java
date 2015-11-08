@@ -1,10 +1,12 @@
 package org.molgenis.selenium.model.mappingservice;
 
+import static java.util.Arrays.asList;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.molgenis.selenium.model.MenuModel;
@@ -41,6 +43,9 @@ public class TagWizardModel extends MenuModel
 	@FindBy(xpath = "//div[@class='bootbox-body' and text() = 'Are you sure you want to remove all tags?']/../../div[@class='modal-footer']/button[text()='OK']")
 	private WebElement okButton;
 
+	@FindBy(id = "save-tag-selection-btn")
+	private WebElement saveTagSelectionButton;
+
 	@FindBy(xpath = "//table[@id='tag-mapping-table']/tbody/tr")
 	List<WebElement> attributeTableRows;
 
@@ -58,6 +63,7 @@ public class TagWizardModel extends MenuModel
 
 	public TagWizardModel selectEntity(String name)
 	{
+		LOG.info("select entity {}...", name);
 		entitySelectionModel.select(name);
 		Predicate<WebDriver> blah = d -> name.equals(getSelectedEntity());
 		tenSecondWait.until(blah);
@@ -77,6 +83,7 @@ public class TagWizardModel extends MenuModel
 
 	public TagWizardModel clearTags()
 	{
+		LOG.info("clear tags...");
 		clearTagsButton.click();
 		okButton.click();
 		tenSecondWait.until(visibilityOf(closeSuccessAlert));
@@ -86,14 +93,51 @@ public class TagWizardModel extends MenuModel
 
 	public TagWizardModel doAutomatedTagging()
 	{
+		LOG.info("do automated tagging...");
 		automatedTaggingButton.click();
 		tenSecondWait.until(visibilityOf(closeSuccessAlert));
 		closeSuccessAlert.click();
 		return this;
 	}
 
+	public TagWizardModel tagAttributeWithTerms(String attributeName, String... terms)
+	{
+		LOG.info("tag attribute {} with terms {}", attributeName, asList(terms));
+		int rowIndex = findTableRowIndexForAttribute(attributeName);
+		WebElement editButton = driver
+				.findElement(By.xpath("//table[@id='tag-mapping-table']/tbody/tr[" + rowIndex + "]/td[3]/button"));
+		editButton.click();
+		tagSelectionModel.select(terms);
+		saveTagSelectionButton.click();
+		try
+		{
+			// spinner only appears after a little while
+			Thread.sleep(500);
+		}
+		catch (InterruptedException e)
+		{
+		}
+		tenSecondWait.until(not(visibilityOf(spinner)));
+		return this;
+	}
+
+	private int findTableRowIndexForAttribute(String attributeName)
+	{
+		List<List<String>> data = getAttributeTags();
+		for (int i = 0; i < data.size(); i++)
+		{
+			if (attributeName.equals(data.get(i).get(0).split("\n")[0].trim()))
+			{
+				// allow for the extra header row
+				return i + 1;
+			}
+		}
+		throw new NoSuchElementException(attributeName);
+	}
+
 	public TagWizardModel selectOntologies(String... ontologies)
 	{
+		LOG.info("select ontologies {}", asList(ontologies));
 		ontologySelectionModel.clearSelection();
 		ontologySelectionModel.select(ontologies);
 		return this;
