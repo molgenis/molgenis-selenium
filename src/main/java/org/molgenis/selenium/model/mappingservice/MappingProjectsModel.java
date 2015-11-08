@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.molgenis.selenium.model.MenuModel;
 import org.molgenis.selenium.model.component.Select2Model;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -11,8 +12,6 @@ import org.openqa.selenium.support.PageFactory;
 
 public class MappingProjectsModel extends MenuModel
 {
-	private static final String THIS_FIELD_IS_REQUIRED_MESSAGE = "This field is required.";
-
 	@FindBy(name = "mapping-project-name")
 	private WebElement mappingProjectTextFieldName;
 
@@ -27,6 +26,9 @@ public class MappingProjectsModel extends MenuModel
 
 	@FindBy(css = "#mapping-projects-tbl tbody tr")
 	private List<WebElement> mappingProjectTableRows;
+
+	@FindBy(css = "div.modal-footer button:contains('OK')")
+	private WebElement okButton;
 
 	private Select2Model targetEntitySelect;
 
@@ -48,6 +50,25 @@ public class MappingProjectsModel extends MenuModel
 	public List<List<String>> getMappingProjectsTable()
 	{
 		return getTableData(mappingProjectTableRows);
+	}
+
+	public MappingProjectsModel copyMappingProject(String projectName)
+	{
+		WebElement toMappingProjectDetailsLink = driver.findElement(By.linkText(projectName));
+		WebElement cloneButton = toMappingProjectDetailsLink
+				.findElement(By.xpath("../..//button[contains(@class,'clone-btn')]"));
+		cloneButton.click();
+		return this;
+	}
+
+	public MappingProjectsModel deleteMappingProject(String projectName)
+	{
+		WebElement toMappingProjectDetailsLink = driver.findElement(By.linkText(projectName));
+		WebElement deleteButton = toMappingProjectDetailsLink
+				.findElement(By.xpath("../..//button[contains(@class,'btn-danger')]"));
+		deleteButton.click();
+		okButton.click();
+		return this;
 	}
 
 }
