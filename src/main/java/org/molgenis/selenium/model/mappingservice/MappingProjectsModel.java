@@ -12,6 +12,9 @@ import org.openqa.selenium.support.PageFactory;
 
 public class MappingProjectsModel extends MenuModel
 {
+	private static final By DELETE_BUTTON_SELECTOR = By.xpath("../..//button[contains(@class,'btn-danger')]");
+	private static final By CLONE_BUTTON_SELECTOR = By.xpath("../..//button[contains(@class,'clone-btn')]");
+
 	@FindBy(name = "mapping-project-name")
 	private WebElement mappingProjectTextFieldName;
 
@@ -27,7 +30,7 @@ public class MappingProjectsModel extends MenuModel
 	@FindBy(css = "#mapping-projects-tbl tbody tr")
 	private List<WebElement> mappingProjectTableRows;
 
-	@FindBy(css = "div.modal-footer button:contains('OK')")
+	@FindBy(xpath = "//div[@class='modal-footer']/button[text()='OK']")
 	private WebElement okButton;
 
 	private Select2Model targetEntitySelect;
@@ -55,8 +58,7 @@ public class MappingProjectsModel extends MenuModel
 	public MappingProjectsModel copyMappingProject(String projectName)
 	{
 		WebElement toMappingProjectDetailsLink = driver.findElement(By.linkText(projectName));
-		WebElement cloneButton = toMappingProjectDetailsLink
-				.findElement(By.xpath("../..//button[contains(@class,'clone-btn')]"));
+		WebElement cloneButton = toMappingProjectDetailsLink.findElement(CLONE_BUTTON_SELECTOR);
 		cloneButton.click();
 		return this;
 	}
@@ -64,8 +66,7 @@ public class MappingProjectsModel extends MenuModel
 	public MappingProjectsModel deleteMappingProject(String projectName)
 	{
 		WebElement toMappingProjectDetailsLink = driver.findElement(By.linkText(projectName));
-		WebElement deleteButton = toMappingProjectDetailsLink
-				.findElement(By.xpath("../..//button[contains(@class,'btn-danger')]"));
+		WebElement deleteButton = toMappingProjectDetailsLink.findElement(DELETE_BUTTON_SELECTOR);
 		deleteButton.click();
 		okButton.click();
 		return this;
