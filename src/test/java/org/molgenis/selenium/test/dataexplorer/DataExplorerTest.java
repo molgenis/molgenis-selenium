@@ -6,24 +6,17 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 
-import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
-import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.HomepageModel;
 import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
 import org.molgenis.selenium.model.importer.ImporterModel;
 import org.molgenis.selenium.test.AbstractSeleniumTest;
 import org.molgenis.selenium.test.Config;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -45,7 +38,7 @@ public class DataExplorerTest extends AbstractSeleniumTest
 		driver.get(baseURL);
 		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
 		homePage.menu().openSignInDialog().signIn(uid, pwd).menu().selectImporter().importFile(emxAllDatatypes, ADD)
-				.finish().signOut();
+				.finish().menu().signOut();
 	}
 
 	@AfterClass

@@ -1,6 +1,7 @@
 package org.molgenis.selenium.model.mappingservice;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
@@ -69,6 +70,7 @@ public class MappingProjectsModel extends AbstractModel
 		WebElement deleteButton = toMappingProjectDetailsLink.findElement(DELETE_BUTTON_SELECTOR);
 		deleteButton.click();
 		okButton.click();
+		spinner().waitTillDone(30, TimeUnit.SECONDS);
 		return this;
 	}
 

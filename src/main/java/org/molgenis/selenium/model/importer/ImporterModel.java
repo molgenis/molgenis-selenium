@@ -1,18 +1,21 @@
 package org.molgenis.selenium.model.importer;
 
-import static org.molgenis.selenium.util.SeleniumUtils.waitFor;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
-import org.molgenis.selenium.model.MenuModel;
+import org.molgenis.selenium.model.AbstractModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ImporterModel extends MenuModel
+public class ImporterModel extends AbstractModel
 {
 	private static final Logger LOG = LoggerFactory.getLogger(ImporterModel.class);
 
@@ -76,9 +79,14 @@ public class ImporterModel extends MenuModel
 	@FindBy(css = "ol.bwizard-steps li:nth-child(5).active")
 	private WebElement stepFive;
 
+	private final Wait<WebDriver> oneMinuteWait;
+	private final Wait<WebDriver> fiveMinuteWait;
+
 	public ImporterModel(WebDriver driver)
 	{
 		super(driver);
+		oneMinuteWait = new WebDriverWait(driver, 60);
+		fiveMinuteWait = new WebDriverWait(driver, TimeUnit.MINUTES.toSeconds(5));
 	}
 
 	public static File getFile(String relativePath)
@@ -124,6 +132,7 @@ public class ImporterModel extends MenuModel
 
 	public ImporterModel uploadFile(File file)
 	{
+		LOG.info("uploadFile {}...", file);
 		assertTrue(file.exists());
 		stepOne.click();
 		upload.sendKeys(file.getAbsolutePath());
@@ -135,13 +144,14 @@ public class ImporterModel extends MenuModel
 	{
 		LOG.info("finish()");
 		finishButton.click();
-		stepOne.click();
+		oneMinuteWait.until(visibilityOf(stepOne));
 		return this;
 	}
 
 	public ImporterModel selectOptions(EntitiesOptions options)
 	{
-		stepTwo.click();
+		LOG.info("selectOptions {}...", options);
+		oneMinuteWait.until(visibilityOf(stepTwo));
 		switch (options)
 		{
 			case ADD:
@@ -160,7 +170,8 @@ public class ImporterModel extends MenuModel
 
 	public ImporterModel selectBasePackage()
 	{
-		stepThree.click();
+		LOG.info("selectBasePackage...");
+		oneMinuteWait.until(visibilityOf(stepThree));
 		basePackageRadioButton.click();
 		nextButton.click();
 		return this;
@@ -168,7 +179,8 @@ public class ImporterModel extends MenuModel
 
 	public ImporterModel validate()
 	{
-		stepFour.click();
+		LOG.info("validate...");
+		oneMinuteWait.until(visibilityOf(stepFour));
 		nextButton.click();
 		return this;
 	}
@@ -176,12 +188,12 @@ public class ImporterModel extends MenuModel
 	public ImporterModel waitForResult()
 	{
 		LOG.info("waitForResult...");
-		stepFive.click();
-		waitFor(this::importFinished, 300);
+		oneMinuteWait.until(visibilityOf(stepFive));
+		fiveMinuteWait.until(this::importFinished);
 		return this;
 	}
 
-	private boolean importFinished()
+	private boolean importFinished(WebDriver driver)
 	{
 		return !getMessageHeader().contains("Importing...");
 	}

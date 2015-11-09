@@ -1,20 +1,17 @@
 package org.molgenis.selenium.model.dataexplorer;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.molgenis.selenium.model.AbstractModel;
-import org.molgenis.selenium.model.MenuModel;
 import org.molgenis.selenium.model.component.Select2Model;
-import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 /**
  * This is a model of the MOLGENIS Data Explorer user interface
@@ -87,7 +84,8 @@ public class DataExplorerModel extends AbstractModel
 				break;
 		}
 		confirmButton.click();
-		SeleniumUtils.waitFor(() -> !selectedEntity.equals(getSelectedEntityTitle()));
+		Wait<WebDriver> tenSecondWait = new WebDriverWait(driver, 10);
+		tenSecondWait.until((d) -> !selectedEntity.equals(getSelectedEntityTitle()));
 	}
 
 	public DataExplorerModel selectEntity(String entityLabel) throws InterruptedException
