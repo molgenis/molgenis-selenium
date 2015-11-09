@@ -76,7 +76,7 @@ public class MappingProjectsOverviewTest extends AbstractSeleniumTest
 		mappingProjectsTable = model.copyMappingProject("Hop hop hop").getMappingProjectsTable();
 		Assert.assertEquals(mappingProjectsTable, asList(asList("", "Hop hop hop", "admin", "HOP_selenium", ""),
 				asList("", "Hop hop hop - Copy", "admin", "HOP_selenium", "")));
-		model.deleteMappingProject("Hop hop hop");
+		mappingProjectsTable = model.deleteMappingProject("Hop hop hop").getMappingProjectsTable();
 		Assert.assertEquals(mappingProjectsTable,
 				asList(asList("", "Hop hop hop - Copy", "admin", "HOP_selenium", "")));
 	}
