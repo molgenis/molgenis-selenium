@@ -12,7 +12,9 @@ import org.molgenis.selenium.test.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -23,7 +25,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 	private static final Logger LOG = LoggerFactory.getLogger(MappingProjectDetailsTest.class);
 	private MappingProjectDetailsModel model;
 
-	// @BeforeClass
+	@BeforeClass
 	public void beforeClass()
 	{
 		token = restClient.login(uid, pwd).getToken();
@@ -43,7 +45,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				.tagAttributeWithTerms("Body_Mass_Index_2", "Height", "Weight").menu().signOut();
 	}
 
-	// @AfterClass
+	@AfterClass
 	public void afterClass()
 	{
 		token = restClient.login(uid, pwd).getToken();
