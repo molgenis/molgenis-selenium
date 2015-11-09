@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 import java.util.List;
 
 import org.molgenis.JenkinsConfig;
+import org.molgenis.selenium.model.mappingservice.AlgorithmEditorModel;
 import org.molgenis.selenium.model.mappingservice.MappingProjectDetailsModel;
 import org.molgenis.selenium.test.AbstractSeleniumTest;
 import org.molgenis.selenium.test.Config;
@@ -34,7 +35,8 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 		restClient.logout(token);
 		importFiles("org/molgenis/selenium/mappingservice/mappingservice-test.xlsx",
 				"org/molgenis/selenium/mappingservice/biobank_ontology_test.owl.zip",
-				"org/molgenis/selenium/mappingservice/uo_test.owl.zip");
+				"org/molgenis/selenium/mappingservice/uo_test.owl.zip",
+				"org/molgenis/selenium/mappingservice/test-javascript_magma.xls");
 		homepage.menu().openSignInDialog().signIn(uid, pwd).menu().selectTagWizard().selectEntity("HOP_selenium")
 				.tagAttributeWithTerms("Body_Mass_Index", "Height", "Weight")
 				.tagAttributeWithTerms("Body_Mass_Index_1", "Height", "Weight")
@@ -72,25 +74,32 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 	@Test
 	public void testMapLifelinesToHop()
 	{
-
 		assertEquals(model.addSource("lifelines_test").getMappingProjectTableData(),
 				asList(asList("Gender (categorical)", "Sex"),
 						asList("Measured Standing Height in m (decimal)", "Height in centimeter"),
 						asList("Measured Standing Height in Meter (decimal)", "Height in centimeter"),
 						asList("Measured Weight in Gram (decimal)", "Weight in gram"),
 						asList("Measured Weight in KILOGRAM (decimal)", "Weight in gram"),
-						asList("Fasting Glucose (decimal)", "If the participant fasting?"),
+						asList("Fasting Glucose (decimal)", "If the participant fasting?, Glucose"),
 						asList("Triglycerides (decimal)", "Triglycerides"),
-						asList("Body Mass Index kg/m2 (decimal)\n(Height and Weight)", "Height in centimeter"),
-						asList("Body Mass Index kg/m^2 (decimal)\n(Height and Weight)", "Height in centimeter"),
-						asList("Body Mass Index kg/m² (decimal)\n(Height and Weight)", "Height in centimeter"),
-						asList("Current Consumption Frequency of Potatoes (categorical)",
-								"How often did you eat boiled or mashed potatoes (also in stew) in the past month? Baked potatoes are asked later"),
+						asList("Body Mass Index kg/m2 (decimal)\n(Height and Weight)",
+								"Weight in gram, Height in centimeter"),
+				asList("Body Mass Index kg/m^2 (decimal)\n(Height and Weight)", "Weight in gram, Height in centimeter"),
+				asList("Body Mass Index kg/m² (decimal)\n(Height and Weight)", "Weight in gram, Height in centimeter"),
+				asList("Current Consumption Frequency of Potatoes (categorical)",
+						"How often did you eat boiled or mashed potatoes (also in stew) in the past month? Baked potatoes are asked later"),
 				asList("History of Hypertension (categorical)",
 						"Have you ever had high blood pressure? (Repeat) (1)")));
+
+		AlgorithmEditorModel bmiAlgorithmEditor = model.editAlgorithm("lifelines_test", "Body_Mass_Index");
+		bmiAlgorithmEditor
+				.assertAlgorithmValueEquals("$('WEIGHT').div(1000.0).div($('HEIGHT').div(100.0).pow(2)).value()");
+		bmiAlgorithmEditor.cancelAndGoBack();
+
 		assertEquals(model.createIntegratedDataset("testing_lifelines_hop").getTableData(),
-				asList(asList("edit", "trash", "search", "", "Female", "1.675", "1.675", "98000", "98", "1", "1.04",
-						"167.5", "167.5", "167.5", "", "Never + fewer than once a week", "",
-						"Ever had high blood pressure", "lifelines_test")));
+				asList(asList("edit", "trash", "search", "", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04",
+						"34.92982846959234", "34.92982846959234", "34.92982846959234", "",
+						"Never + fewer than once a week", "", "Ever had high blood pressure", "lifelines_test")));
+
 	}
 }

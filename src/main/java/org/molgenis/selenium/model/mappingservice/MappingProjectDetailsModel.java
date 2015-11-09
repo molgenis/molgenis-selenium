@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -38,6 +39,9 @@ public class MappingProjectDetailsModel extends AbstractModel
 	@FindBy(xpath = "//a[@data-target='#create-integrated-entity-modal' and contains(@Class, btn)]")
 	private WebElement createIntegratedDatasetModalButton;
 
+	@FindBy(xpath = "//div[@class='modal-footer']/button[text()='OK']")
+	private WebElement okButton;
+
 	private Select2Model sourceEntitySelect;
 
 	public MappingProjectDetailsModel(WebDriver driver)
@@ -67,6 +71,26 @@ public class MappingProjectDetailsModel extends AbstractModel
 		createIntegratedDatasetModalButton.click();
 		return PageFactory.initElements(driver, CreateIntegratedDatasetModalModel.class).setEntityName(entityName)
 				.createIntegratedDataset();
+	}
+
+	public AlgorithmEditorModel editAlgorithm(String sourceEntityName, String attributeName)
+	{
+		By editButtonSelector = By.xpath("//form[@action='/menu/dataintegration/mappingservice/attributeMapping']"
+				+ "[input[@name='targetAttribute'][@value='" + attributeName + "']]" + "[input[@name='source'][@value='"
+				+ sourceEntityName + "']]/button");
+		driver.findElement(editButtonSelector).click();
+		return PageFactory.initElements(driver, AlgorithmEditorModel.class);
+	}
+
+	public MappingProjectDetailsModel removeAttributeMapping(String sourceEntityName, String attributeName)
+	{
+		By removeButtonSelector = By
+				.xpath("//form[@action='/menu/dataintegration/mappingservice/removeAttributeMapping']"
+						+ "[input[@name='attribute'][@value='" + attributeName + "']]"
+						+ "[input[@name='source'][@value='" + sourceEntityName + "']]/button");
+		driver.findElement(removeButtonSelector).click();
+		okButton.click();
+		return this;
 	}
 
 	public List<List<String>> getMappingProjectTableData()
