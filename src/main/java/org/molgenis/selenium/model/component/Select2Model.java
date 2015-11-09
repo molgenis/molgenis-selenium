@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Model for a select2 mref selection box.
+ * Model for a select2 selection box. This class works for both multi selects and single selects.
  */
 public class Select2Model
 {
