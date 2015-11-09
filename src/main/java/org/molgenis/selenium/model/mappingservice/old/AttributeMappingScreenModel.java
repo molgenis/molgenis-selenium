@@ -1,4 +1,4 @@
-package org.molgenis.selenium.model.mappingservice;
+package org.molgenis.selenium.model.mappingservice.old;
 
 import static org.molgenis.selenium.util.MappingServiceUtil.clickButonByElementId;
 import static org.molgenis.selenium.util.MappingServiceUtil.clickOnCloseModalButton;

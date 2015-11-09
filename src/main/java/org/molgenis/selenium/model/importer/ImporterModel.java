@@ -1,10 +1,11 @@
-package org.molgenis.selenium.model;
+package org.molgenis.selenium.model.importer;
 
 import static org.molgenis.selenium.util.SeleniumUtils.waitFor;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 
+import org.molgenis.selenium.model.MenuModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

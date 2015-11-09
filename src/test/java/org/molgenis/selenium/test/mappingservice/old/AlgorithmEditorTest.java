@@ -1,10 +1,12 @@
-package org.molgenis.selenium.test;
+package org.molgenis.selenium.test.mappingservice.old;
 
 import static java.util.Arrays.asList;
 
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.mappingservice.MappingProjectsModel;
 import org.molgenis.selenium.model.mappingservice.TagWizardModel;
+import org.molgenis.selenium.test.AbstractSeleniumTest;
+import org.molgenis.selenium.test.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;

@@ -1,19 +1,20 @@
-package org.molgenis.selenium.test;
+package org.molgenis.selenium.test.importer;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.molgenis.selenium.model.ImporterModel;
-import org.molgenis.selenium.model.ImporterModel.EntitiesOptions;
+import org.molgenis.selenium.model.importer.ImporterModel;
+import org.molgenis.selenium.model.importer.ImporterModel.EntitiesOptions;
+import org.molgenis.selenium.test.AbstractSeleniumTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class UploadTest extends AbstractSeleniumTest
+public class ImporterTest extends AbstractSeleniumTest
 {
-	private static final Logger LOG = LoggerFactory.getLogger(UploadTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ImporterTest.class);
 
 	private ImporterModel model;
 

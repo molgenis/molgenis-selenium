@@ -1,6 +1,6 @@
-package org.molgenis.selenium.test;
+package org.molgenis.selenium.test.dataexplorer;
 
-import static org.molgenis.selenium.model.ImporterModel.EntitiesOptions.ADD;
+import static org.molgenis.selenium.model.importer.ImporterModel.EntitiesOptions.ADD;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -9,9 +9,11 @@ import java.io.File;
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.model.DataExplorerModel;
 import org.molgenis.selenium.model.HomepageModel;
-import org.molgenis.selenium.model.ImporterModel;
+import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
+import org.molgenis.selenium.model.importer.ImporterModel;
+import org.molgenis.selenium.test.AbstractSeleniumTest;
+import org.molgenis.selenium.test.Config;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;

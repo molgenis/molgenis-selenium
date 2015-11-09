@@ -1,5 +1,6 @@
-package org.molgenis.selenium.model;
+package org.molgenis.selenium.model.dataexplorer;
 
+import org.molgenis.selenium.model.MenuModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

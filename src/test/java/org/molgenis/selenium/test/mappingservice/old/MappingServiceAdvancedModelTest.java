@@ -1,13 +1,13 @@
-package org.molgenis.selenium.test;
+package org.molgenis.selenium.test.mappingservice.old;
 
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
-import org.molgenis.selenium.model.mappingservice.AttributeMappingScreenAdvancedModel;
-import org.molgenis.selenium.model.mappingservice.MappingProjectAddSourceDataModel;
-import org.molgenis.selenium.model.mappingservice.MappingProjectImportDataModel;
 import org.molgenis.selenium.model.mappingservice.MappingProjectOverviewModel;
 import org.molgenis.selenium.model.mappingservice.TagWizardScreenModel;
+import org.molgenis.selenium.model.mappingservice.old.AttributeMappingScreenAdvancedModel;
+import org.molgenis.selenium.model.mappingservice.old.MappingProjectAddSourceDataModel;
+import org.molgenis.selenium.model.mappingservice.old.MappingProjectImportDataModel;
 import org.molgenis.selenium.util.RestApiV1Util;
 import org.molgenis.selenium.util.SignUtil;
 import org.openqa.selenium.WebDriver;

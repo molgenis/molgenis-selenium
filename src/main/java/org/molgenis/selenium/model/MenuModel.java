@@ -7,6 +7,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.util.List;
 
+import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
+import org.molgenis.selenium.model.importer.ImporterModel;
 import org.molgenis.selenium.model.mappingservice.MappingProjectsModel;
 import org.molgenis.selenium.model.mappingservice.TagWizardModel;
 import org.openqa.selenium.By;

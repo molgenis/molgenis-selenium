@@ -1,8 +1,9 @@
-package org.molgenis.selenium.model;
+package org.molgenis.selenium.model.dataexplorer;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.molgenis.selenium.model.MenuModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.molgenis.selenium.util.SeleniumUtils;
 import org.openqa.selenium.WebDriver;

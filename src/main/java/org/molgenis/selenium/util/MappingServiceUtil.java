@@ -1,7 +1,7 @@
 package org.molgenis.selenium.util;
 
-import static org.molgenis.selenium.model.mappingservice.AbstractMappingServiceAppModel.MAPPING_PROJECT_NAME;
-import static org.molgenis.selenium.model.mappingservice.AbstractMappingServiceAppModel.MAPPING_SERVICE_BASE_URL;
+import static org.molgenis.selenium.model.mappingservice.old.AbstractMappingServiceAppModel.MAPPING_PROJECT_NAME;
+import static org.molgenis.selenium.model.mappingservice.old.AbstractMappingServiceAppModel.MAPPING_SERVICE_BASE_URL;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

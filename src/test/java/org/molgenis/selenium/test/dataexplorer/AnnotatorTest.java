@@ -1,12 +1,14 @@
-package org.molgenis.selenium.test;
+package org.molgenis.selenium.test.dataexplorer;
 
 import java.util.Arrays;
 
 import org.molgenis.JenkinsConfig;
 import org.molgenis.rest.model.SettingsModel;
-import org.molgenis.selenium.model.AnnotatorModel;
-import org.molgenis.selenium.model.DataExplorerModel;
-import org.molgenis.selenium.model.DataExplorerModel.DeleteOption;
+import org.molgenis.selenium.model.dataexplorer.AnnotatorModel;
+import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
+import org.molgenis.selenium.model.dataexplorer.DataExplorerModel.DeleteOption;
+import org.molgenis.selenium.test.AbstractSeleniumTest;
+import org.molgenis.selenium.test.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;

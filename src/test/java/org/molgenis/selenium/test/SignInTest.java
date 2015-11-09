@@ -4,6 +4,7 @@ import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.HomepageModel;
 import org.molgenis.selenium.model.SignInModel;
+import org.molgenis.selenium.test.dataexplorer.AnnotatorTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
