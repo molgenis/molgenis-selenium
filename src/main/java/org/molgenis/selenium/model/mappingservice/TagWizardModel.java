@@ -11,11 +11,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 public class TagWizardModel extends AbstractModel
@@ -35,7 +33,7 @@ public class TagWizardModel extends AbstractModel
 	@FindBy(id = "clear-all-tags-btn")
 	private WebElement clearTagsButton;
 
-	@FindBy(xpath = "//div[@class='bootbox-body' and text() = 'Are you sure you want to remove all tags?']/../../div[@class='modal-footer']/button[text()='OK']")
+	@FindBy(css = "div.bootbox-confirm .modal-footer button.btn-primary")
 	private WebElement okButton;
 
 	@FindBy(id = "save-tag-selection-btn")
@@ -56,7 +54,7 @@ public class TagWizardModel extends AbstractModel
 	{
 		LOG.info("select entity {}...", name);
 		entitySelectionModel.select(name);
-		new WebDriverWait(driver, 10).until((Predicate<WebDriver>) (d) -> name.equals(getSelectedEntity()));
+		spinner().waitTillDone(10);
 		return this;
 	}
 
@@ -67,7 +65,7 @@ public class TagWizardModel extends AbstractModel
 
 	public List<List<String>> getAttributeTags()
 	{
-		return Lists.transform(getTableData(attributeTableRows), row -> asList(row.get(0), row.get(3)));
+		return Lists.transform(getTableData(attributeTableRows), row -> row.subList(0, 2));
 	}
 
 	public TagWizardModel clearTags()
