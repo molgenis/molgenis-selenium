@@ -52,7 +52,7 @@ public class TagWizardTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		model = homepage.selectTagWizard().selectEntity("HOP_selenium").clearTags();
+		model = homepage.menu().selectTagWizard().selectEntity("HOP_selenium").clearTags();
 	}
 
 	@Test

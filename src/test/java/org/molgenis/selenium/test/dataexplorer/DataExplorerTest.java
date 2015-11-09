@@ -44,7 +44,8 @@ public class DataExplorerTest extends AbstractSeleniumTest
 		File emxAllDatatypes = ImporterModel.getFile("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
 		driver.get(baseURL);
 		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
-		homePage.openSignInDialog().signIn(uid, pwd).selectImporter().importFile(emxAllDatatypes, ADD).finish().signOut();
+		homePage.menu().openSignInDialog().signIn(uid, pwd).menu().selectImporter().importFile(emxAllDatatypes, ADD)
+				.finish().signOut();
 	}
 
 	@AfterClass
@@ -56,7 +57,7 @@ public class DataExplorerTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		model = homepage.selectDataExplorer();
+		model = homepage.menu().selectDataExplorer();
 	}
 
 	@Test

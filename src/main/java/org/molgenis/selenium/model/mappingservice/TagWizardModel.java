@@ -5,7 +5,7 @@ import static java.util.Arrays.asList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.molgenis.selenium.model.MenuModel;
+import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
-public class TagWizardModel extends MenuModel
+public class TagWizardModel extends AbstractModel
 {
 	private static final Logger LOG = LoggerFactory.getLogger(TagWizardModel.class);
 
@@ -47,7 +47,6 @@ public class TagWizardModel extends MenuModel
 	public TagWizardModel(WebDriver driver)
 	{
 		super(driver);
-		tenSecondWait = new WebDriverWait(driver, 10);
 		tagSelectionModel = new Select2Model(driver, "tag-dropdown", true);
 		ontologySelectionModel = new Select2Model(driver, "ontology-select", true);
 		entitySelectionModel = new Select2Model(driver, "select-target", false);
@@ -57,8 +56,7 @@ public class TagWizardModel extends MenuModel
 	{
 		LOG.info("select entity {}...", name);
 		entitySelectionModel.select(name);
-		Predicate<WebDriver> blah = d -> name.equals(getSelectedEntity());
-		tenSecondWait.until(blah);
+		new WebDriverWait(driver, 10).until((Predicate<WebDriver>) (d) -> name.equals(getSelectedEntity()));
 		return this;
 	}
 
@@ -98,7 +96,7 @@ public class TagWizardModel extends MenuModel
 		editButton.click();
 		tagSelectionModel.select(terms);
 		saveTagSelectionButton.click();
-		waitForSpinner();
+		spinner().waitTillDone(30);
 		return this;
 	}
 

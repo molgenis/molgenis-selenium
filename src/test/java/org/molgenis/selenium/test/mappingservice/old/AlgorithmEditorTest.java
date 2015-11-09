@@ -53,10 +53,10 @@ public class AlgorithmEditorTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		model = homepage.selectTagWizard().selectEntity("HOP_selenium")
+		model = homepage.menu().selectTagWizard().selectEntity("HOP_selenium")
 				.selectOntologies("biobank_ontology_test", "uo_test")
 				.tagAttributeWithTerms("Body_Mass_Index", "Weight", "Height")
 				.tagAttributeWithTerms("Body_Mass_Index_1", "Weight", "Height")
-				.tagAttributeWithTerms("Body_Mass_Index_2", "Weight", "Height").selectMappingService();
+				.tagAttributeWithTerms("Body_Mass_Index_2", "Weight", "Height").menu().selectMappingService();
 	}
 }

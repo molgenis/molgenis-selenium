@@ -35,7 +35,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				"test_FOOD59A1_Ref_test", "test_HEALTH351_Ref_test", "prevend_test", "test_SEX_Ref_test");
 		restClient.logout(token);
 		importFiles("org/molgenis/selenium/mappingservice/mappingservice-test.xlsx");
-		homepage.selectTagWizard().selectEntity("HOP_selenium")
+		homepage.menu().selectTagWizard().selectEntity("HOP_selenium")
 				.tagAttributeWithTerms("Body_Mass_Index", "Height", "Weight")
 				.tagAttributeWithTerms("Body_Mass_Index_1", "Height", "Weight")
 				.tagAttributeWithTerms("Body_Mass_Index_2", "Height", "Weight");
@@ -55,7 +55,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 	public void beforeMethod() throws InterruptedException
 	{
 		tryDeleteData("MappingProject", "MappingTarget", "EntityMapping", "AttributeMapping");
-		model = homepage.selectMappingService().addNewMappingProject("Hop hop hop", "HOP_selenium");
+		model = homepage.menu().selectMappingService().addNewMappingProject("Hop hop hop", "HOP_selenium");
 
 	}
 

@@ -49,7 +49,7 @@ public class MappingProjectsOverviewTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		model = homepage.selectMappingService();
+		model = homepage.menu().selectMappingService();
 		tryDeleteData("MappingProject", "MappingTarget", "EntityMapping", "AttributeMapping");
 	}
 

@@ -44,7 +44,7 @@ public class SignInTest extends AbstractSeleniumTest
 		HomepageModel homepageModel = PageFactory.initElements(driver, HomepageModel.class);
 
 		// open the signin
-		SignInModel signinModel = homepageModel.openSignInDialog().signInFails(uid, "blaat");
+		SignInModel signinModel = homepageModel.menu().openSignInDialog().signInFails(uid, "blaat");
 
 		// should show error messages
 		Assert.assertTrue(signinModel.showsErrorText("The username or password you entered is incorrect"));
@@ -61,9 +61,9 @@ public class SignInTest extends AbstractSeleniumTest
 		HomepageModel homepageModel = PageFactory.initElements(driver, HomepageModel.class);
 
 		// should show sign out button
-		Assert.assertTrue(homepageModel.openSignInDialog().signIn(uid, pwd).isLoggedIn());
+		Assert.assertTrue(homepageModel.menu().openSignInDialog().signIn(uid, pwd).menu().isLoggedIn());
 
 		// should show sign in button again
-		Assert.assertTrue(homepageModel.signOut().isSignedOut());
+		Assert.assertTrue(homepageModel.menu().signOut().menu().isSignedOut());
 	}
 }

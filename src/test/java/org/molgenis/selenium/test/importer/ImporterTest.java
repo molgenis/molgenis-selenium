@@ -21,7 +21,7 @@ public class ImporterTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod()
 	{
-		model = homepage.selectImporter();
+		model = homepage.menu().selectImporter();
 	}
 	
 	@Test

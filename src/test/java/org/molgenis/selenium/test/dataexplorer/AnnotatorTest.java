@@ -45,7 +45,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		model = homepage.selectDataExplorer().selectEntity("test_entity").selectAnnotatorTab();
+		model = homepage.menu().selectDataExplorer().selectEntity("test_entity").selectAnnotatorTab();
 	}
 
 	@Test

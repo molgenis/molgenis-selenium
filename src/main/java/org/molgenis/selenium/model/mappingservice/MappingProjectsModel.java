@@ -2,7 +2,7 @@ package org.molgenis.selenium.model.mappingservice;
 
 import java.util.List;
 
-import org.molgenis.selenium.model.MenuModel;
+import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class MappingProjectsModel extends MenuModel
+public class MappingProjectsModel extends AbstractModel
 {
 	private static final By DELETE_BUTTON_SELECTOR = By.xpath("../..//button[contains(@class,'btn-danger')]");
 	private static final By CLONE_BUTTON_SELECTOR = By.xpath("../..//button[contains(@class,'clone-btn')]");

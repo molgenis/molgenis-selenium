@@ -65,14 +65,14 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	public void abstractBeforeMethod()
 	{
 		driver.get(baseURL);
-		homepage = PageFactory.initElements(driver, HomepageModel.class).openSignInDialog().signIn(uid, pwd);
+		homepage = PageFactory.initElements(driver, HomepageModel.class).menu().openSignInDialog().signIn(uid, pwd);
 		token = restClient.login(uid, pwd).getToken();
 	}
 
 	@AfterMethod
 	public void abstractAfterMethod()
 	{
-		homepage.signOut();
+		homepage.menu().signOut();
 		restClient.logout(token);
 	}
 
@@ -113,15 +113,15 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	protected void importFiles(String... relativePaths)
 	{
 		driver.get(baseURL);
-		homepage = PageFactory.initElements(driver, HomepageModel.class).openSignInDialog().signIn(uid, pwd);
+		homepage = PageFactory.initElements(driver, HomepageModel.class).menu().openSignInDialog().signIn(uid, pwd);
 		for (String path : relativePaths)
 		{
 			LOG.info("Import file {}", newArrayList(relativePaths));
 			File annotatorTestFile = ImporterModel.getFile(path);
 			driver.get(baseURL);
-			homepage.selectImporter().importFile(annotatorTestFile, EntitiesOptions.ADD).finish();
+			homepage.menu().selectImporter().importFile(annotatorTestFile, EntitiesOptions.ADD).finish();
 		}
-		homepage.signOut();
+		homepage.menu().signOut();
 	}
 
 }
