@@ -106,15 +106,11 @@ public class ImporterModel extends AbstractModel
 
 	public ImporterModel importFile(File file, EntitiesOptions options)
 	{
-		LOG.info("uploadFile...");
+		LOG.info("importFile {}. Options={} ...", file, options);
 		uploadFile(file);
-		LOG.info("selectOptions...");
 		selectOptions(options);
-		LOG.info("select base package...");
 		selectBasePackage();
-		LOG.info("validate...");
 		validate();
-		LOG.info("waitForResult...");
 		waitForResult();
 		LOG.info("done");
 		return this;
