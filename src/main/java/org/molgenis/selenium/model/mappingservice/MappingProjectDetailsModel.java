@@ -1,6 +1,7 @@
 package org.molgenis.selenium.model.mappingservice;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
@@ -56,7 +57,7 @@ public class MappingProjectDetailsModel extends AbstractModel
 		addSourceButton.click();
 		sourceEntitySelect.select(sourceEntityName);
 		submitNewSourceColumnButton.click();
-		spinner().waitTillDone(30);
+		spinner().waitTillDone(30, TimeUnit.SECONDS);
 		return this;
 	}
 

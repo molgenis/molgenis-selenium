@@ -1,12 +1,14 @@
 package org.molgenis.selenium.model.dataexplorer;
 
-import org.molgenis.selenium.model.MenuModel;
+import java.util.concurrent.TimeUnit;
+
+import org.molgenis.selenium.model.AbstractModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class AnnotatorModel extends MenuModel
+public class AnnotatorModel extends AbstractModel
 {
 	@FindBy(css = "#annotator-select-container input[value=snpEff]")
 	WebElement snpEffCheckbox;
@@ -46,9 +48,10 @@ public class AnnotatorModel extends MenuModel
 		return this;
 	}
 
-	public AnnotatorModel clickAnnotateButton()
+	public AnnotatorModel clickAnnotateButtonAndWait(int timeout, TimeUnit unit)
 	{
 		annotateButton.click();
+		spinner().waitTillDone(timeout, unit);
 		return this;
 	}
 

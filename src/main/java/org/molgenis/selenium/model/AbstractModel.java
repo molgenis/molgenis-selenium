@@ -35,7 +35,7 @@ public abstract class AbstractModel
 		return menuModel;
 	}
 
-	protected static List<List<String>> getTableData(List<WebElement> tableRows)
+	protected List<List<String>> getTableData(List<WebElement> tableRows)
 	{
 		return tableRows.stream().map(elt -> elt.findElements(By.cssSelector("td")))
 				.map(tds -> transform(tds, WebElement::getText)).collect(toList());

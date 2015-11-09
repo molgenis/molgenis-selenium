@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
 
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
@@ -54,7 +55,7 @@ public class TagWizardModel extends AbstractModel
 	{
 		LOG.info("select entity {}...", name);
 		entitySelectionModel.select(name);
-		spinner().waitTillDone(10);
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return this;
 	}
 
@@ -94,7 +95,7 @@ public class TagWizardModel extends AbstractModel
 		editButton.click();
 		tagSelectionModel.select(terms);
 		saveTagSelectionButton.click();
-		spinner().waitTillDone(30);
+		spinner().waitTillDone(30, TimeUnit.SECONDS);
 		return this;
 	}
 

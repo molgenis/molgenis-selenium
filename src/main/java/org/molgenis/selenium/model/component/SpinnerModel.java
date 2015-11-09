@@ -40,14 +40,14 @@ public class SpinnerModel
 	/**
 	 * Waits for a certain amount of seconds for a period of one full second without spinner.
 	 */
-	public SpinnerModel waitTillDone(int timeout)
+	public SpinnerModel waitTillDone(long timeout, TimeUnit unit)
 	{
 		try
 		{
 			LOG.info("Wait for spinner...");
 			Stopwatch sw = Stopwatch.createStarted();
 			noExplicitWait();
-			internalWaitTillDone(timeout, sw);
+			internalWaitTillDone(unit.toSeconds(timeout), sw);
 			return this;
 		}
 		finally
@@ -74,7 +74,7 @@ public class SpinnerModel
 	 * @param sw
 	 *            {@link Stopwatch} that keeps track of time since we started waiting
 	 */
-	private void internalWaitTillDone(int timeout, Stopwatch sw)
+	private void internalWaitTillDone(long timeout, Stopwatch sw)
 	{
 		while (waitForSpinnerToAppear(SPINNER_APPEAR_TIMEOUT))
 		{

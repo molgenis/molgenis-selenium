@@ -14,6 +14,8 @@ import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 /**
  * This is a model of the MOLGENIS Data Explorer user interface
  */
@@ -58,7 +60,7 @@ public class DataExplorerModel extends AbstractModel
 	@FindBy(css = "div.molgenis-tree span.fancytree-has-children span.fancytree-checkbox")
 	private List<WebElement> treeFolders;
 
-	@FindBy(css = ".molgenis-table-container tr")
+	@FindBy(css = ".molgenis-table-container tbody tr")
 	private List<WebElement> tableRows;
 
 	public DataExplorerModel(WebDriver driver)
@@ -132,6 +134,7 @@ public class DataExplorerModel extends AbstractModel
 
 	public List<List<String>> getTableData()
 	{
-		return getTableData(tableRows).subList(1, tableRows.size());
+		LOG.info("getTableData");
+		return getTableData(tableRows);
 	}
 }
