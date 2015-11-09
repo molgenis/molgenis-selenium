@@ -4,13 +4,18 @@ import java.util.List;
 
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
+import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MappingProjectDetailsModel extends AbstractModel
 {
+	private static final Logger LOG = LoggerFactory.getLogger(MappingProjectDetailsModel.class);
+
 	@FindBy(partialLinkText = "Back to mapping project overview")
 	private WebElement backToMappingProjectOverviewButton;
 
@@ -25,7 +30,7 @@ public class MappingProjectDetailsModel extends AbstractModel
 
 	@FindBy(css = "#attribute-mapping-table tbody tr")
 	private List<WebElement> mappingProjectTableRows;
-	
+
 	@FindBy(id = "//a[@data-target='#create-integrated-entity-modal' and contains(@Class, btn)]")
 	private WebElement createIntegratedEntityOpenModalButton;
 
@@ -51,12 +56,16 @@ public class MappingProjectDetailsModel extends AbstractModel
 		addSourceButton.click();
 		sourceEntitySelect.select(sourceEntityName);
 		submitNewSourceColumnButton.click();
+		spinner().waitTillDone(30);
 		return this;
 	}
 
-	public void createIntegratedDataset()
+	public DataExplorerModel createIntegratedDataset(String entityName)
 	{
-
+		LOG.info("Create integrated dataset. Entity name = {}", entityName);
+		createIntegratedDatasetModalButton.click();
+		return PageFactory.initElements(driver, CreateIntegratedDatasetModalModel.class).setEntityName(entityName)
+				.createIntegratedDataset();
 	}
 
 	public List<List<String>> getMappingProjectTableData()

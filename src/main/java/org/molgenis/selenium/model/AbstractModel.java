@@ -1,6 +1,7 @@
 package org.molgenis.selenium.model;
 
 import static com.google.common.collect.Lists.transform;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public abstract class AbstractModel
 
 	public AbstractModel(WebDriver driver)
 	{
-		this.driver = driver;
+		this.driver = requireNonNull(driver);
 		this.menuModel = PageFactory.initElements(driver, MenuModel.class);
 		this.spinnerModel = PageFactory.initElements(driver, SpinnerModel.class);
 	}

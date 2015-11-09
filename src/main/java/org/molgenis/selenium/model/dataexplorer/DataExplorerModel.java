@@ -3,6 +3,7 @@ package org.molgenis.selenium.model.dataexplorer;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.MenuModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.molgenis.selenium.util.SeleniumUtils;
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This is a model of the MOLGENIS Data Explorer user interface
  */
-public class DataExplorerModel extends MenuModel
+public class DataExplorerModel extends AbstractModel
 {
 	private static final Logger LOG = LoggerFactory.getLogger(DataExplorerModel.class);
 
@@ -129,8 +130,8 @@ public class DataExplorerModel extends MenuModel
 		return this;
 	}
 
-	public List<String> getTableData()
+	public List<List<String>> getTableData()
 	{
-		return tableRows.stream().map(WebElement::getText).collect(Collectors.toList());
+		return getTableData(tableRows).subList(1, tableRows.size());
 	}
 }
