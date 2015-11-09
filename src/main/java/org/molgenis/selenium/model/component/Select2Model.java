@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Model for a select2 mref selection box.
  */
-public class Select2Model implements MultiSelectModel
+public class Select2Model
 {
 	private static final Logger LOG = LoggerFactory.getLogger(Select2Model.class);
 	private WebDriver driver;
@@ -57,7 +57,6 @@ public class Select2Model implements MultiSelectModel
 	 * 
 	 * @return List containing the selected item texts
 	 */
-	@Override
 	public List<String> getSelectedLabels()
 	{
 		LOG.debug("Get selected labels in Select2 with id {}...", id);
@@ -68,7 +67,6 @@ public class Select2Model implements MultiSelectModel
 	/**
 	 * Removes all selected items.
 	 */
-	@Override
 	public void clearSelection()
 	{
 		LOG.info("Clear selection in Select2 with id {}...", id);
@@ -86,7 +84,6 @@ public class Select2Model implements MultiSelectModel
 	 *            the term to type
 	 * @throws InterruptedException
 	 */
-	@Override
 	public void select(String... terms)
 	{
 		LOG.info("Selecting terms {} in Select2 with id {}...", Arrays.asList(terms), id);
