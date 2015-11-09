@@ -33,9 +33,6 @@ public class MappingProjectDetailsModel extends AbstractModel
 	@FindBy(css = "#attribute-mapping-table tbody tr")
 	private List<WebElement> mappingProjectTableRows;
 
-	@FindBy(id = "//a[@data-target='#create-integrated-entity-modal' and contains(@Class, btn)]")
-	private WebElement createIntegratedEntityOpenModalButton;
-
 	@FindBy(xpath = "//a[@data-target='#create-integrated-entity-modal' and contains(@Class, btn)]")
 	private WebElement createIntegratedDatasetModalButton;
 
