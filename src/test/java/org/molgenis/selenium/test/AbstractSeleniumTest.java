@@ -9,6 +9,7 @@ import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.selenium.model.HomepageModel;
+import org.molgenis.selenium.model.component.SpinnerModel;
 import org.molgenis.selenium.model.importer.ImporterModel;
 import org.molgenis.selenium.model.importer.ImporterModel.EntitiesOptions;
 import org.openqa.selenium.WebDriver;
@@ -31,8 +32,6 @@ import org.testng.annotations.BeforeMethod;
 { JenkinsConfig.class, Config.class })
 public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTests
 {
-	public static final int IMPLICIT_WAIT_SECONDS = 30;
-
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSeleniumTest.class);
 
 	protected WebDriver driver;
@@ -56,7 +55,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	public void abstractBeforeClass()
 	{
 		driver = DriverType.FIREFOX.getDriver();
-		driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 	}
 
 	@AfterClass
