@@ -94,8 +94,8 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 						"Have you ever had high blood pressure? (Repeat) (1)")));
 
 		AlgorithmEditorModel bmiAlgorithmEditor = model.editAlgorithm("lifelines_test", "Body_Mass_Index");
-		bmiAlgorithmEditor
-				.assertAlgorithmValueEquals("$('WEIGHT').div(1000.0).div($('HEIGHT').div(100.0).pow(2)).value()");
+		assertEquals(bmiAlgorithmEditor.getAlgorithmValue(),
+				"$('WEIGHT').div(1000.0).div($('HEIGHT').div(100.0).pow(2)).value()");
 		bmiAlgorithmEditor.cancelAndGoBack();
 
 		assertEquals(model.createIntegratedDataset("testing_lifelines_hop").getTableData(),
