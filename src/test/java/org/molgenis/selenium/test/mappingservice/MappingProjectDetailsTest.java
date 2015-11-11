@@ -33,7 +33,8 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				"DIS_HBP_Ref_selenium", "lifelines_test", "test_GENDER_Ref_test", "test_NUCHTER1_Ref_test",
 				"test_FOOD59A1_Ref_test", "test_HEALTH351_Ref_test", "prevend_test", "test_SEX_Ref_test");
 		tryDeleteData("Ontology_OntologyTerm", "Ontology_OntologyTermDynamicAnnotation",
-				"Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym", "Ontology_Ontology");
+				"Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym", "Ontology_Ontology", "Script",
+				"ScriptParameter");
 		restClient.logout(token);
 		importFiles("org/molgenis/selenium/mappingservice/mappingservice-test.xlsx",
 				"org/molgenis/selenium/mappingservice/biobank_ontology_test.owl.zip",
@@ -53,7 +54,8 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				"DIS_HBP_Ref_selenium", "lifelines_test", "test_GENDER_Ref_test", "test_NUCHTER1_Ref_test",
 				"test_FOOD59A1_Ref_test", "test_HEALTH351_Ref_test", "prevend_test", "test_SEX_Ref_test");
 		tryDeleteData("Ontology_OntologyTerm", "Ontology_OntologyTermDynamicAnnotation",
-				"Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym", "Ontology_Ontology");
+				"Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym", "Ontology_Ontology", "Script",
+				"ScriptParameter");
 		restClient.logout(token);
 	}
 
