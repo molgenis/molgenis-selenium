@@ -12,6 +12,7 @@ import org.molgenis.selenium.model.HomepageModel;
 import org.molgenis.selenium.model.component.SpinnerModel;
 import org.molgenis.selenium.model.importer.ImporterModel;
 import org.molgenis.selenium.model.importer.ImporterModel.EntitiesOptions;
+import org.molgenis.util.GsonConfig;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ import org.testng.annotations.BeforeMethod;
  * Base class that does the general setup and tear down of the tests.
  */
 @ContextConfiguration(classes =
-{ JenkinsConfig.class, Config.class })
+{ JenkinsConfig.class, Config.class, GsonConfig.class })
 public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTests
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSeleniumTest.class);

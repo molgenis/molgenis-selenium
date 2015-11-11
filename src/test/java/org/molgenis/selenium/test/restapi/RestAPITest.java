@@ -16,7 +16,9 @@ import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.data.rest.client.bean.LoginResponse;
 import org.molgenis.data.rest.client.bean.QueryResponse;
+import org.molgenis.util.GsonConfig;
 import org.molgenis.util.GsonHttpMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -31,7 +33,8 @@ import com.google.gson.reflect.TypeToken;
 /**
  * Automated version of the REST API test sheet.
  */
-@ContextConfiguration(classes = JenkinsConfig.class)
+@ContextConfiguration(classes =
+{ JenkinsConfig.class, GsonConfig.class })
 public class RestAPITest extends AbstractTestNGSpringContextTests
 {
 	private Map<String, Object> testUser;
@@ -47,6 +50,9 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	private String pwd;
 
 	private String adminToken;
+
+	@Autowired
+	private GsonHttpMessageConverter gsonHttpMessageConverter;
 
 	public RestAPITest()
 	{
@@ -69,8 +75,8 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	public void grant(String userName, String entityName, String permission)
 	{
 		Object id = getUserId(userName);
-		client.create(adminToken, "UserAuthority", ImmutableMap.<String, Object> of("role", "ROLE_ENTITY_" + permission
-				+ "_" + entityName.toUpperCase(), "molgenisUser", id));
+		client.create(adminToken, "UserAuthority", ImmutableMap.<String, Object> of("role",
+				"ROLE_ENTITY_" + permission + "_" + entityName.toUpperCase(), "molgenisUser", id));
 	}
 
 	public void createUser()
@@ -132,7 +138,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	protected void createClient()
 	{
 		RestTemplate template = new RestTemplate();
-		template.setMessageConverters(asList(new GsonHttpMessageConverter(true)));
+		template.setMessageConverters(asList(gsonHttpMessageConverter));
 		String apiHref = baseUrl + "/api/v1";
 		client = new MolgenisClient(template, apiHref);
 	}
