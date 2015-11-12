@@ -89,19 +89,19 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 			{
 				LOG.info("Delete {}...", name);
 				restClient.deleteMetadata(token, name);
+				try
+				{
+					Thread.sleep(5000);
+					// If you log out after firing the delete, you get a 401
+				}
+				catch (InterruptedException e)
+				{
+				}
 			}
 			catch (Exception ex)
 			{
 				LOG.info("Failed to delete entity {}. {}", name, ex.getMessage());
 			}
-		}
-		try
-		{
-			Thread.sleep(5000);
-			// If you log out after firing the delete, you get a 401
-		}
-		catch (InterruptedException e)
-		{
 		}
 	}
 
@@ -114,6 +114,14 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 			{
 				LOG.info("Delete {} data...", name);
 				restClient.deleteData(token, name);
+				try
+				{
+					Thread.sleep(5000);
+					// If you log out after firing the delete, you get a 401
+				}
+				catch (InterruptedException e)
+				{
+				}
 			}
 			catch (Exception ex)
 			{
