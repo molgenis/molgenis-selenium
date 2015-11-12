@@ -2,7 +2,6 @@ package org.molgenis.selenium.test.mappingservice;
 
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertEquals;
-import java.util.List;
 
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.mappingservice.AlgorithmEditorModel;
@@ -78,6 +77,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 	@Test
 	public void testMapLifelinesToHop()
 	{
+		LOG.info("Test mapping Lifelines to HOP entity...");
 		assertEquals(model.addSource("lifelines_test").getMappingProjectTableData(),
 				asList(asList("Gender (categorical)", "Sex"),
 						asList("Measured Standing Height in m (decimal)", "Height in centimeter"),
@@ -95,11 +95,13 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				asList("History of Hypertension (categorical)",
 						"Have you ever had high blood pressure? (Repeat) (1)")));
 
+		LOG.info("Check if BMI algorithm was correctly generated...");
 		AlgorithmEditorModel bmiAlgorithmEditor = model.editAlgorithm("lifelines_test", "Body_Mass_Index");
 		assertEquals(bmiAlgorithmEditor.getAlgorithmValue(),
 				"$('WEIGHT').div(1000.0).div($('HEIGHT').div(100.0).pow(2)).value()");
 		bmiAlgorithmEditor.cancelAndGoBack();
 
+		LOG.info("Test creation of integrated dataset...");
 		compareTableData(model.createIntegratedDataset("testing_lifelines_hop").getTableData(),
 				asList(asList("edit", "trash", "search", "", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04",
 						"34.92982846959234", "34.92982846959234", "34.92982846959234", "",

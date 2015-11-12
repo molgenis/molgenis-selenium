@@ -18,6 +18,8 @@ import org.molgenis.data.rest.client.bean.LoginResponse;
 import org.molgenis.data.rest.client.bean.QueryResponse;
 import org.molgenis.util.GsonConfig;
 import org.molgenis.util.GsonHttpMessageConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,6 +39,8 @@ import com.google.gson.reflect.TypeToken;
 { JenkinsConfig.class, GsonConfig.class })
 public class RestAPITest extends AbstractTestNGSpringContextTests
 {
+	private static final Logger LOG = LoggerFactory.getLogger(RestAPITest.class);
+
 	private Map<String, Object> testUser;
 	private MolgenisClient client;
 
@@ -146,7 +150,9 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	@Test
 	public void testAnonymousUserHasNoReadPermissions()
 	{
-		System.out.println("anonymous gets...");
+		LOG.info("Test that anonymous user cannot read protected entities...");
+
+		LOG.info("Test that anonymous user cannot read LoggingEvent...");
 		try
 		{
 			client.get(null, "LoggingEvent");
@@ -158,6 +164,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 			assertEquals(parseErrorMessage(actual), "No READ permission on entity LoggingEvent");
 		}
 
+		LOG.info("Test that anonymous user cannot read ScriptType...");
 		try
 		{
 			client.get(null, "ScriptType");
@@ -169,6 +176,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 			assertEquals(parseErrorMessage(actual), "No READ permission on entity ScriptType");
 		}
 
+		LOG.info("Test that anonymous user cannot read UserAuthority...");
 		try
 		{
 			client.get(null, "UserAuthority");
@@ -180,6 +188,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 			assertEquals(parseErrorMessage(actual), "No READ permission on entity UserAuthority");
 		}
 
+		LOG.info("Test that anonymous user cannot read GroupAuthority...");
 		try
 		{
 			client.get(null, "GroupAuthority");
@@ -205,11 +214,18 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	@Test
 	public void testTestUserHasReadPermissionOnLoggingEventAndScriptTypeButNotOnUserAuthorityAndGroupAuthority()
 	{
-		System.out.println("login test user");
+		LOG.info("Test test user permissions...");
+
+		LOG.debug("login test user...");
 		String token = client.login("test", "secret").getToken();
-		System.out.println("test user gets...");
+
+		LOG.info("Test that test user can read LoggingEvents...");
 		client.get(token, "LoggingEvent");
+
+		LOG.info("Test that test user can read ScriptType...");
 		client.get(token, "ScriptType");
+
+		LOG.info("Test that test user cannot read UserAuthority...");
 		try
 		{
 			client.get(token, "UserAuthority");
@@ -221,6 +237,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 			assertEquals(parseErrorMessage(actual), "No READ permission on entity UserAuthority");
 		}
 
+		LOG.info("Test that test user cannot read GroupAuthority...");
 		try
 		{
 			client.get(token, "GroupAuthority");
@@ -236,11 +253,18 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	@Test
 	public void testTestUserCanDeleteLoggingEvent()
 	{
-		System.out.println("login test user");
+		LOG.info("Test that test user can delete logging event...");
+		LOG.debug("Login test user...");
 		String token = client.login("test", "secret").getToken();
+		
+		LOG.debug("Retrieve LoggingEvents...");
 		QueryResponse response = client.get(token, "LoggingEvent");
 		Object identifier = response.getItems().get(0).get("identifier");
+		
+		LOG.debug("Delete the first LoggingEvent...");
 		client.delete(token, "LoggingEvent", identifier);
+		
+		LOG.debug("Make sure the deleted LoggingEvent is gone...");
 		try
 		{
 			client.get(token, "LoggingEvent", identifier);
@@ -255,8 +279,11 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	@Test
 	public void testTestUserCannotDeleteScriptTypeR()
 	{
-		System.out.println("login test user");
+		LOG.info("Test that test user isnot authorized to delete ScriptType R...");
+		LOG.debug("login test user...");
 		String token = client.login("test", "secret").getToken();
+		
+		LOG.debug("try to delete ScriptType R...");
 		try
 		{
 			client.delete(token, "ScriptType", "R");
@@ -272,8 +299,11 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	@Test
 	public void testTestUserCannotDeleteUserAuthority()
 	{
-		System.out.println("login test user");
+		LOG.info("Test that test user isnot authorized to delete UserAuthority...");
+		LOG.debug("login test user...");
 		String token = client.login("test", "secret").getToken();
+		
+		LOG.debug("Try to delete nonexistent UserAuthority...");
 		try
 		{
 			client.delete(token, "UserAuthority", "blah");
@@ -289,8 +319,11 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	@Test
 	public void testTestUserCannotDeleteGroupAuthority()
 	{
-		System.out.println("login test user");
+		LOG.info("Test that test user isnot authorized to delete GroupAuthority...");
+		LOG.debug("login test user...");
 		String token = client.login("test", "secret").getToken();
+		
+		LOG.debug("Try to delete nonexistent GroupAuthority...");
 		try
 		{
 			client.delete(token, "GroupAuthority", "blah");
@@ -306,7 +339,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	@Test
 	public void testLogoutWithoutTokenFails()
 	{
-		System.out.println("login test user");
+		LOG.info("Test that logout without token throws an exception...");
 		try
 		{
 			client.logout(null);
@@ -322,6 +355,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	@Test
 	public void testLogoutInvalidatesToken()
 	{
+		LOG.info("Test that succesful logout invalidates the token");
 		String token = client.login("test", "secret").getToken();
 		client.logout(token);
 		try

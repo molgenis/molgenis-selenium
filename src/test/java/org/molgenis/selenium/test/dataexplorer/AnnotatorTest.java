@@ -1,10 +1,7 @@
 package org.molgenis.selenium.test.dataexplorer;
 
 import static java.util.Arrays.asList;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.molgenis.JenkinsConfig;
@@ -17,7 +14,6 @@ import org.molgenis.selenium.test.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -56,6 +52,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	@Test
 	public void testAnnotateWithCaddAndSnpEffCopyDelete() throws Exception
 	{
+		LOG.info("Test annotation with cadd and snpEff annotators...");
 		DataExplorerModel dataExplorerModel = model.clickSnpEff().clickCADD().clickCopy()
 				.clickAnnotateButtonAndWait(5, TimeUnit.MINUTES).goToResult().deselectAll().selectCompoundAttributes();
 		compareTableData(dataExplorerModel.getTableData(),

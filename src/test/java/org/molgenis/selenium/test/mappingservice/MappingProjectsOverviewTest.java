@@ -62,6 +62,7 @@ public class MappingProjectsOverviewTest extends AbstractSeleniumTest
 	@Test
 	public void testCreateMappingProject()
 	{
+		LOG.info("Test creating a mapping project...");
 		List<List<String>> mappingProjectsTable = model.addNewMappingProject("Hop hop hop", "HOP_selenium")
 				.backToMappingProjectsOverview().getMappingProjectsTable();
 		Assert.assertEquals(mappingProjectsTable, asList(asList("", "Hop hop hop", "admin", "HOP_selenium", "")));
@@ -70,6 +71,7 @@ public class MappingProjectsOverviewTest extends AbstractSeleniumTest
 	@Test
 	public void testCopyAndDeleteMappingProject()
 	{
+		LOG.info("Test creating, copying and deleting a mapping project...");
 		List<List<String>> mappingProjectsTable = model.addNewMappingProject("Hop hop hop", "HOP_selenium")
 				.backToMappingProjectsOverview().getMappingProjectsTable();
 		Assert.assertEquals(mappingProjectsTable, asList(asList("", "Hop hop hop", "admin", "HOP_selenium", "")));

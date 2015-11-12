@@ -1,21 +1,15 @@
 package org.molgenis.selenium.test;
 
-import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.HomepageModel;
 import org.molgenis.selenium.model.SignInModel;
 import org.molgenis.selenium.test.dataexplorer.AnnotatorTest;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -40,7 +34,7 @@ public class SignInTest extends AbstractSeleniumTest
 	@Test
 	public void testLoginFails() throws InterruptedException
 	{
-		LOG.info("testLoginFails()...");
+		LOG.info("Test that login with invalid credentials fails...");
 		HomepageModel homepageModel = PageFactory.initElements(driver, HomepageModel.class);
 
 		// open the signin
@@ -57,7 +51,7 @@ public class SignInTest extends AbstractSeleniumTest
 	@Test
 	public void testLoginLogout() throws InterruptedException
 	{
-		LOG.info("testLoginLogout()...");
+		LOG.info("Test login and logout...");
 		HomepageModel homepageModel = PageFactory.initElements(driver, HomepageModel.class);
 
 		// should show sign out button

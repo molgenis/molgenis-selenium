@@ -95,7 +95,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 				restClient.deleteMetadata(token, name);
 				try
 				{
-					Thread.sleep(5000);
+					Thread.sleep(1000);
 					// If you log out after firing the delete, you get a 401
 				}
 				catch (InterruptedException e)
@@ -120,7 +120,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 				restClient.deleteData(token, name);
 				try
 				{
-					Thread.sleep(5000);
+					Thread.sleep(1000);
 					// If you log out after firing the delete, you get a 401
 				}
 				catch (InterruptedException e)
@@ -132,14 +132,6 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 				LOG.info("Failed to delete data for {}. {}", name, ex.getMessage());
 			}
 		}
-		try
-		{
-			Thread.sleep(5000);
-			// If you log out after firing the delete, you get a 401
-		}
-		catch (InterruptedException e)
-		{
-		}
 	}
 
 	protected void importFiles(String... relativePaths)
@@ -148,7 +140,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		homepage = PageFactory.initElements(driver, HomepageModel.class).menu().openSignInDialog().signIn(uid, pwd);
 		for (String path : relativePaths)
 		{
-			LOG.info("Import file {}", newArrayList(relativePaths));
+			LOG.info("Import file {}...", newArrayList(relativePaths));
 			File annotatorTestFile = ImporterModel.getFile(path);
 			driver.get(baseURL);
 			homepage.menu().selectImporter().importFile(annotatorTestFile, EntitiesOptions.ADD).finish();
@@ -158,6 +150,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 
 	protected static void compareTableData(List<List<String>> actual, List<List<String>> expected)
 	{
+		LOG.debug("Compare table data...");
 		try
 		{
 			assertEquals(actual.size(), expected.size());

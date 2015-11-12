@@ -58,9 +58,8 @@ public class TagWizardTest extends AbstractSeleniumTest
 	@Test
 	public void testAutomaticTagging()
 	{
-		LOG.info("testAutomaticTagging()");
+		LOG.info("Test automatic tagging of HOP model attributes...");
 		model.selectOntologies("biobank_ontology_test", "uo_test").doAutomatedTagging();
-
 		Assert.assertEquals(model.getAttributeTags(),
 				asList(asList("id\nid", ""), asList("HOP_GENDER\nGender", "Gender"),
 						asList("PM_HEIGHT_MEASURE\nMeasured Standing Height in m", "(Height and meter)"),
@@ -83,7 +82,7 @@ public class TagWizardTest extends AbstractSeleniumTest
 	@Test
 	public void testManualTagging() throws InterruptedException
 	{
-		LOG.info("testAutomaticTagging()");
+		LOG.info("Test Manual tagging of weight attribute with combined tag...");
 		model.selectOntologies("biobank_ontology_test", "uo_test").tagAttributeWithTerms("PM_WEIGHT_MEASURE", "Weight",
 				"Body Weight");
 		Assert.assertEquals(model.getAttributeTags().get(4),
