@@ -40,7 +40,9 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	@AfterClass
 	public void afterClass()
 	{
+		token = restClient.login(uid, pwd).getToken();
 		tryDeleteEntities("AnnotatorTestSelenium");
+		restClient.logout(token);
 	}
 
 	@BeforeMethod

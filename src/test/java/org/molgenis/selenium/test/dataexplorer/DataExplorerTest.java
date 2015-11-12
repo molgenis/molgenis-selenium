@@ -44,7 +44,9 @@ public class DataExplorerTest extends AbstractSeleniumTest
 	@AfterClass
 	public void afterClass()
 	{
+		token = restClient.login(uid, pwd).getToken();
 		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Person", "Location");
+		restClient.logout(token);
 	}
 
 	@BeforeMethod
