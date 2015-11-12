@@ -28,22 +28,22 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	public void beforeClass() throws InterruptedException
 	{
 		token = restClient.login(uid, pwd).getToken();
-		tryDeleteEntities("test_entity");
+		tryDeleteEntities("AnnotatorTestSelenium");
 		new SettingsModel(restClient, token).updateDataExplorerSettings("mod_annotators", true);
 		restClient.logout(token);
-		importFiles("test_file.xlsx");
+		importFiles("annotator_test.xlsx");
 	}
 
 	@AfterClass
 	public void afterClass()
 	{
-		tryDeleteEntities("test_entity");
+		tryDeleteEntities("AnnotatorTestSelenium");
 	}
 
 	@BeforeMethod
 	public void beforeMethod() throws InterruptedException
 	{
-		model = homepage.menu().selectDataExplorer().selectEntity("test_entity").selectAnnotatorTab();
+		model = homepage.menu().selectDataExplorer().selectEntity("AnnotatorTestSelenium").selectAnnotatorTab();
 	}
 
 	@Test
@@ -52,18 +52,19 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		DataExplorerModel dataExplorerModel = model.clickSnpEff().clickCADD().clickCopy()
 				.clickAnnotateButtonAndWait(5, TimeUnit.MINUTES).goToResult().deselectAll().selectCompoundAttributes();
 		Assert.assertEquals(dataExplorerModel.getTableData(),
-				asList(asList("edit", "trash", "search", "", "", "missense_variant", "MODERATE", "ESPN", "ESPN",
-						"transcript", "NM_031475.2", "Coding", "9/13", "c.2044G>A", "p.Gly682Arg", "2212/3531",
-						"2044/2565", "682/854", "", "", "", ""),
-				asList("edit", "trash", "search", "", "", "missense_variant", "MODERATE", "H6PD", "H6PD", "transcript",
-						"NM_001282587.1", "Coding", "5/5", "c.1763G>A", "p.Arg588Gln", "1915/9027", "1763/2409",
-						"588/802", "", "", "", ""),
-				asList("edit", "trash", "search", "", "", "missense_variant", "MODERATE", "HSPG2", "HSPG2",
-						"transcript", "NM_001291860.1", "Coding", "86/97", "c.11728A>C", "p.Thr3910Pro", "11808/14343",
-						"11728/13179", "3910/4392", "", "", "", ""),
-				asList("edit", "trash", "search", "3.852093", "23.4", "missense_variant", "MODERATE", "ABCA4", "ABCA4",
-						"transcript", "NM_000350.2", "Coding", "33/50", "c.4685T>C", "p.Ile1562Thr", "4789/7325",
-						"4685/6822", "1562/2273", "", "", "", "")));
+				asList(asList("edit", "trash", "search", "-0.234176", "0.929", "intron_variant", "MODIFIER",
+						"LOC101926913", "LOC101926913", "transcript", "NR_110185.1", "Noncoding", "5/5",
+						"n.376+9863G>A", "", "", "", "", "", ",T", "", ""),
+				asList("edit", "trash", "search", "1.357866", "12.57", "splice_region_variant&synonymous_variant",
+						"LOW", "STAT4", "STAT4", "transcript", "NM_001243835.1", "Coding", "16/24", "c.1338C>A",
+						"p.Thr446Thr", "1602/2775", "1338/2247", "446/748", "", "", "", ""),
+				asList("edit", "trash", "search", "", "", "intron_variant", "MODIFIER", "ICOSLG", "ICOSLG",
+						"transcript", "NM_001283050.1", "Coding", "5/6", "c.863-37_863-36insG", "", "", "", "", "",
+						",A", "", ""),
+				asList("edit", "trash", "search", "", "", "frameshift_variant", "HIGH", "COL18A1", "COL18A1",
+						"transcript", "NM_030582.3", "Coding", "33/42", "c.3358_3365delCCCCCCGGCCCCCCAGG",
+						"p.Pro1120fs", "3379/5894", "3358/4551", "1120/1516", "", ",CCCCCCCAGG",
+						"(COL18A1|COL18A1|1|1.00)", "")));
 		dataExplorerModel.deleteEntity(DeleteOption.DATA_AND_METADATA);
 	}
 
