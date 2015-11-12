@@ -100,7 +100,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				"$('WEIGHT').div(1000.0).div($('HEIGHT').div(100.0).pow(2)).value()");
 		bmiAlgorithmEditor.cancelAndGoBack();
 
-		assertEquals(model.createIntegratedDataset("testing_lifelines_hop").getTableData(),
+		compareTableData(model.createIntegratedDataset("testing_lifelines_hop").getTableData(),
 				asList(asList("edit", "trash", "search", "", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04",
 						"34.92982846959234", "34.92982846959234", "34.92982846959234", "",
 						"Never + fewer than once a week", "", "Ever had high blood pressure", "lifelines_test")));

@@ -75,42 +75,4 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		dataExplorerModel.deleteEntity(DeleteOption.DATA_AND_METADATA);
 	}
 
-	private static void compareTableData(List<List<String>> actual, List<List<String>> expected)
-	{
-		try
-		{
-			assertEquals(actual.size(), expected.size());
-			for (int i = 0; i < expected.size(); i++)
-			{
-				List<String> actualRow = actual.get(i);
-				List<String> expectedRow = expected.get(i);
-				assertEquals(actualRow.size(), expectedRow.size());
-				for (int j = 0; j < expectedRow.size(); j++)
-				{
-					String actualCell = actualRow.get(j);
-					String expectedCell = expectedRow.get(j);
-
-					if (actualCell == null)
-					{
-						assertNull(expectedCell);
-					}
-					else
-					{
-						if (!actualCell.equals(expectedCell))
-						{
-							// could be a float, compare them for being reasonably close
-							float actualFloat = Float.parseFloat(actualCell);
-							float expectedFloat = Float.parseFloat(expectedCell);
-							Assert.assertEquals(actualFloat, expectedFloat, 1e-6 * actualFloat);
-						}
-					}
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			Assert.fail("Error comparing table data. Expected:<" + expected + "> but was:<" + actual + ">", ex);
-		}
-	}
-
 }
