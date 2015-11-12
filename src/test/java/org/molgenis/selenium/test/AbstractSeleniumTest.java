@@ -95,6 +95,14 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 				LOG.info("Failed to delete entity {}. {}", name, ex.getMessage());
 			}
 		}
+		try
+		{
+			Thread.sleep(5000);
+			// If you log out after firing the delete, you get a 401
+		}
+		catch (InterruptedException e)
+		{
+		}
 	}
 
 	protected void tryDeleteData(String... entityNames)
@@ -111,6 +119,14 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 			{
 				LOG.info("Failed to delete data for {}. {}", name, ex.getMessage());
 			}
+		}
+		try
+		{
+			Thread.sleep(5000);
+			// If you log out after firing the delete, you get a 401
+		}
+		catch (InterruptedException e)
+		{
 		}
 	}
 
