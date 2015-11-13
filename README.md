@@ -1,5 +1,7 @@
 # molgenis-selenium
 
+[![Build Status](http://www.molgenis.org/jenkins/buildStatus/icon?job=selenium-molgenis-test)](http://www.molgenis.org/jenkins/job/selenium-molgenis-test/)
+
 This project uses selenium and the molgenis REST client to test a running molgenis instance.
 You can configure which instance should be tested in a property file.
 
