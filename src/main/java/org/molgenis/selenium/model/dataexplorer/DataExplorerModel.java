@@ -1,15 +1,24 @@
 package org.molgenis.selenium.model.dataexplorer;
 
-import java.util.List;
+import static java.util.Optional.empty;
+import static java.util.stream.Collectors.toList;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
+import org.molgenis.selenium.model.dataexplorer.annotators.AnnotatorModel;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +75,7 @@ public class DataExplorerModel extends AbstractModel
 		entityModel = new Select2Model(driver, "dataset-select", false);
 	}
 
-	public void deleteEntity(DeleteOption deleteOption) throws InterruptedException
+	public void deleteEntity(DeleteOption deleteOption)
 	{
 		String selectedEntity = getSelectedEntityTitle();
 		LOG.info("deleteEntity {}, mode={} ...", selectedEntity, deleteOption);
@@ -84,11 +93,10 @@ public class DataExplorerModel extends AbstractModel
 				break;
 		}
 		confirmButton.click();
-		Wait<WebDriver> tenSecondWait = new WebDriverWait(driver, 10);
-		tenSecondWait.until((d) -> !selectedEntity.equals(getSelectedEntityTitle()));
+		spinner().waitTillDone(20, TimeUnit.SECONDS);
 	}
 
-	public DataExplorerModel selectEntity(String entityLabel) throws InterruptedException
+	public DataExplorerModel selectEntity(String entityLabel)
 	{
 		LOG.info("selectEntity", entityLabel);
 		entityModel.select(entityLabel);
@@ -124,15 +132,43 @@ public class DataExplorerModel extends AbstractModel
 		return this;
 	}
 
-	public DataExplorerModel selectCompoundAttributes()
+	/**
+	 * Clicks on an attribute's checkbox in the attribute tree.
+	 * @param attributeName
+	 * @return
+	 */
+	public DataExplorerModel clickAttribute(String attributeName)
 	{
-		treeFolders.forEach(WebElement::click);
+		driver.findElement(By.xpath("//div[@class='molgenis-tree']//li[span/span/text()='" + attributeName
+				+ "']/span/span[@class='fancytree-checkbox']")).click();
 		return this;
 	}
 
+	/**
+	 * Retrieves the currently displayed table data, row by row. The first three columns are skipped.
+	 */
 	public List<List<String>> getTableData()
 	{
-		LOG.info("getTableData");
-		return getTableData(tableRows);
+		LOG.info("getTableData...");
+		List<List<String>> result = getTableData(tableRows).stream().map(l -> l.subList(3, l.size())).collect(toList());
+		LOG.debug("getTableData result={}", result);
+		return result;
+	}
+
+	/**
+	 * Returns the fully qualified name of the currently displayed entity, based on the driver's URL.
+	 */
+	public Optional<String> getEntityNameFromURL()
+	{
+		try
+		{
+			List<NameValuePair> params = URLEncodedUtils.parse(new URI(driver.getCurrentUrl()), "UTF-8");
+			return params.stream().filter(nvp -> "entity".equals(nvp.getName())).findFirst()
+					.map(NameValuePair::getValue);
+		}
+		catch (URISyntaxException e)
+		{
+			return empty();
+		}
 	}
 }

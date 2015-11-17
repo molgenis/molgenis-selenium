@@ -35,7 +35,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				"Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym", "Ontology_Ontology", "Script",
 				"ScriptParameter");
 		restClient.logout(token);
-		importFiles("org/molgenis/selenium/mappingservice/mappingservice-test.xlsx",
+		importEMXFiles("org/molgenis/selenium/mappingservice/mappingservice-test.xlsx",
 				"org/molgenis/selenium/mappingservice/biobank_ontology_test.owl.zip",
 				"org/molgenis/selenium/mappingservice/uo_test.owl.zip",
 				"org/molgenis/selenium/mappingservice/test-javascript_magma.xls");

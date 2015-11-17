@@ -49,6 +49,9 @@ public class ImporterModel extends AbstractModel
 	@FindBy(css = "#message-panel .panel-heading")
 	private WebElement messagePanel;
 
+	@FindBy(xpath = "//input[@name='name']")
+	private WebElement entityNameInput;
+
 	@FindBy(xpath = "//input[@value='add']")
 	private WebElement addRadioButton;
 
@@ -116,6 +119,18 @@ public class ImporterModel extends AbstractModel
 		return this;
 	}
 
+	public ImporterModel importVcf(File file, String entityName)
+	{
+		LOG.info("importFile {}. entityName={} ...", file, entityName);
+		uploadFile(file);
+		selectEntityName(entityName);
+		selectBasePackage();
+		validate();
+		waitForResult();
+		LOG.info("done");
+		return this;
+	}
+
 	public String getMessageHeader()
 	{
 		return messagePanel.getText();
@@ -141,6 +156,14 @@ public class ImporterModel extends AbstractModel
 		LOG.info("finish()");
 		finishButton.click();
 		oneMinuteWait.until(visibilityOf(stepOne));
+		return this;
+	}
+
+	public ImporterModel selectEntityName(String entityName)
+	{
+		oneMinuteWait.until(visibilityOf(stepTwo));
+		entityNameInput.sendKeys(entityName);
+		nextButton.click();
 		return this;
 	}
 

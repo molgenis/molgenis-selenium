@@ -7,6 +7,7 @@ import static org.testng.Assert.assertNull;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
@@ -118,7 +119,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		}
 	}
 
-	protected void importFiles(String... relativePaths)
+	protected void importEMXFiles(String... relativePaths)
 	{
 		driver.get(baseURL);
 		homepage = PageFactory.initElements(driver, HomepageModel.class).menu().openSignInDialog().signIn(uid, pwd);
@@ -129,6 +130,16 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 			driver.get(baseURL);
 			homepage.menu().selectImporter().importFile(annotatorTestFile, EntitiesOptions.ADD).finish();
 		}
+		homepage.menu().signOut();
+	}
+
+	protected void importVcf(String relativePath, String entityName)
+	{
+		driver.get(baseURL);
+		homepage = PageFactory.initElements(driver, HomepageModel.class).menu().openSignInDialog().signIn(uid, pwd);
+		File annotatorTestFile = ImporterModel.getFile(relativePath);
+		driver.get(baseURL);
+		homepage.menu().selectImporter().importVcf(annotatorTestFile, entityName).finish();
 		homepage.menu().signOut();
 	}
 
@@ -165,10 +176,26 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 				}
 			}
 		}
-		catch (Exception ex)
+		catch (Throwable t)
 		{
-			Assert.fail("Error comparing table data. Expected:<" + expected + "> but was:<" + actual + ">", ex);
+			Assert.fail("Error comparing table data. Expected:<" + getJavaInitializerString(expected) + "> but was:<"
+					+ getJavaInitializerString(actual) + ">", t);
 		}
+	}
+
+	public static String getJavaInitializerString(List<List<String>> tableData)
+	{
+		if (tableData == null)
+		{
+			return "null";
+		}
+		return tableData.stream().map(AbstractSeleniumTest::getJavaInitializerStringForRow)
+				.collect(Collectors.joining(",", "asList(", ")"));
+	}
+
+	public static String getJavaInitializerStringForRow(List<String> row)
+	{
+		return row.stream().map(Object::toString).collect(Collectors.joining("\",\"", "asList(\"", "\")\n"));
 	}
 
 }
