@@ -103,7 +103,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 
 		LOG.info("Test creation of integrated dataset...");
 		compareTableData(model.createIntegratedDataset("testing_lifelines_hop").getTableData(),
-				asList(asList("edit", "trash", "search", "", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04",
+				asList(asList("", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04",
 						"34.92982846959234", "34.92982846959234", "34.92982846959234", "",
 						"Never + fewer than once a week", "", "Ever had high blood pressure", "lifelines_test")));
 
