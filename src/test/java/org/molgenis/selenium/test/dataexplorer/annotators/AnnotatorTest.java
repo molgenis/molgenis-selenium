@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.molgenis.JenkinsConfig;
 import org.molgenis.rest.model.SettingsModel;
@@ -379,9 +381,23 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	public void testRunCaddTwiceOnVcfNoCopy()
 	{
 		LOG.info("Test annotating VCF with CADD twice, on the VCF entity, no copy ...");
-		LOG.info("First annotation with CADD on VcfSelenium...");
+		LOG.info("First annotation with CADD and EXAC on VcfSelenium...");
 		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("VcfSelenium").selectAnnotatorTab()
-				.select("cadd").clickAnnotateButtonAndWait(1, TimeUnit.MINUTES).goToResult();
+				.select("cadd").select("exac").clickAnnotateButtonAndWait(2, TimeUnit.MINUTES).goToResult();
+
+		LOG.info("Check cadd annotations...");
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1,
+				TimeUnit.SECONDS);
+		List<List<String>> tableData = dataExplorerModel.getTableData();
+		LOG.info("Annotated cadd table data: {}", tableData);
+		compareTableData(tableData, VCF_CADD_ANNOTATION);
+
+		LOG.info("Check exac annotations...");
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner().waitTillDone(1,
+				TimeUnit.SECONDS);
+		tableData = dataExplorerModel.getTableData();
+		LOG.info("Annotated exac table data: {}", tableData);
+		compareTableData(tableData, VCF_EXAC_ANNOTATION);
 
 		LOG.info("Clear cadd scores in first row...");
 		Map<String, Object> entity = restClient.get(token, "VcfSelenium").getItems().get(0);
@@ -395,15 +411,25 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		dataExplorerModel.selectAnnotatorTab().select("cadd").clickAnnotateButtonAndWait(1, TimeUnit.MINUTES)
 				.goToResult();
 
-		LOG.info("Check results");
+		LOG.info("Check cadd annotations...");
 		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
-		List<List<String>> tableData = dataExplorerModel.getTableData();
+		tableData = dataExplorerModel.getTableData();
 		LOG.info("CADD table data after annotating twice: {}", tableData);
-		compareTableData(tableData,
-				asList(asList("rs151276478", "-0.25518", "2.773"), asList("rs1749913", "", ""), asList("", "", ""),
-						asList("rs72885464", "", ""), asList("", "", ""), asList("rs2063690", "", ""),
-						asList("rs149296338", "", ""), asList("rs3122407", "", ""), asList("", "-1.358693", "0.027")));
+		compareTableData(tableData, moveFirstRowToLast(VCF_CADD_ANNOTATION));
+
+		LOG.info("Check exac annotations...");
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner().waitTillDone(1,
+				TimeUnit.SECONDS);
+		tableData = dataExplorerModel.getTableData();
+		LOG.info("exac table data after annotating twice: {}", tableData);
+		compareTableData(tableData, moveFirstRowToLast(VCF_EXAC_ANNOTATION));
+	}
+
+	private List<List<String>> moveFirstRowToLast(List<List<String>> expected)
+	{
+		return Stream.<List<String>> concat(expected.stream().skip(1), Stream.<List<String>> of(expected.get(0)))
+				.collect(Collectors.toList());
 	}
 
 }
