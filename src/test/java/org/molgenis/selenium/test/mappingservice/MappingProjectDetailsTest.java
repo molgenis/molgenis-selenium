@@ -35,7 +35,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				"Ontology_OntologyTermNodePath", "Ontology_OntologyTermSynonym", "Ontology_Ontology", "Script",
 				"ScriptParameter");
 		restClient.logout(token);
-		importFiles("org/molgenis/selenium/mappingservice/mappingservice-test.xlsx",
+		importEMXFiles("org/molgenis/selenium/mappingservice/mappingservice-test.xlsx",
 				"org/molgenis/selenium/mappingservice/biobank_ontology_test.owl.zip",
 				"org/molgenis/selenium/mappingservice/uo_test.owl.zip",
 				"org/molgenis/selenium/mappingservice/test-javascript_magma.xls");
@@ -103,7 +103,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 
 		LOG.info("Test creation of integrated dataset...");
 		compareTableData(model.createIntegratedDataset("testing_lifelines_hop").getTableData(),
-				asList(asList("edit", "trash", "search", "", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04",
+				asList(asList("", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04",
 						"34.92982846959234", "34.92982846959234", "34.92982846959234", "",
 						"Never + fewer than once a week", "", "Ever had high blood pressure", "lifelines_test")));
 
