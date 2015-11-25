@@ -71,9 +71,8 @@ public class AnnotatorTest extends AbstractSeleniumTest
 			asList("2", "0.003739", "5", "444"), asList("3", "0.155,6.339E-5", "428,0", "1644,0"),
 			asList("4", "1.079E-5,1.079E-5", "0,0", "1,1"));
 
-	private static final List<List<String>> EMX_GONL_ANNOTATION = asList(asList("1", ".,.,.", "."),
-			asList("2", "495,3,0", "0.0030120481927710845"), asList("3", ".,.,.|.,.,.", ".|."),
-			asList("4", ".,.,.|.,.,.", ".|."));
+	private static final List<List<String>> EMX_GONL_ANNOTATION = asList(asList("1", "", ""),
+			asList("2", "495,3,0", "0.0030120481927710845"), asList("3", "", ""), asList("4", "", ""));
 
 	private static final List<List<String>> EMX_EMPTY_ANNOTATION_TWO_COLUMN = asList(asList("1", "", ""),
 			asList("2", "", ""), asList("3", "", ""), asList("4", "", ""));
@@ -115,11 +114,11 @@ public class AnnotatorTest extends AbstractSeleniumTest
 			asList("rs2063690", "2.471E-5,0.112,1.648E-5", "0,1094,0", "1,11380,2"), asList("rs149296338", "", "", ""),
 			asList("rs3122407", "0.997", "26864", "173"));
 
-	private static final List<List<String>> VCF_GONL_ANNOTATION = asList(asList("", ".,.,.", "."),
+	private static final List<List<String>> VCF_GONL_ANNOTATION = asList(asList("", "", ""),
 			asList("rs151276478", "485,13,0", "0.013052208835341365"),
-			asList("rs1749913", "6,120,372", "0.8674698795180723"), asList("", ".,.,.|.,.,.|.,.,.", ".|.|."),
-			asList("rs72885464", "241,207,50", "0.30823293172690763"), asList("", ".,.,.|.,.,.|.,.,.", ".|.|."),
-			asList("rs2063690", ".,.,.|412,77,9|.,.,.", ".|0.09538152610441768|."), asList("rs149296338", ".,.,.", "."),
+			asList("rs1749913", "6,120,372", "0.8674698795180723"), asList("", "", ""),
+			asList("rs72885464", "241,207,50", "0.30823293172690763"), asList("", "", ""),
+			asList("rs2063690", "|412,77,9|", "|0.09538152610441768|"), asList("rs149296338", "", ""),
 			asList("rs3122407", "0,1,496", "0.9989939637826962"));
 
 	private static final List<List<String>> VCF_EMPTY_ANNOTATION_TWO_COLUMNS = asList(asList("", "", ""),
