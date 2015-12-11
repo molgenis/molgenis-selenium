@@ -162,6 +162,10 @@ public class FormsTest extends AbstractSeleniumTest
 		model.changeValueNoncompoundAttribute("xboolnillable", ""); // N/A
 		model.changeValueCompoundAttribute("xcompound", "xcompound_int", "30");
 		model.changeValueCompoundAttribute("xcompound", "xcompound_string", "selenium test");
+		model.changeValueNoncompoundAttribute("xcategorical_value", "ref4"); // label4
+		model.changeValueNoncompoundAttribute("xcategoricalnillable_value", ""); // N/A
+		model.changeValueNoncompoundAttribute("xcategoricalmref_value", "ref1", "ref2"); // label1
+		model.changeValueNoncompoundAttribute("xcatmrefnillable_value", "ref1", "ref2"); // label1
 
 		model.clickOnSaveChangesButton();
 		LOG.info("Tested editing some values and pushing the save changes button");

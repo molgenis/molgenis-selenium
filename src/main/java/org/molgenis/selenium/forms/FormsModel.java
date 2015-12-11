@@ -15,6 +15,8 @@ import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 public class FormsModel extends AbstractModel
 {
 	private static final Logger LOG = LoggerFactory.getLogger(FormsModel.class);
@@ -99,22 +101,22 @@ public class FormsModel extends AbstractModel
 
 	enum HTMLInputType
 	{
-		radio, text, number
+		radio, text, number, checkbox
 	}
 
-	public void changeValueNoncompoundAttribute(String simpleName, String value)
+	public void changeValueNoncompoundAttribute(String simpleName, String... value)
 	{
 		WebElement attribuetContainer = findAttributesContainerWebElement(simpleName, false);
 		changeValueAttribute(attribuetContainer, simpleName, value);
 	}
 
-	public void changeValueCompoundAttribute(String simpleName, String simpleNamePartOf, String value)
+	public void changeValueCompoundAttribute(String simpleName, String simpleNamePartOf, String... values)
 	{
 		WebElement attribuetContainer = findAttributesContainerWebElement(simpleName, true);
-		changeValueAttribute(attribuetContainer, simpleNamePartOf, value);
+		changeValueAttribute(attribuetContainer, simpleNamePartOf, values);
 	}
 
-	public void changeValueAttribute(WebElement attribuetContainer, String simpleName, String value)
+	public void changeValueAttribute(WebElement attribuetContainer, String simpleName, String... values)
 	{
 		List<WebElement> inputList = attribuetContainer
 				.findElements(By.cssSelector("\\input[name=" + simpleName + "]"));
@@ -122,15 +124,23 @@ public class FormsModel extends AbstractModel
 		switch (HTMLInputType.valueOf(inputList.get(0).getAttribute("type")))
 		{
 			case radio:
-				attribuetContainer.findElement(By.xpath("//input[@name='" + simpleName + "'][@value='" + value + "']"))
+				attribuetContainer.findElement(
+						By.xpath("//input[@name='" + simpleName + "'][@value='" + values[0] + "']"))
 						.click();
+				break;
+			case checkbox:
+				attribuetContainer.findElements(By.cssSelector("input[name='" + simpleName + "']:checked")).stream()
+						.forEachOrdered(e -> e.click());
+				Lists.newArrayList(values).forEach(
+						e -> attribuetContainer.findElement(
+								By.xpath("//input[@name='" + simpleName + "'][@value='" + e + "']")).click());
 				break;
 			case text:
 			case number:
 				final WebElement element = attribuetContainer.findElement(By.xpath("//input[@name='" + simpleName
 						+ "']"));
 				element.clear();
-				element.sendKeys(value);
+				element.sendKeys(values[0]);
 				break;
 			default:
 				break;
