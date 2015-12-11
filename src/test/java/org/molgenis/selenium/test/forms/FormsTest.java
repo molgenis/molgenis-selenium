@@ -71,7 +71,7 @@ public class FormsTest extends AbstractSeleniumTest
 		// super.importEMXFiles("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
 	}
 
-	@Test
+	// @Test
 	/**
 	 * Action: Click on 'edit' icon of first row.
 	 * Result: Form should be visible.
@@ -88,18 +88,20 @@ public class FormsTest extends AbstractSeleniumTest
 		// assertEquals(model.getIdLabel().getText(), "id *");
 		// assertEquals(model.getIdInput().getAttribute("value"), "1");
 		
-		Map<String, WebElement> noncompoundAttrbutes = model.findAttributes(TESTTYPE_NONCOMPOUND_ATTRIBUTES, false);
+		Map<String, WebElement> noncompoundAttrbutes = model.findAttributesContainerWebElement(
+				TESTTYPE_NONCOMPOUND_ATTRIBUTES, false);
 		noncompoundAttrbutes.values().forEach(e -> assertTrue(e.isDisplayed()));
 		LOG.info("Test that noncompound attributes are found: {}", TESTTYPE_NONCOMPOUND_ATTRIBUTES);
 
-		Map<String, WebElement> compoundAttrbutes = model.findAttributes(Arrays.asList("xcompound"), true);
+		Map<String, WebElement> compoundAttrbutes = model.findAttributesContainerWebElement(Arrays.asList("xcompound"),
+				true);
 		compoundAttrbutes.values().forEach(e -> assertTrue(e.isDisplayed()));
 		LOG.info("Test that compound attributes are found: {}", "xcompound");
 
 		model.clickOnCloseButton();
 	}
 
-	@Test
+	// @Test
 	/**
 	 * Action: Click on 'eye' icon.
 	 * Result: Nillable fields should be hidden.
@@ -110,7 +112,7 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsModel model = dataModel.clickOnEditFirstRowButton();
 		model = model.clickEyeButton();
 
-		Map<String, WebElement> noncompoundNillableAttrbutes = model.findAttributes(
+		Map<String, WebElement> noncompoundNillableAttrbutes = model.findAttributesContainerWebElement(
 				TESTTYPE_NONCOMPOUND_NILLABLE_ATTRIBUTES, false);
 		noncompoundNillableAttrbutes.values().forEach(e -> assertTrue(e.isDisplayed()));
 		LOG.info("Test that noncompound and nonnillable attributes are displayed: {}",
@@ -119,7 +121,7 @@ public class FormsTest extends AbstractSeleniumTest
 		assertFalse(model.exists("xcompound", true));
 		LOG.info("Test that xcompound is not displayed");
 
-		Map<String, WebElement> noncompoundNonnillableAttrbutes = model.findAttributes(
+		Map<String, WebElement> noncompoundNonnillableAttrbutes = model.findAttributesContainerWebElement(
 				TESTTYPE_NONCOMPOUND_NONNILLABLE_ATTRIBUTES, false);
 		noncompoundNonnillableAttrbutes.values().forEach(e -> assertFalse(e.isDisplayed()));
 		LOG.info("Test that noncompound and nillable attributes are hidden: {}",
@@ -129,7 +131,7 @@ public class FormsTest extends AbstractSeleniumTest
 	}
 	
 
-	@Test
+	// @Test
 	/**
 	 * Action: Click 'Save changes'.
 	 * Result: Form should be saved without errors and give a 'saved' message.
@@ -144,6 +146,25 @@ public class FormsTest extends AbstractSeleniumTest
 		dataModel = model.clickOnSaveChangesButton();
 		assertTrue(dataModel.existAlertMessage("", ""));
 		LOG.info("Tested save changes button");
+	}
+
+	@Test
+	/**
+	 * Action: Edit some values and save changes.
+	 * Result: Values should be updated
+	 */
+	public void testEditValuesAndSaveChanges()
+	{
+		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
+		final FormsModel model = dataModel.clickOnEditFirstRowButton();
+
+		model.changeValueNoncompoundAttribute("xbool", "false"); // No
+		model.changeValueNoncompoundAttribute("xboolnillable", ""); // N/A
+		model.changeValueCompoundAttribute("xcompound", "xcompound_int", "30");
+		model.changeValueCompoundAttribute("xcompound", "xcompound_string", "selenium test");
+
+		model.clickOnSaveChangesButton();
+		LOG.info("Tested editing some values and pushing the save changes button");
 	}
 
 	@AfterClass

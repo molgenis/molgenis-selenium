@@ -97,21 +97,51 @@ public class FormsModel extends AbstractModel
 		return idInput;
 	}
 
-	public Map<String, WebElement> findAttributes(List<String> simpleNames, boolean isCompoundAttribute)
+	enum HTMLInputType
 	{
-		return findAttributes(modalBody, simpleNames, isCompoundAttribute);
+		radio, text, number
+	}
+
+	public void changeValueNoncompoundAttribute(String simpleName, String value)
+	{
+		WebElement attribuetContainer = findAttributesContainerWebElement(simpleName, false);
+		changeValueAttribute(attribuetContainer, simpleName, value);
+	}
+
+	public void changeValueCompoundAttribute(String simpleName, String simpleNamePartOf, String value)
+	{
+		WebElement attribuetContainer = findAttributesContainerWebElement(simpleName, true);
+		changeValueAttribute(attribuetContainer, simpleNamePartOf, value);
+	}
+
+	public void changeValueAttribute(WebElement attribuetContainer, String simpleName, String value)
+	{
+		List<WebElement> inputList = attribuetContainer
+				.findElements(By.cssSelector("\\input[name=" + simpleName + "]"));
+
+		switch (HTMLInputType.valueOf(inputList.get(0).getAttribute("type")))
+		{
+			case radio:
+				attribuetContainer.findElement(By.xpath("//input[@name='" + simpleName + "'][@value='" + value + "']"))
+						.click();
+				break;
+			case text:
+			case number:
+				final WebElement element = attribuetContainer.findElement(By.xpath("//input[@name='" + simpleName
+						+ "']"));
+				element.clear();
+				element.sendKeys(value);
+				break;
+			default:
+				break;
+		}
 	}
 
 	public boolean exists(String simpleName, boolean isCompoundAttribute)
 	{
-		String container = getAttributeContainer(isCompoundAttribute);
 		try
 		{
-			modalBody
-					.findElement(By.xpath("//" + container
-					+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
-					+ simpleName + "']"));
-			return true;
+			return null != findAttributesContainerWebElement(simpleName, isCompoundAttribute);
 		}
 		catch (Exception e)
 		{
@@ -119,22 +149,21 @@ public class FormsModel extends AbstractModel
 		}
 	}
 
-	private Map<String, WebElement> findAttributes(WebElement webElement, List<String> simpleNames,
+	public Map<String, WebElement> findAttributesContainerWebElement(List<String> simpleNames,
 			boolean isCompoundAttribute)
 	{
-		String container = getAttributeContainer(isCompoundAttribute);
 		Map<String, WebElement> result = new HashMap<String, WebElement>();
 		simpleNames.stream().forEachOrdered(
-				simpleName -> result.put(
-						simpleName,
-						webElement.findElement(By.xpath("//" + container
-								+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length()
-								+ ") = '$" + simpleName + "']"))));
+				simpleName -> result.put(simpleName,
+						this.findAttributesContainerWebElement(simpleName, isCompoundAttribute)
+						));
 		return result;
 	}
-
-	private String getAttributeContainer(boolean isCompoundAttribute)
-	{
-		return isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER;
+	
+	private WebElement findAttributesContainerWebElement(String simpleName,
+			boolean isCompoundAttribute){
+		return modalBody.findElement(By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length()
+				+ ") = '$" + simpleName + "']"));
 	}
 }
