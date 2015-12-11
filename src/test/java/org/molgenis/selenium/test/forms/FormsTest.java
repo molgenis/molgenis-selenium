@@ -127,6 +127,24 @@ public class FormsTest extends AbstractSeleniumTest
 
 		model.clickOnCloseButton();
 	}
+	
+
+	@Test
+	/**
+	 * Action: Click 'Save changes'.
+	 * Result: Form should be saved without errors and give a 'saved' message.
+	 * 
+	 * This test will fail because of this issue:
+	 * "Save changes message in forms is not shown #4273"
+	 */
+	public void testSaveChanges()
+	{
+		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
+		final FormsModel model = dataModel.clickOnEditFirstRowButton();
+		dataModel = model.clickOnSaveChangesButton();
+		assertTrue(dataModel.existAlertMessage("", ""));
+		LOG.info("Tested save changes button");
+	}
 
 	@AfterClass
 	public void afterClass() throws InterruptedException

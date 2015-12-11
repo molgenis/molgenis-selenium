@@ -22,6 +22,9 @@ public class DataModel extends AbstractModel
 	@FindBy(css="#data-table-container button[title='Edit row']")
 	private List<WebElement> editRowButton;
 
+	@FindBy(css = "div.alerts")
+	private WebElement alertsContainer;
+
 	public DataModel(WebDriver driver)
 	{
 		super(driver);
@@ -41,5 +44,22 @@ public class DataModel extends AbstractModel
 		this.editRowButton.get(0).click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, FormsModel.class);
+	}
+
+	/**
+	 * @return the alertsContainer
+	 */
+	public WebElement getAlertsContainer()
+	{
+		return this.alertsContainer;
+	}
+
+	/**
+	 * @return the alertsContainer
+	 */
+	public boolean existAlertMessage(String text, String type)
+	{
+		// TODO IMPLEMENT
+		return true;
 	}
 }

@@ -29,6 +29,10 @@ public class FormsModel extends AbstractModel
 	@FindBy(xpath = "//button[@title=\"Hide optional fields\"]")
 	private WebElement eyeButton;
 
+	// Save changes button
+	@FindBy(xpath = "//button[@name=\"save-changes\"]")
+	private WebElement saveChangesButton;
+
 	// id label
 	@FindBy(css = "label[for=\"id\"]")
 	private WebElement idLabel;
@@ -67,6 +71,14 @@ public class FormsModel extends AbstractModel
 		spinner().waitTillDone(2, TimeUnit.SECONDS);
 		LOG.info("clicked on the modal eye button");
 		return PageFactory.initElements(driver, FormsModel.class);
+	}
+
+	public DataModel clickOnSaveChangesButton()
+	{
+		LOG.info("clicked on edit first row button for entity TypeTest");
+		this.saveChangesButton.click();
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
+		return PageFactory.initElements(driver, DataModel.class);
 	}
 
 	/**
