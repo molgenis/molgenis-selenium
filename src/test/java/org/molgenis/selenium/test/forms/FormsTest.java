@@ -145,6 +145,7 @@ public class FormsTest extends AbstractSeleniumTest
 		final FormsModel model = dataModel.clickOnEditFirstRowButton();
 		dataModel = model.clickOnSaveChangesButton();
 		assertTrue(dataModel.existAlertMessage("", ""));
+		assertFalse(model.isFormOpen());
 		LOG.info("Tested save changes button");
 	}
 
@@ -164,10 +165,19 @@ public class FormsTest extends AbstractSeleniumTest
 		model.changeValueCompoundAttribute("xcompound", "xcompound_string", "selenium test");
 		model.changeValueNoncompoundAttribute("xcategorical_value", "ref4"); // label4
 		model.changeValueNoncompoundAttribute("xcategoricalnillable_value", ""); // N/A
-		model.changeValueNoncompoundAttribute("xcategoricalmref_value", "ref1", "ref2"); // label1
-		model.changeValueNoncompoundAttribute("xcatmrefnillable_value", "ref1", "ref2"); // label1
+		model.changeValueNoncompoundAttribute("xcategoricalmref_value", "ref1", "ref2"); // label1, label2
+		model.changeValueNoncompoundAttribute("xcatmrefnillable_value", ""); // label1, lzabel2
+		model.changeValueNoncompoundAttribute("xdate", "2015-12-31");
+		model.changeValueNoncompoundAttribute("xdatenillable", "");
+
+		// TODO change more values
+		// TODO test changed results in table
+
+		assertFalse(model.formHasErrors());
 
 		model.clickOnSaveChangesButton();
+
+		assertFalse(model.isFormOpen());
 		LOG.info("Tested editing some values and pushing the save changes button");
 	}
 

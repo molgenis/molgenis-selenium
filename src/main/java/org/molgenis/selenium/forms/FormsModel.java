@@ -54,6 +54,9 @@ public class FormsModel extends AbstractModel
 	@FindBy(css = "div.modal-body")
 	private WebElement modalBody;
 
+	@FindBy(css = "body")
+	private WebElement pageBody;
+
 	public FormsModel(WebDriver driver)
 	{
 		super(driver);
@@ -131,7 +134,10 @@ public class FormsModel extends AbstractModel
 			case checkbox:
 				attribuetContainer.findElements(By.cssSelector("input[name='" + simpleName + "']:checked")).stream()
 						.forEachOrdered(e -> e.click());
-				Lists.newArrayList(values).forEach(
+				Lists.newArrayList(values)
+						.stream()
+						.filter(e -> !"".equals(e))
+						.forEach(
 						e -> attribuetContainer.findElement(
 								By.xpath("//input[@name='" + simpleName + "'][@value='" + e + "']")).click());
 				break;
@@ -175,5 +181,24 @@ public class FormsModel extends AbstractModel
 		return modalBody.findElement(By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
 				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length()
 				+ ") = '$" + simpleName + "']"));
+	}
+
+	/**
+	 * @return an answer for the question: This form contains errors?
+	 */
+	public boolean formHasErrors()
+	{
+		return this.elementsExists(modalBody, By.cssSelector(".has-error"));
+	}
+
+	/**
+	 * @return an answer for the question: Is this form open?
+	 */
+	public boolean isFormOpen()
+	{
+		if(this.elementsExists(modalBody, By.cssSelector(".has-error"))){
+			return this.pageBody.findElement(By.cssSelector(".modal-open")).isEnabled();
+		}
+		return false;
 	}
 }

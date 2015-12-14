@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.molgenis.selenium.model.component.SpinnerModel;
 import org.openqa.selenium.By;
@@ -39,5 +40,13 @@ public abstract class AbstractModel
 	{
 		return tableRows.stream().map(elt -> elt.findElements(By.cssSelector("td")))
 				.map(tds -> transform(tds, WebElement::getText)).collect(toList());
+	}
+
+	protected synchronized boolean elementsExists(WebElement we, By by)
+	{
+		this.driver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
+		boolean exists = we.findElements(by).size() != 0;
+		this.driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS); // Restore default value
+		return exists;
 	}
 }
