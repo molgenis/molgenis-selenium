@@ -75,6 +75,8 @@ public class Select2Model
 		LOG.info("Clear selection in Select2 with id {}...", id);
 		while (!StringUtils.isEmpty(driver.findElement(selectSelector).getText().trim()))
 		{
+			// FIXME this is not working for select2-search-choice-close page elements that are not visible
+			// It is not working for an xref nillable value select2
 			driver.findElement(closeButtonSelector).click();
 		}
 		LOG.debug("Selection is empty.");
@@ -104,6 +106,8 @@ public class Select2Model
 		LOG.info("Selecting terms with ids and labels {} in Select2 with id {}...", idsAndLabels, id);
 		for (Map.Entry<String, String> entry : idsAndLabels.entrySet())
 		{
+			if (entry.getKey().isEmpty() || entry.getValue().isEmpty()) continue;
+			
 			LOG.debug("Click select.");
 			WebElement select2Option = driver.findElement(selectedOptionSelector);
 			select2Option.click();

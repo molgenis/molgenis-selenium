@@ -3,7 +3,7 @@ package org.molgenis.selenium.model.dataexplorer.data;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.molgenis.selenium.forms.FormsModel;
+import org.molgenis.selenium.forms.FormsModalModel;
 import org.molgenis.selenium.model.AbstractModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,20 +30,20 @@ public class DataModel extends AbstractModel
 		super(driver);
 	}
 
-	public FormsModel clickOnAddRowButton()
+	public FormsModalModel clickOnAddRowButton()
 	{
 		LOG.info("clicked on add row button for entity TypeTest");
 		this.addRowButton.click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
-		return PageFactory.initElements(driver, FormsModel.class);
+		return PageFactory.initElements(driver, FormsModalModel.class);
 	}
 	
-	public FormsModel clickOnEditFirstRowButton()
+	public FormsModalModel clickOnEditFirstRowButton()
 	{
 		LOG.info("clicked on edit first row button for entity TypeTest");
 		this.editRowButton.get(0).click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
-		return PageFactory.initElements(driver, FormsModel.class);
+		return PageFactory.initElements(driver, FormsModalModel.class);
 	}
 
 	/**
@@ -59,7 +59,8 @@ public class DataModel extends AbstractModel
 	 */
 	public boolean existAlertMessage(String text, String type)
 	{
-		// TODO IMPLEMENT
+		// TODO IMPLEMENT related to issue: "Save changes message in forms is not shown #4273"
 		return true;
 	}
+
 }

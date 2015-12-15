@@ -42,11 +42,22 @@ public abstract class AbstractModel
 				.map(tds -> transform(tds, WebElement::getText)).collect(toList());
 	}
 
-	protected synchronized boolean elementsExists(WebElement we, By by)
+	/**
+	 * Test if an element exists
+	 * 
+	 * @param webDriver
+	 *            WebDriver
+	 * @param webElement
+	 *            WebElement: can be null than the webDriver is used to search.
+	 * @param by
+	 *            By
+	 * @return
+	 */
+	public static boolean exists(WebDriver webDriver, WebElement webElement, By by)
 	{
-		this.driver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
-		boolean exists = we.findElements(by).size() != 0;
-		this.driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS); // Restore default value
+		webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
+		boolean exists = (null == webElement ? webDriver : webElement).findElements(by).size() != 0;
+		webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); // Restore default value
 		return exists;
 	}
 }
