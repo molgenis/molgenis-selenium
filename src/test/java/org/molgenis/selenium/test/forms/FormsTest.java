@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.molgenis.selenium.forms.FormsModel;
+import org.molgenis.selenium.forms.FormsModalModel;
+import org.molgenis.selenium.forms.FormsUtils;
+import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.molgenis.selenium.test.AbstractSeleniumTest;
 import org.openqa.selenium.WebElement;
@@ -20,6 +22,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 public class FormsTest extends AbstractSeleniumTest
@@ -75,25 +78,19 @@ public class FormsTest extends AbstractSeleniumTest
 	/**
 	 * Action: Click on 'edit' icon of first row.
 	 * Result: Form should be visible.
-	 * 
-	 * TODO test if the values are correct
-	 * TODO test if the labels are correct
 	 */
 	public void testVisibilityFirstRow()
 	{
 		final DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
-		final FormsModel model = dataModel.clickOnEditFirstRowButton();
+		final FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		
-		// TODO test values
-		// assertEquals(model.getIdLabel().getText(), "id *");
-		// assertEquals(model.getIdInput().getAttribute("value"), "1");
-		
-		Map<String, WebElement> noncompoundAttrbutes = model.findAttributesContainerWebElement(
+		Map<String, WebElement> noncompoundAttrbutes = FormsUtils.findAttributesContainerWebElement(model.getModal(),
 				TESTTYPE_NONCOMPOUND_ATTRIBUTES, false);
 		noncompoundAttrbutes.values().forEach(e -> assertTrue(e.isDisplayed()));
 		LOG.info("Test that noncompound attributes are found: {}", TESTTYPE_NONCOMPOUND_ATTRIBUTES);
 
-		Map<String, WebElement> compoundAttrbutes = model.findAttributesContainerWebElement(Arrays.asList("xcompound"),
+		Map<String, WebElement> compoundAttrbutes = FormsUtils.findAttributesContainerWebElement(model.getModal(),
+				Arrays.asList("xcompound"),
 				true);
 		compoundAttrbutes.values().forEach(e -> assertTrue(e.isDisplayed()));
 		LOG.info("Test that compound attributes are found: {}", "xcompound");
@@ -109,19 +106,21 @@ public class FormsTest extends AbstractSeleniumTest
 	public void testNillableFieldsShouldBeHidden()
 	{
 		final DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
-		FormsModel model = dataModel.clickOnEditFirstRowButton();
+		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		model = model.clickEyeButton();
 
-		Map<String, WebElement> noncompoundNillableAttrbutes = model.findAttributesContainerWebElement(
+		Map<String, WebElement> noncompoundNillableAttrbutes = FormsUtils.findAttributesContainerWebElement(model.getModal(),
 				TESTTYPE_NONCOMPOUND_NILLABLE_ATTRIBUTES, false);
 		noncompoundNillableAttrbutes.values().forEach(e -> assertTrue(e.isDisplayed()));
 		LOG.info("Test that noncompound and nonnillable attributes are displayed: {}",
 				TESTTYPE_NONCOMPOUND_NILLABLE_ATTRIBUTES);
 
-		assertFalse(model.exists("xcompound", true));
+		assertFalse(AbstractModel.exists(super.driver, model.getModal(),
+				FormsUtils.getAttributeContainerWebElementBy(model.getModal(), "xcompound", true)));
 		LOG.info("Test that xcompound is not displayed");
 
-		Map<String, WebElement> noncompoundNonnillableAttrbutes = model.findAttributesContainerWebElement(
+		Map<String, WebElement> noncompoundNonnillableAttrbutes = FormsUtils.findAttributesContainerWebElement(
+				model.getModal(),
 				TESTTYPE_NONCOMPOUND_NONNILLABLE_ATTRIBUTES, false);
 		noncompoundNonnillableAttrbutes.values().forEach(e -> assertFalse(e.isDisplayed()));
 		LOG.info("Test that noncompound and nillable attributes are hidden: {}",
@@ -142,10 +141,10 @@ public class FormsTest extends AbstractSeleniumTest
 	public void testSaveChanges()
 	{
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
-		final FormsModel model = dataModel.clickOnEditFirstRowButton();
+		final FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		dataModel = model.clickOnSaveChangesButton();
 		assertTrue(dataModel.existAlertMessage("", ""));
-		assertFalse(model.isFormOpen());
+		assertFalse(model.isModalFormOpen());
 		LOG.info("Tested save changes button");
 	}
 
@@ -157,27 +156,57 @@ public class FormsTest extends AbstractSeleniumTest
 	public void testEditValuesAndSaveChanges()
 	{
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
-		final FormsModel model = dataModel.clickOnEditFirstRowButton();
+		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 
-		model.changeValueNoncompoundAttribute("xbool", "false"); // No
-		model.changeValueNoncompoundAttribute("xboolnillable", ""); // N/A
-		model.changeValueCompoundAttribute("xcompound", "xcompound_int", "30");
-		model.changeValueCompoundAttribute("xcompound", "xcompound_string", "selenium test");
-		model.changeValueNoncompoundAttribute("xcategorical_value", "ref4"); // label4
-		model.changeValueNoncompoundAttribute("xcategoricalnillable_value", ""); // N/A
-		model.changeValueNoncompoundAttribute("xcategoricalmref_value", "ref1", "ref2"); // label1, label2
-		model.changeValueNoncompoundAttribute("xcatmrefnillable_value", ""); // label1, lzabel2
-		model.changeValueNoncompoundAttribute("xdate", "2015-12-31");
-		model.changeValueNoncompoundAttribute("xdatenillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xbool", "false"); // No
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xboolnillable", ""); // N/A
+		// FormsUtils.changeValueCompoundAttribute(model.getModal(), "xcompound", "xcompound_int", "30");
+		// FormsUtils.changeValueCompoundAttribute(model.getModal(), "xcompound", "xcompound_string", "selenium test");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xcategorical_value", "ref4"); // label4
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xcategoricalnillable_value", ""); // N/A
+		// FormsUtils.changeValueAttributeCheckbox(model.getModal(), "xcategoricalmref_value", "ref1",
+		// "ref2"); // label1, label2
+		// FormsUtils.changeValueAttributeCheckbox(model.getModal(), "xcatmrefnillable_value", ""); // label1, lzabel2
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdate", "2015-12-31");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatenillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatetime", "2015-12-31T23:59:59+0100");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatetimenillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdecimal", "5.55");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdecimalnillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xemail", "molgenis@gmail.com");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xemailnillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xenum", "enum3");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xenumnillable", "");
+		// // model.changeValueNoncompoundAttribute("xhtml", "<h2>hello selenium testsh</h2>"); TODO
+		// // model.changeValueNoncompoundAttribute("xhtmlnillable", ""); TODO
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xhyperlink", "http://www.seleniumhq.org/");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xhyperlinknillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xint", "5");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintnillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintrange", "5");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintrangenillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlong", "5");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongnillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongrange", "5");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongrangenillable", "");
+		// FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xmref_value",
+		// ImmutableMap.<String, String> of("ref4", "label4", "ref5", "label5"), true, true);
+		// FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xmrefnillable_value",
+		// ImmutableMap.<String, String> of("", ""), true, true);
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xstring", "xstring");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xstringnillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xtext", "xtext");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xtextnillable", "");
+		FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xxref_value",
+				ImmutableMap.<String, String> of("ref4", "label4"), false, false);
+		FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xxrefnillable_value",
+				ImmutableMap.<String, String> of("", ""), false, true);
 
-		// TODO change more values
-		// TODO test changed results in table
-
-		assertFalse(model.formHasErrors());
+		assertFalse(FormsUtils.formHasErrors(super.driver, model.getModal()));
 
 		model.clickOnSaveChangesButton();
 
-		assertFalse(model.isFormOpen());
+		assertFalse(model.isModalFormOpen());
 		LOG.info("Tested editing some values and pushing the save changes button");
 	}
 
