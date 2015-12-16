@@ -31,6 +31,8 @@ public class FormsModalModel extends AbstractModel
 	@FindBy(css = "div.modal-body")
 	private WebElement modal;
 
+	private By modalBy = By.cssSelector("div.modal-body");
+
 	public FormsModalModel(WebDriver driver)
 	{
 		super(driver);
@@ -76,5 +78,13 @@ public class FormsModalModel extends AbstractModel
 	public WebElement getModal()
 	{
 		return modal;
+	}
+
+	/**
+	 * @return the modalBy
+	 */
+	public By getModalBy()
+	{
+		return modalBy;
 	}
 }

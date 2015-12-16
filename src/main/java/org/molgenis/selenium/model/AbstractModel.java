@@ -47,16 +47,16 @@ public abstract class AbstractModel
 	 * 
 	 * @param webDriver
 	 *            WebDriver
-	 * @param webElement
+	 * @param context
 	 *            WebElement: can be null than the webDriver is used to search.
 	 * @param by
-	 *            By
+	 *            By: by is used to fined the WebElement and define if exist
 	 * @return
 	 */
-	public static boolean exists(WebDriver webDriver, WebElement webElement, By by)
+	public static boolean exists(WebDriver webDriver, By context, By by)
 	{
 		webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
-		boolean exists = (null == webElement ? webDriver : webElement).findElements(by).size() != 0;
+		boolean exists = (null == context ? webDriver : webDriver.findElement(context)).findElements(by).size() != 0;
 		webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); // Restore default value
 		return exists;
 	}

@@ -28,26 +28,31 @@ public class FormsUtils
 		radio, text, number, email, url, hidden, checkbox
 	}
 
-	public static void changeValueNoncompoundAttribute(WebElement context, String simpleName, String value)
+	public static void changeValueNoncompoundAttribute(WebDriver driver, By context, String simpleName, String value)
 	{
-		WebElement attribuetContainer = findAttributeContainerWebElement(context, simpleName, false);
+		WebElement attribuetContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
 		changeValueAttribute(attribuetContainer, simpleName, value);
 	}
 
-	public static void changeValueCompoundAttribute(WebElement context, String simpleName, String simpleNamePartOf,
+	public static String getValueNoncompoundAttribute(WebDriver driver, By context, String simpleName)
+	{
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		return attributeContainer.findElement(By.cssSelector("\\input[name=" + simpleName + "]")).getAttribute("value");
+	}
+
+	public static void changeValueCompoundAttribute(WebDriver driver, By context, String simpleName,
+			String simpleNamePartOf,
 			String value)
 	{
-		WebElement attribuetContainer = findAttributeContainerWebElement(context, simpleName, true);
+		WebElement attribuetContainer = findAttributeContainerWebElement(driver, context, simpleName, true);
 		changeValueAttribute(attribuetContainer, simpleNamePartOf, value);
 	}
 
-
 	public static void changeValueAttribute(WebElement attributeContainer, String simpleName, String value)
 	{
-		List<WebElement> inputList = attributeContainer
-				.findElements(By.cssSelector("\\input[name=" + simpleName + "]"));
+		WebElement input = attributeContainer.findElement(By.cssSelector("\\input[name=" + simpleName + "]"));
 
-		switch (HTMLInputType.valueOf(inputList.get(0).getAttribute("type")))
+		switch (HTMLInputType.valueOf(input.getAttribute("type")))
 		{
 			case radio:
 				attributeContainer.findElement(By.xpath("//input[@name='" + simpleName + "'][@value='" + value + "']"))
@@ -60,7 +65,7 @@ public class FormsUtils
 				final WebElement urlInput = attributeContainer.findElement(By.xpath("//input[@name='" + simpleName
 						+ "']"));
 				urlInput.clear();
-				urlInput.sendKeys((String) value);
+				urlInput.sendKeys(value);
 				break;
 			case hidden:
 			case checkbox:
@@ -79,10 +84,10 @@ public class FormsUtils
 	 * @param simpleName
 	 * @param values
 	 */
-	public static void changeValueAttributeCheckbox(WebElement context, String simpleName,
+	public static void changeValueAttributeCheckbox(WebDriver driver, By context, String simpleName,
 			String... values)
 	{
-		WebElement container = findAttributeContainerWebElement(context, simpleName, false);
+		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
 		container.findElements(By.cssSelector("input[name='" + simpleName + "']:checked")).stream()
 				.forEachOrdered(e -> e.click());
 		Arrays.asList(values)
@@ -100,10 +105,10 @@ public class FormsUtils
 	 * @param idAndLabel
 	 * @param multi
 	 */
-	public static void changeValueAttributeSelect2(WebDriver driver, WebElement context, String simpleName,
+	public static void changeValueAttributeSelect2(WebDriver driver, By context, String simpleName,
 			Map<String, String> idAndLabel, boolean multi, boolean clearOriginalValues)
 	{
-		WebElement container = findAttributeContainerWebElement(context, simpleName, false);
+		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
 
 		Select2Model s2model = new Select2Model(driver, container.findElement(
 				By.cssSelector(".select2-container")).getAttribute("id"), multi);
@@ -115,22 +120,23 @@ public class FormsUtils
 		s2model.select(idAndLabel);
 	}
 
-	public static Map<String, WebElement> findAttributesContainerWebElement(WebElement context,
+	public static Map<String, WebElement> findAttributesContainerWebElement(WebDriver driver, By context,
 			List<String> simpleNames,
 			boolean isCompoundAttribute)
 	{
 		Map<String, WebElement> result = new HashMap<String, WebElement>();
 		simpleNames.stream().forEachOrdered(
 				simpleName -> result.put(simpleName,
-						FormsUtils.findAttributeContainerWebElement(context, simpleName, isCompoundAttribute)
+						FormsUtils.findAttributeContainerWebElement(driver, context, simpleName, isCompoundAttribute)
 						));
 		return result;
 	}
 
-	public static WebElement findAttributeContainerWebElement(WebElement context, String simpleName,
+	public static WebElement findAttributeContainerWebElement(WebDriver driver, By context, String simpleName,
 			boolean isCompoundAttribute)
 	{
-		return context.findElement(By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+		return driver.findElement(context).findElement(
+				By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
 				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
 				+ simpleName + "']"));
 	}
@@ -153,8 +159,8 @@ public class FormsUtils
 	 *            WebElement the context in which an element with class "has-error" can be found.
 	 * @return an answer for the question: This form contains errors?
 	 */
-	public static boolean formHasErrors(WebDriver webDriver, WebElement context)
+	public static boolean formHasErrors(WebDriver webDriver, By context)
 	{
-		return AbstractModel.exists(webDriver, context, By.cssSelector(".has-error"));
+		return AbstractModel.exists(webDriver, null, By.cssSelector(".has-error"));
 	}
 }
