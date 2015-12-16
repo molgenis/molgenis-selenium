@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.molgenis.rest.model.SettingsModel;
 import org.molgenis.selenium.forms.FormsModalModel;
 import org.molgenis.selenium.forms.FormsUtils;
 import org.molgenis.selenium.model.AbstractModel;
@@ -67,14 +68,14 @@ public class FormsTest extends AbstractSeleniumTest
 	@BeforeClass
 	public void beforeClass() throws InterruptedException
 	{
-		// super.token = super.restClient.login(uid, pwd).getToken();
-		// // tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Location", "Person");
-		// new SettingsModel(super.restClient, super.token).updateDataExplorerSettings("mod_data", true);
-		// super.restClient.logout(token);
-		// super.importEMXFiles("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
+		super.token = super.restClient.login(uid, pwd).getToken();
+		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Location", "Person");
+		new SettingsModel(super.restClient, super.token).updateDataExplorerSettings("mod_data", true);
+		super.restClient.logout(token);
+		super.importEMXFiles("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
 	}
 
-	// @Test
+	@Test
 	/**
 	 * Action: Click on 'edit' icon of first row.
 	 * Result: Form should be visible.
@@ -98,7 +99,7 @@ public class FormsTest extends AbstractSeleniumTest
 		model.clickOnCloseButton();
 	}
 
-	// @Test
+	@Test
 	/**
 	 * Action: Click on 'eye' icon.
 	 * Result: Nillable fields should be hidden.
@@ -130,7 +131,7 @@ public class FormsTest extends AbstractSeleniumTest
 	}
 	
 
-	// @Test
+	@Test
 	/**
 	 * Action: Click 'Save changes'.
 	 * Result: Form should be saved without errors and give a 'saved' message.
@@ -158,49 +159,50 @@ public class FormsTest extends AbstractSeleniumTest
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xbool", "false"); // No
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xboolnillable", ""); // N/A
-		// FormsUtils.changeValueCompoundAttribute(model.getModal(), "xcompound", "xcompound_int", "30");
-		// FormsUtils.changeValueCompoundAttribute(model.getModal(), "xcompound", "xcompound_string", "selenium test");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xcategorical_value", "ref4"); // label4
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xcategoricalnillable_value", ""); // N/A
-		// FormsUtils.changeValueAttributeCheckbox(model.getModal(), "xcategoricalmref_value", "ref1",
-		// "ref2"); // label1, label2
-		// FormsUtils.changeValueAttributeCheckbox(model.getModal(), "xcatmrefnillable_value", ""); // label1, lzabel2
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdate", "2015-12-31");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatenillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatetime", "2015-12-31T23:59:59+0100");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatetimenillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdecimal", "5.55");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdecimalnillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xemail", "molgenis@gmail.com");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xemailnillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xenum", "enum3");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xenumnillable", "");
-		// // model.changeValueNoncompoundAttribute("xhtml", "<h2>hello selenium testsh</h2>"); TODO
-		// // model.changeValueNoncompoundAttribute("xhtmlnillable", ""); TODO
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xhyperlink", "http://www.seleniumhq.org/");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xhyperlinknillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xint", "5");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintnillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintrange", "5");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintrangenillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlong", "5");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongnillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongrange", "5");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongrangenillable", "");
-		// FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xmref_value",
-		// ImmutableMap.<String, String> of("ref4", "label4", "ref5", "label5"), true, true);
-		// FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xmrefnillable_value",
-		// ImmutableMap.<String, String> of("", ""), true, true);
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xstring", "xstring");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xstringnillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xtext", "xtext");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xtextnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xbool", "false"); // No
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xboolnillable", ""); // N/A
+		FormsUtils.changeValueCompoundAttribute(model.getModal(), "xcompound", "xcompound_int", "30");
+		FormsUtils.changeValueCompoundAttribute(model.getModal(), "xcompound", "xcompound_string", "selenium test");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xcategorical_value", "ref4"); // label4
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xcategoricalnillable_value", ""); // N/A
+		FormsUtils.changeValueAttributeCheckbox(model.getModal(), "xcategoricalmref_value", "ref1", "ref2"); // label1,
+																												// label2
+		FormsUtils.changeValueAttributeCheckbox(model.getModal(), "xcatmrefnillable_value", ""); // label1, lzabel2
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdate", "2015-12-31");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatenillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatetime", "2015-12-31T23:59:59+0100");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdatetimenillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdecimal", "5.55");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xdecimalnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xemail", "molgenis@gmail.com");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xemailnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xenum", "enum3");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xenumnillable", "");
+		// model.changeValueNoncompoundAttribute("xhtml", "<h2>hello selenium testsh</h2>"); FIXME
+		// model.changeValueNoncompoundAttribute("xhtmlnillable", ""); FIXME
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xhyperlink", "http://www.seleniumhq.org/");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xhyperlinknillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xint", "5");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintrange", "5");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xintrangenillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlong", "5");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongrange", "5");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xlongrangenillable", "");
+		FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xmref_value",
+				ImmutableMap.<String, String> of("ref4", "label4", "ref5", "label5"), true, true);
+		FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xmrefnillable_value",
+				ImmutableMap.<String, String> of("", ""), true, true);
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xstring", "xstring");
+		FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xstringnillable", "");
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xtext", "xtext"); FIXME
+		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xtextnillable", ""); FIXME
 		FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xxref_value",
 				ImmutableMap.<String, String> of("ref4", "label4"), false, false);
 		FormsUtils.changeValueAttributeSelect2(super.driver, model.getModal(), "xxrefnillable_value",
-				ImmutableMap.<String, String> of("", ""), false, true);
+				ImmutableMap.<String, String> of("ref4", "label4"), false, false); // Clear original values for nillable
+																					// is not supported. FIXME
 
 		assertFalse(FormsUtils.formHasErrors(super.driver, model.getModal()));
 
@@ -213,8 +215,8 @@ public class FormsTest extends AbstractSeleniumTest
 	@AfterClass
 	public void afterClass() throws InterruptedException
 	{
-		// super.token = super.restClient.login(uid, pwd).getToken();
-		// tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Location", "Person");
-		// super.restClient.logout(token);
+		super.token = super.restClient.login(uid, pwd).getToken();
+		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Location", "Person");
+		super.restClient.logout(token);
 	}
 }
