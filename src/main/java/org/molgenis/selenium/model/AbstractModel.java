@@ -55,7 +55,7 @@ public abstract class AbstractModel
 	 */
 	public static boolean exists(WebDriver webDriver, By context, By by)
 	{
-		webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
+		webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
 		boolean exists = (null == context ? webDriver : webDriver.findElement(context)).findElements(by).size() != 0;
 		webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); // Restore default value
 		return exists;

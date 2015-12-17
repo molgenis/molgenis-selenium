@@ -75,8 +75,7 @@ public class Select2Model
 		LOG.info("Clear selection in Select2 with id {}...", id);
 		while (!StringUtils.isEmpty(driver.findElement(selectSelector).getText().trim()))
 		{
-			// FIXME this is not working for select2-search-choice-close page elements that are not visible
-			// It is not working for an xref nillable value select2
+			// FIXME It is not working for non multi select2.
 			driver.findElement(closeButtonSelector).click();
 		}
 		LOG.debug("Selection is empty.");
@@ -122,21 +121,14 @@ public class Select2Model
 			LOG.debug("Text input box empty. Entering term...");
 			select2InputText.sendKeys(entry.getKey());
 
-			try
-			{
-				LOG.debug("Waiting for match..");
-				WebElement match = driver.findElement(By
-						.xpath("//div[contains(@class,'select2-result-label')]//b[normalize-space(.)='"
-								+ entry.getKey()
-								+ "']|//div[contains(@class,'select2-result-label')][normalize-space(.)='"
-								+ entry.getKey() + "']"));
-				LOG.debug("Click match..");
-				match.click();
-			}
-			catch (Exception ex)
-			{
-				LOG.warn("Element was stale when clicking");
-			}
+			LOG.debug("Waiting for match..");
+			WebElement match = driver.findElement(By
+					.xpath("//div[contains(@class,'select2-result-label')]//b[normalize-space(.)='"
+							+ entry.getKey()
+							+ "']|//div[contains(@class,'select2-result-label')][normalize-space(.)='"
+							+ entry.getKey() + "']"));
+			LOG.debug("Click match..");
+			match.click();
 
 			LOG.debug("Waiting for selection to appear in the list of search choices...");
 			tenSecondWait.until(textToBePresentInElementLocated(

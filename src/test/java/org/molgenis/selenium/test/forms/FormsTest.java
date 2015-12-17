@@ -13,6 +13,8 @@ import org.molgenis.selenium.forms.FormsUtils;
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.molgenis.selenium.test.AbstractSeleniumTest;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +97,7 @@ public class FormsTest extends AbstractSeleniumTest
 		compoundAttrbutes.values().forEach(e -> assertTrue(e.isDisplayed()));
 		LOG.info("Test that compound attributes are found: {}", "xcompound");
 
-		model.clickOnCloseButton();
+		model.clickOnCancelButton();
 	}
 
 	/**
@@ -127,7 +129,7 @@ public class FormsTest extends AbstractSeleniumTest
 		LOG.info("Test that noncompound and nillable attributes are hidden: {}",
 				TESTTYPE_NONCOMPOUND_NONNILLABLE_ATTRIBUTES);
 
-		model.clickOnCloseButton();
+		model.clickOnCancelButton();
 	}
 	
 	/**
@@ -143,14 +145,50 @@ public class FormsTest extends AbstractSeleniumTest
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		final FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		dataModel = model.clickOnSaveChangesButton();
-		assertTrue(dataModel.existAlertMessage("", ""));
-		assertFalse(model.isModalFormOpen());
+		assertTrue(model.isModalFormClosed());
 		LOG.info("Tested save changes button");
 	}
 
 	/**
-	 * Action: Edit some values and save changes.
-	 * Result: Values should be updated
+	 * Create new TypeTestRef Fill in all attributes (Use new TypeTestRef) and click 'Create'
+	 */
+	@Test
+	public void testCreateNewTypeTestRefAndTypeTest()
+	{
+		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTestRef").selectDataTab();
+		FormsModalModel model = dataModel.clickOnAddRowButton();
+
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "value", "ref6");
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "label", "label6");
+
+		dataModel = model.clickOnCreateButton();
+		assertTrue(model.isModalFormClosed());
+		LOG.info("Added a new row with values: {value:ref6, label:label6} [TypeTestRef]");
+
+		dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
+		model = dataModel.clickOnAddRowButton();
+
+		// Unique
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "id", "55");
+
+		populateAllNonUniqueTestTypeAttributeValues(driver, model.getModalBy());
+		
+		// Unique
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique", "Unique");
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique", "42");
+		FormsUtils.changeValueAttributeSelect2NonMulti(driver, model.getModalBy(), "xxref_unique",
+				ImmutableMap.<String, String> of("ref6", "label6"));
+
+		// "These values are computed automatically": xcomputedint, xcomputedxref
+
+		dataModel = model.clickOnCreateButton();
+
+		assertTrue(model.isModalFormClosed());
+		LOG.info("Added a new row with values: {...} [TypeTest]");
+	}
+
+	/**
+	 * Action: Edit some values and save changes. Result: Values should be updated
 	 */
 	@Test
 	public void testEditValuesAndSaveChanges()
@@ -158,72 +196,65 @@ public class FormsTest extends AbstractSeleniumTest
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xbool", "false");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xboolnillable", "");
-		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_int", "30");
-		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_string",
-				"selenium test");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xcategorical_value", "ref4");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xcategoricalnillable_value", "");
-		FormsUtils.changeValueAttributeCheckbox(driver, model.getModalBy(), "xcategoricalmref_value", "ref1", "ref2");
-		FormsUtils.changeValueAttributeCheckbox(driver, model.getModalBy(), "xcatmrefnillable_value", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdate", "2015-12-31");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdatenillable", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdatetime", "2015-12-31T23:59:59+0100");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdatetimenillable", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdecimal", "5.55");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdecimalnillable", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xemail", "molgenis@gmail.com");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xemailnillable", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xenum", "enum3");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xenumnillable", "");
-		// model.changeValueNoncompoundAttribute("xhtml", "<h2>hello selenium testsh</h2>"); FIXME
-		// model.changeValueNoncompoundAttribute("xhtmlnillable", ""); FIXME
-		
-		// xhyperlink
-		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink",
-				"www.molgenis.org");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink",
-				"http://www.seleniumhq.org/");
-
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlinknillable", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xint", "5");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xintnillable", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xintrange", "5");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xintrangenillable", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xlong", "5");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xlongnillable", "");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xlongrange", "5");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xlongrangenillable", "");
-		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xmref_value",
-				ImmutableMap.<String, String> of("ref4", "label4", "ref5", "label5"), true, true);
-		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xmrefnillable_value",
-				ImmutableMap.<String, String> of("", ""), true, true);
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring", "xstring");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstringnillable", "");
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xtext", "xtext"); // FIXME
-		// FormsUtils.changeValueNoncompoundAttribute(model.getModal(), "xtextnillable", ""); // FIXME
-		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xxref_value",
-				ImmutableMap.<String, String> of("ref4", "label4"), false, false);
-
-		// FIXME Clear original values for
-		// nillable non multi is not supported by select2model.
-		// Delete button is not visible
-		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xxrefnillable_value",
-				ImmutableMap.<String, String> of("ref4", "label4"), false, false);
-
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_hidden", "hidden");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstringnillable_hidden", "");
-
-		// FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xcomputedxref",
-		// "This value is computed automatically"); // FIXME Is not editable
-		// FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xcomputedint",
-		// "This value is computed automatically"); // FIXME Is not editable
+		populateAllNonUniqueTestTypeAttributeValues(driver, model.getModalBy());
 
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertFalse(model.isModalFormOpen());
+		assertTrue(model.isModalFormClosed());
 		LOG.info("Tested editing some values and pushing the save changes button");
+	}
+
+	private static void populateAllNonUniqueTestTypeAttributeValues(WebDriver driver, By modalBy)
+	{
+		FormsUtils.changeValueNoncompoundAttributeRadio(driver, modalBy, "xbool", "true");
+		FormsUtils.changeValueNoncompoundAttributeRadio(driver, modalBy, "xboolnillable", "");
+		FormsUtils.changeValueCompoundAttribute(driver, modalBy, "xcompound", "xcompound_int", "55");
+		FormsUtils.changeValueCompoundAttribute(driver, modalBy, "xcompound", "xcompound_string",
+				"selenium test");
+		FormsUtils.changeValueNoncompoundAttributeRadio(driver, modalBy, "xcategorical_value", "ref1");
+		FormsUtils.changeValueNoncompoundAttributeRadio(driver, modalBy, "xcategoricalnillable_value", "");
+		FormsUtils.changeValueNoncompoundAttributeCheckbox(driver, modalBy, "xcategoricalmref_value", "ref1", "ref2");
+		FormsUtils.changeValueNoncompoundAttributeCheckbox(driver, modalBy, "xcatmrefnillable_value", "");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdate", "2015-12-31");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdatenillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdatetime", "2015-12-31T23:59:59+0100");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdatetimenillable", "");
+
+		// FIXMEE: #4283 Remove value xdecimal, try to add x.xx (example: 1.00) will not be possible
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdecimal", "555");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdecimalnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xemail", "molgenis@gmail.com");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xemailnillable", "");
+		FormsUtils.changeValueNoncompoundAttributeRadio(driver, modalBy, "xenum", "enum3");
+		FormsUtils.changeValueNoncompoundAttributeRadio(driver, modalBy, "xenumnillable", "");
+		FormsUtils.typeValueNoncompoundAttributeAceEditor(driver, modalBy, "xhtml",
+				"<h2>hello selenium test");
+		FormsUtils.typeValueNoncompoundAttributeAceEditor(driver, modalBy, "xhtmlnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xhyperlink",
+				"http://www.seleniumhq.org/");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xhyperlinknillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xint", "5");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xintnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xintrange", "5");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xintrangenillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xlong", "5");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xlongnillable", "");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xlongrange", "5");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xlongrangenillable", "");
+		FormsUtils.changeValueAttributeSelect2Multi(driver, modalBy, "xmref_value",
+				ImmutableMap.<String, String> of("ref4", "label4", "ref5", "label5"), true);
+		FormsUtils.changeValueAttributeSelect2Multi(driver, modalBy, "xmrefnillable_value",
+				ImmutableMap.<String, String> of("", ""), true);
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xstring", "xstring");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xstringnillable", "");
+		FormsUtils.changeValueNoncompoundAttributeTextarea(driver, modalBy, "xtext", "xtext");
+		FormsUtils.changeValueNoncompoundAttributeTextarea(driver, modalBy, "xtextnillable", "");
+		FormsUtils.changeValueAttributeSelect2NonMulti(driver, modalBy, "xxref_value",
+				ImmutableMap.<String, String> of("ref1", "label1"));
+		FormsUtils.changeValueAttributeSelect2NonMulti(driver, modalBy, "xxrefnillable_value",
+				ImmutableMap.<String, String> of("ref4", "label4"));
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xstring_hidden", "hidden");
+		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xstringnillable_hidden", "");
 	}
 
 	/**
@@ -260,11 +291,11 @@ public class FormsTest extends AbstractSeleniumTest
 				"www.molgenis.org");
 
 		// xmref_value
-		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xmref_value",
-				ImmutableMap.<String, String> of("", ""), true, true);
+		FormsUtils.changeValueAttributeSelect2Multi(driver, model.getModalBy(), "xmref_value",
+				ImmutableMap.<String, String> of("", ""), true);
 		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
-		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xmref_value",
-				ImmutableMap.<String, String> of("ref1", "label1"), true, true);
+		FormsUtils.changeValueAttributeSelect2Multi(driver, model.getModalBy(), "xmref_value",
+				ImmutableMap.<String, String> of("ref1", "label1"), true);
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 
 		// xstring_unique
@@ -282,21 +313,20 @@ public class FormsTest extends AbstractSeleniumTest
 		String xXrefUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xxref_unique");
 		if (!xXrefUnique.isEmpty())
 		{
-			FormsUtils.changeValueAttributeSelect2(
+			FormsUtils.changeValueAttributeSelect2NonMulti(
 					driver,
 					model.getModalBy(),
 					"xxref_unique",
 					(oXintUnique.equals("ref3") ? ImmutableMap.<String, String> of("ref4", "label4") : ImmutableMap
-							.<String, String> of("ref3", "label3")), false, false);
+							.<String, String> of("ref3", "label3")));
 			assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
-			FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xxref_unique",
-					ImmutableMap.<String, String> of(xXrefUnique, "label" + xXrefUnique.replace("ref", "")), false,
-					false);
+			FormsUtils.changeValueAttributeSelect2NonMulti(driver, model.getModalBy(), "xxref_unique",
+					ImmutableMap.<String, String> of(xXrefUnique, "label" + xXrefUnique.replace("ref", "")));
 		}
 
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertFalse(model.isModalFormOpen());
+		assertTrue(model.isModalFormClosed());
 		LOG.info("Tested editing some values and pushing the save changes button");
 	}
 
@@ -310,8 +340,8 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		FormsUtils.clickDeselectAll(driver, model.getModalBy(), "xcategoricalmref_value");
 		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
-		model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormOpen());
+		model.clickOnCancelButton();
+		assertTrue(model.isModalFormClosed());
 		LOG.info("Test deselect all checkboxes xcategoricalmref_value");
 	}
 
@@ -326,7 +356,7 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.clickSelectAll(driver, model.getModalBy(), "xcategoricalmref_value");
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertFalse(model.isModalFormOpen());
+		assertTrue(model.isModalFormClosed());
 		LOG.info("Test select all checkboxes xcategoricalmref_value");
 	}
 

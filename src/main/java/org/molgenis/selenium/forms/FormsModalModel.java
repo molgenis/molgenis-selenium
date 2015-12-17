@@ -9,41 +9,37 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FormsModalModel extends AbstractModel
 {
 	private static final Logger LOG = LoggerFactory.getLogger(FormsModalModel.class);
-	
-	// Cancel button
-	@FindBy(css = "button[name=\"cancel\"]")
-	private WebElement cancelButton;
 
 	// Eye button
 	@FindBy(xpath = "//button[@title=\"Hide optional fields\"]")
 	private WebElement eyeButton;
 
-	// Save changes button
-	@FindBy(xpath = "//button[@name=\"save-changes\"]")
-	private WebElement saveChangesButton;
-
 	@FindBy(css = "div.modal-body")
 	private WebElement modal;
 
+	// Save changes button
+	private By saveChangesButtonBy = By.xpath("//button[@name=\"save-changes\"]");
+
+	// Create button
+	private By createButtonBy = By.xpath("//button[@name=\"create\"]");
+
+	// Cancel button
+	private By cancelButtonBy = By.xpath("//button[@name=\"cancel\"]");
+
+	// Modal body
 	private By modalBy = By.cssSelector("div.modal-body");
 
 	public FormsModalModel(WebDriver driver)
 	{
 		super(driver);
-	}
-
-	public DataModel clickOnCloseButton()
-	{
-		this.cancelButton.click();
-		spinner().waitTillDone(2, TimeUnit.SECONDS);
-		LOG.info("clicked on the modal cancel button");
-		return PageFactory.initElements(driver, DataModel.class);
 	}
 	
 	public FormsModalModel clickEyeButton()
@@ -56,20 +52,39 @@ public class FormsModalModel extends AbstractModel
 
 	public DataModel clickOnSaveChangesButton()
 	{
-		LOG.info("clicked on edit first row button for entity TypeTest");
-		this.saveChangesButton.click();
+		LOG.info("clicked on save changes button");
+		driver.findElement(this.saveChangesButtonBy).click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, DataModel.class);
 	}
 	
+	public DataModel clickOnCreateButton()
+	{
+		LOG.info("clicked on create button");
+		driver.findElement(this.createButtonBy).click();
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
+		return PageFactory.initElements(driver, DataModel.class);
+	}
+
+	public DataModel clickOnCancelButton()
+	{
+		LOG.info("clicked on cancel button");
+		driver.findElement(this.cancelButtonBy).click();
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
+		return PageFactory.initElements(driver, DataModel.class);
+	}
+
 	/**
 	 * Is this modal open?
 	 * 
 	 * @return boolean
 	 */
-	public boolean isModalFormOpen()
+	public boolean isModalFormClosed()
 	{
-		return AbstractModel.exists(super.driver, null, By.cssSelector(".modal-open"));
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 30);
+		Boolean result = webDriverWait.until(ExpectedConditions.invisibilityOfElementLocated(By
+				.cssSelector(".modal-open")));
+		return null != result && result.booleanValue();
 	}
 
 	/**

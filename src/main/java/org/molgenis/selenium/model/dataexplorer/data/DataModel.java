@@ -53,14 +53,4 @@ public class DataModel extends AbstractModel
 	{
 		return this.alertsContainer;
 	}
-
-	/**
-	 * @return the alertsContainer
-	 */
-	public boolean existAlertMessage(String text, String type)
-	{
-		// TODO IMPLEMENT related to issue: "Save changes message in forms is not shown #4273"
-		return true;
-	}
-
 }

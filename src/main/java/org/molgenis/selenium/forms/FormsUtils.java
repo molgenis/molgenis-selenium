@@ -27,34 +27,66 @@ public class FormsUtils
 	{
 	}
 
-	enum HTMLInputType
-	{
-		radio, text, number, email, url, hidden, checkbox
-	}
-
 	public static void changeValueNoncompoundAttribute(WebDriver driver, By context, String simpleName, String value)
 	{
-		WebElement attribuetContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		changeValueAttribute(attribuetContainer, simpleName, value);
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, value);
+		assertEquals(getValueNoncompoundAttribute(driver, context, simpleName), value);
+	}
+
+	public static void changeValueNoncompoundAttributeUnsafe(WebDriver driver, By context, String simpleName,
+			String value)
+	{
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, value);
+	}
+
+	public static void changeValueNoncompoundAttributeRadio(WebDriver driver, By context, String simpleName,
+			String value)
+	{
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		attributeContainer.findElement(
+				By.xpath("//input[@name='" + simpleName + "'][@type='radio'][@value='" + value + "']")).click();
+		assertEquals(value, getValueNoncompoundAttributeRadio(driver, context, simpleName));
+		attributeContainer.click();
+	}
+
+	public static void typeValueNoncompoundAttributeAceEditor(WebDriver driver, By context, String simpleName,
+			String value)
+	{
+		By textareaBy = By.xpath("//textarea[@class='ace_text-input']");
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		WebElement textarea = attributeContainer.findElement(textareaBy);
+		textarea.sendKeys(value);
+	}
+
+	public static void changeValueNoncompoundAttributeTextarea(WebDriver driver, By context, String simpleName,
+			String value)
+	{
+		By textareaBy = By.cssSelector("textarea");
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		WebElement textarea = attributeContainer.findElement(textareaBy);
+		textarea.clear();
+		textarea.sendKeys(value);
 	}
 
 	public static void testErrorMessageInvalidValueNoncompoundAttribute(WebDriver driver, By context,
 			String simpleName, String value)
 	{
 		String originalValue = FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
-		WebElement attribuetContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		changeValueAttribute(attribuetContainer, simpleName, value);
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, value);
 		assertTrue(FormsUtils.formHasErrors(driver, context));
 		FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
-		changeValueAttribute(attribuetContainer, simpleName, originalValue);
+		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, originalValue);
 	}
 
 	public static void testOnblurAutoConvertValueNoncompoundAttribute(WebDriver driver, By context, String simpleName,
 			String value, String expected)
 	{
-		WebElement attribuetContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		changeValueAttribute(attribuetContainer, simpleName, value);
-		attribuetContainer.click(); // Onblur
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, value);
+		attributeContainer.click(); // Onblur
 		assertFalse(FormsUtils.formHasErrors(driver, context));
 		String actual = FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
 		assertEquals(actual, expected);
@@ -66,37 +98,26 @@ public class FormsUtils
 		return attributeContainer.findElement(By.cssSelector("\\input[name=" + simpleName + "]")).getAttribute("value");
 	}
 
+	public static String getValueNoncompoundAttributeRadio(WebDriver driver, By context, String simpleName)
+	{
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		return attributeContainer.findElement(By.cssSelector("input[name='" + simpleName + "'][type='radio']:checked"))
+				.getAttribute("value");
+	}
+
 	public static void changeValueCompoundAttribute(WebDriver driver, By context, String simpleName,
 			String simpleNamePartOf,
 			String value)
 	{
-		WebElement attribuetContainer = findAttributeContainerWebElement(driver, context, simpleName, true);
-		changeValueAttribute(attribuetContainer, simpleNamePartOf, value);
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, true);
+		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleNamePartOf, value);
 	}
 
-	public static void changeValueAttribute(WebElement attributeContainer, String simpleName, String value)
+	public static void changeValueAttributeTextNumberEmailUrl(WebElement attributeContainer, String simpleName, String value)
 	{
 		WebElement inputElement = attributeContainer.findElement(By.xpath("//input[@name='" + simpleName + "']"));
-		switch (HTMLInputType.valueOf(inputElement.getAttribute("type")))
-		{
-			case radio:
-				attributeContainer.findElement(By.xpath("//input[@name='" + simpleName + "'][@value='" + value + "']"))
-						.click();
-				break;
-			case text:
-			case number:
-			case email:
-			case url:
-				inputElement.clear();
-				inputElement.sendKeys(value);
-				break;
-			case hidden:
-			case checkbox:
-				LOG.warn("The hidden and checkbox HTML input type are not supported");
-				break;
-			default:
-				break;
-		}
+		inputElement.clear();
+		inputElement.sendKeys(value);
 	}
 
 	/**
@@ -107,7 +128,7 @@ public class FormsUtils
 	 * @param simpleName
 	 * @param values
 	 */
-	public static void changeValueAttributeCheckbox(WebDriver driver, By context, String simpleName,
+	public static void changeValueNoncompoundAttributeCheckbox(WebDriver driver, By context, String simpleName,
 			String... values)
 	{
 		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
@@ -136,25 +157,41 @@ public class FormsUtils
 	}
 
 	/**
-	 * Use this method to empty and add new values to a select2 attribute
+	 * Use this method to empty and add new values to the select2 attribute
 	 * 
 	 * @param simpleName
 	 * @param idAndLabel
-	 * @param multi
 	 */
-	public static void changeValueAttributeSelect2(WebDriver driver, By context, String simpleName,
-			Map<String, String> idAndLabel, boolean multi, boolean clearOriginalValues)
+	public static void changeValueAttributeSelect2Multi(WebDriver driver, By context, String simpleName,
+			Map<String, String> idAndLabel, boolean clearOriginalValues)
 	{
 		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
 
-		Select2Model s2model = new Select2Model(driver, container.findElement(
-				By.cssSelector(".select2-container")).getAttribute("id"), multi);
+		Select2Model s2model = new Select2Model(driver, container.findElement(By.cssSelector(".select2-container"))
+				.getAttribute("id"), true);
 
 		if (clearOriginalValues)
 		{
 			s2model.clearSelection();
 		}
 		s2model.select(idAndLabel);
+		container.click();
+	}
+
+	/**
+	 * Use this method to change selection of non multi select2 attribute
+	 * 
+	 * @param simpleName
+	 * @param idAndLabel
+	 */
+	public static void changeValueAttributeSelect2NonMulti(WebDriver driver, By context, String simpleName,
+			Map<String, String> idAndLabel)
+	{
+		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
+		Select2Model s2model = new Select2Model(driver, container.findElement(By.cssSelector(".select2-container"))
+				.getAttribute("id"), false);
+		s2model.select(idAndLabel);
+		container.click();
 	}
 
 	public static Map<String, WebElement> findAttributesContainerWebElement(WebDriver driver, By context,
