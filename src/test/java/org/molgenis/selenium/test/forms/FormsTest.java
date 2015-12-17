@@ -1,9 +1,6 @@
 package org.molgenis.selenium.test.forms;
 
 import static org.testng.Assert.assertFalse;
-//import static org.testng.Assert.assertEquals;
-//import static org.testng.Assert.assertFalse;
-//import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
