@@ -69,17 +69,17 @@ public class FormsTest extends AbstractSeleniumTest
 	public void beforeClass() throws InterruptedException
 	{
 		super.token = super.restClient.login(uid, pwd).getToken();
-		// tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Location", "Person");
+		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Location", "Person");
 		new SettingsModel(super.restClient, super.token).updateDataExplorerSettings("mod_data", true);
 		super.restClient.logout(token);
-		// super.importEMXFiles("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
+		super.importEMXFiles("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
 	}
 
-	@Test
 	/**
 	 * Action: Click on 'edit' icon of first row.
 	 * Result: Form should be visible.
 	 */
+	@Test
 	public void testVisibilityFirstRow()
 	{
 		final DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
@@ -101,11 +101,11 @@ public class FormsTest extends AbstractSeleniumTest
 		model.clickOnCloseButton();
 	}
 
-	@Test
 	/**
 	 * Action: Click on 'eye' icon.
 	 * Result: Nillable fields should be hidden.
 	 */
+	@Test
 	public void testNillableFieldsShouldBeHidden()
 	{
 		final DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
@@ -133,8 +133,6 @@ public class FormsTest extends AbstractSeleniumTest
 		model.clickOnCloseButton();
 	}
 	
-
-	// @Test
 	/**
 	 * Action: Click 'Save changes'.
 	 * Result: Form should be saved without errors and give a 'saved' message.
@@ -142,6 +140,7 @@ public class FormsTest extends AbstractSeleniumTest
 	 * This test will fail because of this issue:
 	 * "Save changes message in forms is not shown #4273"
 	 */
+	@Test
 	public void testSaveChanges()
 	{
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
@@ -156,6 +155,7 @@ public class FormsTest extends AbstractSeleniumTest
 	 * Action: Edit some values and save changes.
 	 * Result: Values should be updated
 	 */
+	@Test
 	public void testEditValuesAndSaveChanges()
 	{
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
@@ -182,8 +182,13 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xenumnillable", "");
 		// model.changeValueNoncompoundAttribute("xhtml", "<h2>hello selenium testsh</h2>"); FIXME
 		// model.changeValueNoncompoundAttribute("xhtmlnillable", ""); FIXME
+		
+		// xhyperlink
+		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink",
+				"www.molgenis.org");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink",
 				"http://www.seleniumhq.org/");
+
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlinknillable", "");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xint", "5");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xintnillable", "");
@@ -206,26 +211,77 @@ public class FormsTest extends AbstractSeleniumTest
 
 		// FIXME Clear original values for
 		// nillable non multi is not supported by select2model.
+		// Delete button is not visible
 		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xxrefnillable_value",
 				ImmutableMap.<String, String> of("ref4", "label4"), false, false);
 
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_hidden", "hidden");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstringnillable_hidden", "");
 
-		// TEST xstring_unique
+		// FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xcomputedxref",
+		// "This value is computed automatically"); // FIXME Is not editable
+		// FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xcomputedint",
+		// "This value is computed automatically"); // FIXME Is not editable
+
+		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		model.clickOnSaveChangesButton();
+		assertFalse(model.isModalFormOpen());
+		LOG.info("Tested editing some values and pushing the save changes button");
+	}
+
+	/**
+	 * Action: Test error messages for invalid values
+	 */
+	@Test
+	public void testErrorMessagesInvalidValues()
+	{
+		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
+		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
+
+		// xcompound_int
+		// Test change value and invalid value message
+		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_int",
+				"9999999999999");
+		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_int", "30");
+
+		// xdate
+		String oXdate = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xdate");
+		FormsUtils.testOnblurAutoConvertValueNoncompoundAttribute(driver, model.getModalBy(), "xdate", oXdate + "TEST",
+				oXdate);
+
+		// xdecimal
+		FormsUtils.testOnblurAutoConvertValueNoncompoundAttribute(driver, model.getModalBy(), "xdecimal", "1-1-1-1-1",
+				"11111");
+
+		// xemail
+		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xemail",
+				"molgenisgmail.com");
+
+		// xhyperlink
+		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink",
+				"www.molgenis.org");
+
+		// xmref_value
+		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xmref_value",
+				ImmutableMap.<String, String> of("", ""), true, true);
+		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		FormsUtils.changeValueAttributeSelect2(driver, model.getModalBy(), "xmref_value",
+				ImmutableMap.<String, String> of("ref1", "label1"), true, true);
+		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
+
+		// xstring_unique
 		String oXstringUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique",
+		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique",
 				(oXstringUnique.equals("str4") ? "str3" : "str4"));
-		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique", oXstringUnique);
 
-		// TEST xint_unique
+		// xint_unique
 		String oXintUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique");
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique",
+		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique",
 				(oXintUnique.equals("2") ? "1" : "2"));
-		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique", oXintUnique);
 
+		// xxref_unique
+		// Test change value and invalid value message
 		String xXrefUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xxref_unique");
 		if (!xXrefUnique.isEmpty())
 		{
@@ -241,24 +297,47 @@ public class FormsTest extends AbstractSeleniumTest
 					false);
 		}
 
-		// FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xcomputedxref",
-		// "This value is computed automatically"); // FIXME Is not editable
-		// FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xcomputedint",
-		// "This value is computed automatically"); // FIXME Is not editable
-
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
-
 		model.clickOnSaveChangesButton();
-
 		assertFalse(model.isModalFormOpen());
 		LOG.info("Tested editing some values and pushing the save changes button");
+	}
+
+	/**
+	 * Action: Click link 'Deselect all' link of xcategoricalmref_value. Result: All checkboxes should be unchecked.
+	 */
+	@Test
+	public void testDeselectAll()
+	{
+		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
+		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
+		FormsUtils.clickDeselectAll(driver, model.getModalBy(), "xcategoricalmref_value");
+		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		model.clickOnSaveChangesButton();
+		assertTrue(model.isModalFormOpen());
+		LOG.info("Test deselect all checkboxes xcategoricalmref_value");
+	}
+
+	/**
+	 * Action: Click 'select all' link of xcategoricalmref_value. Result: All checkboxes should be checked.
+	 */
+	@Test
+	public void testSelectAll()
+	{
+		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
+		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
+		FormsUtils.clickSelectAll(driver, model.getModalBy(), "xcategoricalmref_value");
+		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		model.clickOnSaveChangesButton();
+		assertFalse(model.isModalFormOpen());
+		LOG.info("Test select all checkboxes xcategoricalmref_value");
 	}
 
 	@AfterClass
 	public void afterClass() throws InterruptedException
 	{
-		// super.token = super.restClient.login(uid, pwd).getToken();
-		// tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Location", "Person");
-		// super.restClient.logout(token);
+		super.token = super.restClient.login(uid, pwd).getToken();
+		tryDeleteEntities("org_molgenis_test_TypeTest", "TypeTestRef", "Location", "Person");
+		super.restClient.logout(token);
 	}
 }

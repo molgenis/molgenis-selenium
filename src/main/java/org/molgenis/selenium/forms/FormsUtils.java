@@ -1,5 +1,9 @@
 package org.molgenis.selenium.forms;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +38,28 @@ public class FormsUtils
 		changeValueAttribute(attribuetContainer, simpleName, value);
 	}
 
+	public static void testErrorMessageInvalidValueNoncompoundAttribute(WebDriver driver, By context,
+			String simpleName, String value)
+	{
+		String originalValue = FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
+		WebElement attribuetContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		changeValueAttribute(attribuetContainer, simpleName, value);
+		assertTrue(FormsUtils.formHasErrors(driver, context));
+		FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
+		changeValueAttribute(attribuetContainer, simpleName, originalValue);
+	}
+
+	public static void testOnblurAutoConvertValueNoncompoundAttribute(WebDriver driver, By context, String simpleName,
+			String value, String expected)
+	{
+		WebElement attribuetContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		changeValueAttribute(attribuetContainer, simpleName, value);
+		attribuetContainer.click(); // Onblur
+		assertFalse(FormsUtils.formHasErrors(driver, context));
+		String actual = FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
+		assertEquals(actual, expected);
+	}
+
 	public static String getValueNoncompoundAttribute(WebDriver driver, By context, String simpleName)
 	{
 		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
@@ -50,9 +76,8 @@ public class FormsUtils
 
 	public static void changeValueAttribute(WebElement attributeContainer, String simpleName, String value)
 	{
-		WebElement input = attributeContainer.findElement(By.cssSelector("\\input[name=" + simpleName + "]"));
-
-		switch (HTMLInputType.valueOf(input.getAttribute("type")))
+		WebElement inputElement = attributeContainer.findElement(By.xpath("//input[@name='" + simpleName + "']"));
+		switch (HTMLInputType.valueOf(inputElement.getAttribute("type")))
 		{
 			case radio:
 				attributeContainer.findElement(By.xpath("//input[@name='" + simpleName + "'][@value='" + value + "']"))
@@ -62,10 +87,8 @@ public class FormsUtils
 			case number:
 			case email:
 			case url:
-				final WebElement urlInput = attributeContainer.findElement(By.xpath("//input[@name='" + simpleName
-						+ "']"));
-				urlInput.clear();
-				urlInput.sendKeys(value);
+				inputElement.clear();
+				inputElement.sendKeys(value);
 				break;
 			case hidden:
 			case checkbox:
@@ -96,6 +119,20 @@ public class FormsUtils
 				.forEach(
 						e -> container.findElement(
 								By.xpath("//input[@name='" + simpleName + "'][@value='" + e + "']")).click());
+	}
+
+	public static void clickDeselectAll(WebDriver driver, By context, String simpleName)
+	{
+		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
+		WebElement link = container.findElement(By.xpath("//span[contains(text(), 'Deselect all')]/.."));
+		link.click();
+	}
+
+	public static void clickSelectAll(WebDriver driver, By context, String simpleName)
+	{
+		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
+		WebElement link = container.findElement(By.xpath("//span[contains(text(), 'Select all')]/.."));
+		link.click();
 	}
 
 	/**
