@@ -1,4 +1,4 @@
-package org.molgenis.selenium.forms;
+package org.molgenis.selenium.model.forms;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;

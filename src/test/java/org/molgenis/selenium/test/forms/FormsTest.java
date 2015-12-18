@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.molgenis.rest.model.SettingsModel;
-import org.molgenis.selenium.forms.FormsModalModel;
-import org.molgenis.selenium.forms.FormsUtils;
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.dataexplorer.data.DataModel;
+import org.molgenis.selenium.model.forms.FormsModalModel;
+import org.molgenis.selenium.model.forms.FormsUtils;
 import org.molgenis.selenium.test.AbstractSeleniumTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

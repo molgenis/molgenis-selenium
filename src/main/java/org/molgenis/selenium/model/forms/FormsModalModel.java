@@ -1,4 +1,4 @@
-package org.molgenis.selenium.forms;
+package org.molgenis.selenium.model.forms;
 
 import java.util.concurrent.TimeUnit;
 

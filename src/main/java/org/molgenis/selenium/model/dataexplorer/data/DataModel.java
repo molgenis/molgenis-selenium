@@ -3,8 +3,8 @@ package org.molgenis.selenium.model.dataexplorer.data;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.molgenis.selenium.forms.FormsModalModel;
 import org.molgenis.selenium.model.AbstractModel;
+import org.molgenis.selenium.model.forms.FormsModalModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
