@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
+import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.HomepageModel;
-import org.molgenis.selenium.model.component.SpinnerModel;
 import org.molgenis.selenium.model.importer.ImporterModel;
 import org.molgenis.selenium.model.importer.ImporterModel.EntitiesOptions;
 import org.molgenis.util.GsonConfig;
@@ -61,7 +61,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	public void abstractBeforeClass()
 	{
 		driver = DriverType.FIREFOX.getDriver();
-		driver.manage().timeouts().implicitlyWait(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(AbstractModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 	}
 
 	@AfterClass
