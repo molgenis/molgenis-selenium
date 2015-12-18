@@ -197,4 +197,5 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	{
 		return row.stream().map(Object::toString).collect(Collectors.joining("\",\"", "asList(\"", "\")\n"));
 	}
+
 }
