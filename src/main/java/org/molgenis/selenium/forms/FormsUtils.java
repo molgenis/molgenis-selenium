@@ -235,6 +235,6 @@ public class FormsUtils
 	 */
 	public static boolean formHasErrors(WebDriver webDriver, By context)
 	{
-		return AbstractModel.exists(webDriver, null, By.cssSelector(".has-error"));
+		return !AbstractModel.noElementFound(webDriver, null, By.cssSelector(".has-error"));
 	}
 }
