@@ -5,7 +5,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.molgenis.selenium.model.component.SpinnerModel;
 import org.openqa.selenium.By;
@@ -55,9 +54,8 @@ public abstract class AbstractModel
 	 */
 	public static boolean exists(WebDriver webDriver, By context, By by)
 	{
-		webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
-		boolean exists = (null == context ? webDriver : webDriver.findElement(context)).findElements(by).size() != 0;
-		webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); // Restore default value
-		return exists;
+		List<WebElement> webElements = (null == context ? webDriver.findElements(by) : webDriver.findElement(context)
+				.findElements(by));
+		return webElements.size() > 0;
 	}
 }

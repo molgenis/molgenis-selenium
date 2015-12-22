@@ -1,5 +1,6 @@
 package org.molgenis.selenium.test.forms;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -145,7 +146,7 @@ public class FormsTest extends AbstractSeleniumTest
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		final FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		dataModel = model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitUntilModalFormClosed();
 		LOG.info("Tested save changes button");
 	}
 
@@ -162,7 +163,7 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "label", "label6");
 
 		dataModel = model.clickOnCreateButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitUntilModalFormClosed();
 		LOG.info("Added a new row with values: {value:ref6, label:label6} [TypeTestRef]");
 
 		dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
@@ -182,8 +183,7 @@ public class FormsTest extends AbstractSeleniumTest
 		// "These values are computed automatically": xcomputedint, xcomputedxref
 
 		dataModel = model.clickOnCreateButton();
-
-		assertTrue(model.isModalFormClosed());
+		model.waitUntilModalFormClosed();
 		LOG.info("Added a new row with values: {...} [TypeTest]");
 	}
 
@@ -195,12 +195,9 @@ public class FormsTest extends AbstractSeleniumTest
 	{
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
-
 		populateAllNonUniqueTestTypeAttributeValues(driver, model.getModalBy());
-
-		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitUntilModalFormClosed();
 		LOG.info("Tested editing some values and pushing the save changes button");
 	}
 
@@ -267,49 +264,57 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 
 		// xcompound_int
-		// Test change value and invalid value message
 		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_int",
 				"9999999999999");
-		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
-		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_int", "30");
+		assertTrue(FormsUtils.messageExists(driver,
+				"Please enter a value between -2147483648 and 2147483647."));
+		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_int", "100");
 
 		// xdate
-		String oXdate = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xdate");
-		FormsUtils.testOnblurAutoConvertValueNoncompoundAttribute(driver, model.getModalBy(), "xdate", oXdate + "TEST",
-				oXdate);
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdate", "");
+		assertTrue(FormsUtils.messageExists(driver, "Please enter a value."));
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdate", "2015-12-31");
+		//At this stage the date JavaScript event is still working. Testing onBlur of a date is very difficult.
 
-		// xdecimal
-		FormsUtils.testOnblurAutoConvertValueNoncompoundAttribute(driver, model.getModalBy(), "xdecimal", "1-1-1-1-1",
-				"11111");
+		// Test onblur xdecimal
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xdecimal", "1-1-1-1-1");
+		FormsUtils.focusOnElement(driver, model.getModalBy(), "xdecimal");
+		String actual1 = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xdecimal");
+		assertEquals(actual1, "11111");
 
 		// xemail
-		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xemail",
-				"molgenisgmail.com");
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xemail", "molgenisgmail.com");
+		assertTrue(FormsUtils.messageExists(driver, "Please enter a valid email address."));
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xemail", "molgenis@gmail.com");
 
 		// xhyperlink
-		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink",
-				"www.molgenis.org");
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xhyperlink", "www.molgenis.org");
+		assertTrue(FormsUtils.messageExists(driver, "Please enter a valid URL."));
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xhyperlink",
+				"http://www.molgenis.org");
 
 		// xmref_value
 		FormsUtils.changeValueAttributeSelect2Multi(driver, model.getModalBy(), "xmref_value",
 				ImmutableMap.<String, String> of("", ""), true);
-		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		assertTrue(FormsUtils.messageExists(driver, "Please enter a value."));
 		FormsUtils.changeValueAttributeSelect2Multi(driver, model.getModalBy(), "xmref_value",
 				ImmutableMap.<String, String> of("ref1", "label1"), true);
-		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 
 		// xstring_unique
 		String oXstringUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique");
-		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique",
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xstring_unique",
 				(oXstringUnique.equals("str4") ? "str3" : "str4"));
+		assertTrue(FormsUtils.messageExists(driver, "This xstring_unique already exists. It must be unique."));
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xstring_unique", oXstringUnique);
 
 		// xint_unique
 		String oXintUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique");
-		FormsUtils.testErrorMessageInvalidValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique",
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xint_unique",
 				(oXintUnique.equals("2") ? "1" : "2"));
+		assertTrue(FormsUtils.messageExists(driver, "This xint_unique already exists. It must be unique."));
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xint_unique", oXstringUnique);
 
 		// xxref_unique
-		// Test change value and invalid value message
 		String xXrefUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xxref_unique");
 		if (!xXrefUnique.isEmpty())
 		{
@@ -319,14 +324,13 @@ public class FormsTest extends AbstractSeleniumTest
 					"xxref_unique",
 					(oXintUnique.equals("ref3") ? ImmutableMap.<String, String> of("ref4", "label4") : ImmutableMap
 							.<String, String> of("ref3", "label3")));
-			assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+			assertTrue(FormsUtils.messageExists(driver, "This xxref_unique already exists. It must be unique."));
 			FormsUtils.changeValueAttributeSelect2NonMulti(driver, model.getModalBy(), "xxref_unique",
 					ImmutableMap.<String, String> of(xXrefUnique, "label" + xXrefUnique.replace("ref", "")));
 		}
 
-		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitUntilModalFormClosed();
 		LOG.info("Tested editing some values and pushing the save changes button");
 	}
 
@@ -339,9 +343,9 @@ public class FormsTest extends AbstractSeleniumTest
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		FormsUtils.clickDeselectAll(driver, model.getModalBy(), "xcategoricalmref_value");
-		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		assertTrue(FormsUtils.messageExists(driver, "Please enter a value."));
 		model.clickOnCancelButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitUntilModalFormClosed();
 		LOG.info("Test deselect all checkboxes xcategoricalmref_value");
 	}
 
@@ -354,9 +358,8 @@ public class FormsTest extends AbstractSeleniumTest
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		FormsUtils.clickSelectAll(driver, model.getModalBy(), "xcategoricalmref_value");
-		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitUntilModalFormClosed();
 		LOG.info("Test select all checkboxes xcategoricalmref_value");
 	}
 

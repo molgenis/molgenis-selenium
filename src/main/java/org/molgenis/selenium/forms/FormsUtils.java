@@ -1,8 +1,6 @@
 package org.molgenis.selenium.forms;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,12 +12,10 @@ import org.molgenis.selenium.model.component.Select2Model;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openqa.selenium.interactions.Actions;
 
 public class FormsUtils
 {
-	private static final Logger LOG = LoggerFactory.getLogger(FormsUtils.class);
 	private static final String NONCOMPOUND_CONTAINER = "div";
 	private static final String COMPOUND_CONTAINER = "fieldset";
 
@@ -29,16 +25,22 @@ public class FormsUtils
 
 	public static void changeValueNoncompoundAttribute(WebDriver driver, By context, String simpleName, String value)
 	{
-		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, value);
+		changeValueNoncompoundAttributeUnsafe(driver, context, simpleName, value);
 		assertEquals(getValueNoncompoundAttribute(driver, context, simpleName), value);
 	}
 
 	public static void changeValueNoncompoundAttributeUnsafe(WebDriver driver, By context, String simpleName,
 			String value)
 	{
-		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, value);
+		WebElement input = driver.findElement(context).findElement(findAttributeInputBy(simpleName, false));
+		input.clear();
+		input.sendKeys(value);
+	}
+
+	public static void sendKeysNoncompoundAttributeUnsafe(WebDriver driver, By context, String simpleName,
+			String value)
+	{
+		driver.findElement(context).findElement(findAttributeInputBy(simpleName, false)).sendKeys(value);
 	}
 
 	public static void changeValueNoncompoundAttributeRadio(WebDriver driver, By context, String simpleName,
@@ -70,32 +72,9 @@ public class FormsUtils
 		textarea.sendKeys(value);
 	}
 
-	public static void testErrorMessageInvalidValueNoncompoundAttribute(WebDriver driver, By context,
-			String simpleName, String value)
-	{
-		String originalValue = FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
-		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, value);
-		assertTrue(FormsUtils.formHasErrors(driver, context));
-		FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
-		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, originalValue);
-	}
-
-	public static void testOnblurAutoConvertValueNoncompoundAttribute(WebDriver driver, By context, String simpleName,
-			String value, String expected)
-	{
-		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleName, value);
-		attributeContainer.click(); // Onblur
-		assertFalse(FormsUtils.formHasErrors(driver, context));
-		String actual = FormsUtils.getValueNoncompoundAttribute(driver, context, simpleName);
-		assertEquals(actual, expected);
-	}
-
 	public static String getValueNoncompoundAttribute(WebDriver driver, By context, String simpleName)
 	{
-		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		return attributeContainer.findElement(By.cssSelector("\\input[name=" + simpleName + "]")).getAttribute("value");
+		return driver.findElement(findAttributeInputBy(simpleName, false)).getAttribute("value");
 	}
 
 	public static String getValueNoncompoundAttributeRadio(WebDriver driver, By context, String simpleName)
@@ -110,14 +89,19 @@ public class FormsUtils
 			String value)
 	{
 		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, true);
-		changeValueAttributeTextNumberEmailUrl(attributeContainer, simpleNamePartOf, value);
-	}
-
-	public static void changeValueAttributeTextNumberEmailUrl(WebElement attributeContainer, String simpleName, String value)
-	{
-		WebElement inputElement = attributeContainer.findElement(By.xpath("//input[@name='" + simpleName + "']"));
+		WebElement inputElement = attributeContainer.findElement(By.xpath("//input[@name='" + simpleNamePartOf + "']"));
 		inputElement.clear();
 		inputElement.sendKeys(value);
+	}
+
+	/**
+	 * Focus on element
+	 */
+	public static void focusOnElement(WebDriver driver, By context, String simpleName)
+	{
+		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
+		WebElement inputElement = attributeContainer.findElement(By.xpath("//input[@name='" + simpleName + "']"));
+		new Actions(driver).moveToElement(inputElement).perform();
 	}
 
 	/**
@@ -166,7 +150,6 @@ public class FormsUtils
 			Map<String, String> idAndLabel, boolean clearOriginalValues)
 	{
 		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
-
 		Select2Model s2model = new Select2Model(driver, container.findElement(By.cssSelector(".select2-container"))
 				.getAttribute("id"), true);
 
@@ -175,7 +158,6 @@ public class FormsUtils
 			s2model.clearSelection();
 		}
 		s2model.select(idAndLabel);
-		container.click();
 	}
 
 	/**
@@ -214,6 +196,20 @@ public class FormsUtils
 				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
 				+ simpleName + "']"));
 	}
+	
+	public static By findAttributeInputBy(String simpleName,
+			boolean isCompoundAttribute)
+	{
+		return By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
+				+ simpleName + "']//input[@name='" + simpleName + "']");
+	}
+
+	public static boolean messageExists(WebDriver driver, String text)
+	{
+		By by = By.xpath("//strong[contains(text(), '" + text + "')]");
+		return AbstractModel.exists(driver, null, by);
+	}
 
 	public static By getAttributeContainerWebElementBy(WebElement context, String simpleName,
 			boolean isCompoundAttribute)
@@ -222,19 +218,5 @@ public class FormsUtils
 				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
 				+ simpleName + "']");
 		return by;
-	}
-
-	/**
-	 * an answer for the question: This form contains errors?
-	 * 
-	 * @param webDriver
-	 *            WebDriver
-	 * @param context
-	 *            WebElement the context in which an element with class "has-error" can be found.
-	 * @return an answer for the question: This form contains errors?
-	 */
-	public static boolean formHasErrors(WebDriver webDriver, By context)
-	{
-		return AbstractModel.exists(webDriver, null, By.cssSelector(".has-error"));
 	}
 }
