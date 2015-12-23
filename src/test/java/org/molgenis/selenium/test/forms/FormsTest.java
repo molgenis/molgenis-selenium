@@ -159,7 +159,7 @@ public class FormsTest extends AbstractSeleniumTest
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTestRef").selectDataTab();
 		FormsModalModel model = dataModel.clickOnAddRowButton();
 
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "value", "ref6");
+		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "value", "ref6");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "label", "label6");
 
 		dataModel = model.clickOnCreateButton();
@@ -247,7 +247,7 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.changeValueNoncompoundAttributeTextarea(driver, modalBy, "xtext", "xtext");
 		FormsUtils.changeValueNoncompoundAttributeTextarea(driver, modalBy, "xtextnillable", "");
 		FormsUtils.changeValueAttributeSelect2NonMulti(driver, modalBy, "xxref_value",
-				ImmutableMap.<String, String> of("ref1", "label1"));
+				ImmutableMap.<String, String> of("ref4", "label4"));
 		FormsUtils.changeValueAttributeSelect2NonMulti(driver, modalBy, "xxrefnillable_value",
 				ImmutableMap.<String, String> of("ref4", "label4"));
 		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xstring_hidden", "hidden");
@@ -283,14 +283,14 @@ public class FormsTest extends AbstractSeleniumTest
 		assertEquals(actual1, "11111");
 
 		// xemail
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xemail", "molgenisgmail.com");
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xemail", "molgenisgmail.com");
 		assertTrue(FormsUtils.messageExists(driver, "Please enter a valid email address."));
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xemail", "molgenis@gmail.com");
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xemail", "molgenis@gmail.com");
 
 		// xhyperlink
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xhyperlink", "www.molgenis.org");
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink", "www.molgenis.org");
 		assertTrue(FormsUtils.messageExists(driver, "Please enter a valid URL."));
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xhyperlink",
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink",
 				"http://www.molgenis.org");
 
 		// xmref_value
@@ -302,31 +302,28 @@ public class FormsTest extends AbstractSeleniumTest
 
 		// xstring_unique
 		String oXstringUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique");
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xstring_unique",
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique",
 				(oXstringUnique.equals("str4") ? "str3" : "str4"));
 		assertTrue(FormsUtils.messageExists(driver, "This xstring_unique already exists. It must be unique."));
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xstring_unique", oXstringUnique);
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique", oXstringUnique);
 
 		// xint_unique
 		String oXintUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique");
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xint_unique",
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique",
 				(oXintUnique.equals("2") ? "1" : "2"));
 		assertTrue(FormsUtils.messageExists(driver, "This xint_unique already exists. It must be unique."));
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xint_unique", oXstringUnique);
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique", oXintUnique);
 
 		// xxref_unique
 		String xXrefUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xxref_unique");
 		if (!xXrefUnique.isEmpty())
 		{
-			FormsUtils.changeValueAttributeSelect2NonMulti(
-					driver,
-					model.getModalBy(),
-					"xxref_unique",
-					(oXintUnique.equals("ref3") ? ImmutableMap.<String, String> of("ref4", "label4") : ImmutableMap
-							.<String, String> of("ref3", "label3")));
+			Map<String, String> xXrefUniqueError = (xXrefUnique.equals("ref2") ? ImmutableMap.<String, String> of("ref1", "label1") : ImmutableMap.<String, String> of("ref2", "label2"));
+			FormsUtils
+					.changeValueAttributeSelect2NonMulti(driver, model.getModalBy(), "xxref_unique", xXrefUniqueError);
 			assertTrue(FormsUtils.messageExists(driver, "This xxref_unique already exists. It must be unique."));
 			FormsUtils.changeValueAttributeSelect2NonMulti(driver, model.getModalBy(), "xxref_unique",
-					ImmutableMap.<String, String> of(xXrefUnique, "label" + xXrefUnique.replace("ref", "")));
+					ImmutableMap.<String, String> of(xXrefUnique, "label" + xXrefUnique.replaceAll("ref", "")));
 		}
 
 		model.clickOnSaveChangesButton();

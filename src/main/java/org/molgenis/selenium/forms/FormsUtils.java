@@ -10,9 +10,12 @@ import java.util.Map;
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class FormsUtils
 {
@@ -23,18 +26,27 @@ public class FormsUtils
 	{
 	}
 
-	public static void changeValueNoncompoundAttribute(WebDriver driver, By context, String simpleName, String value)
-	{
-		changeValueNoncompoundAttributeUnsafe(driver, context, simpleName, value);
-		assertEquals(getValueNoncompoundAttribute(driver, context, simpleName), value);
-	}
-
 	public static void changeValueNoncompoundAttributeUnsafe(WebDriver driver, By context, String simpleName,
 			String value)
 	{
 		WebElement input = driver.findElement(context).findElement(findAttributeInputBy(simpleName, false));
 		input.clear();
 		input.sendKeys(value);
+	}
+
+	public static void changeValueNoncompoundAttribute(WebDriver driver, By context, String simpleName, String value)
+	{
+		int count = 0;
+		while(count < 3){
+			try{
+				WebDriverWait wait = new WebDriverWait(driver, 5);
+				changeValueNoncompoundAttributeUnsafe(driver, context, simpleName, value);
+				wait.until(ExpectedConditions.textToBePresentInElementValue(findAttributeInputBy(simpleName, false), value));
+				break;
+			}catch(TimeoutException te){
+				count++;
+			}
+		}
 	}
 
 	public static void sendKeysNoncompoundAttributeUnsafe(WebDriver driver, By context, String simpleName,
@@ -157,7 +169,7 @@ public class FormsUtils
 		{
 			s2model.clearSelection();
 		}
-		s2model.select(idAndLabel);
+		s2model.selectReactForms(idAndLabel);
 	}
 
 	/**
@@ -172,8 +184,7 @@ public class FormsUtils
 		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
 		Select2Model s2model = new Select2Model(driver, container.findElement(By.cssSelector(".select2-container"))
 				.getAttribute("id"), false);
-		s2model.select(idAndLabel);
-		container.click();
+		s2model.selectReactForms(idAndLabel);
 	}
 
 	public static Map<String, WebElement> findAttributesContainerWebElement(WebDriver driver, By context,
