@@ -243,50 +243,43 @@ public class AnnotatorTest extends AbstractSeleniumTest
 				.goToResult();
 
 		LOG.info("Check results...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated cadd table data: {}", tableData);
 		compareTableData(tableData, EMX_CADD_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("dann").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("dann").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated dann table data: {}", tableData);
 		compareTableData(tableData, EMX_EMPTY_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("clinvar").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("clinvar").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated clinvar table data: {}", tableData);
 		compareTableData(tableData, EMX_EMPTY_ANNOTATION_TWO_COLUMN);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("gonl").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("gonl").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated gonl table data: {}", tableData);
 		compareTableData(tableData, EMX_GONL_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated exac table data: {}", tableData);
 		compareTableData(tableData, EMX_EXAC_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("fitcon").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("fitcon").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated fitcon table data: {}", tableData);
 		compareTableData(tableData, EMX_EMPTY_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("snpEff").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("snpEff").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated snpEff table data: {}", getJavaInitializerString(tableData));
@@ -331,15 +324,13 @@ public class AnnotatorTest extends AbstractSeleniumTest
 				.goToResult().selectAnnotatorTab().select("hpo").select("CGD")
 				.clickAnnotateButtonAndWait(5, TimeUnit.MINUTES).goToResult();
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("hpo").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("hpo").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
 		LOG.info("HPO table data: {}", tableData);
 		compareTableData(tableData, EMX_EMPTY_ANNOTATION_TWO_COLUMN);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("CGD").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("CGD").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("CGD table data: {}", tableData);
@@ -394,16 +385,14 @@ public class AnnotatorTest extends AbstractSeleniumTest
 				.select("cadd").select("exac").clickAnnotateButtonAndWait(2, TimeUnit.MINUTES).goToResult();
 
 		LOG.info("Check cadd annotations...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated cadd table data: {}", tableData);
 		compareTableData(tableData, VCF_CADD_ANNOTATION);
 
 		LOG.info("Check exac annotations...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated exac table data: {}", tableData);
@@ -422,16 +411,14 @@ public class AnnotatorTest extends AbstractSeleniumTest
 				.goToResult();
 
 		LOG.info("Check cadd annotations...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("CADD table data after annotating twice: {}", tableData);
 		compareTableData(tableData, moveFirstRowToLast(VCF_CADD_ANNOTATION));
 
 		LOG.info("Check exac annotations...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("exac table data after annotating twice: {}", tableData);

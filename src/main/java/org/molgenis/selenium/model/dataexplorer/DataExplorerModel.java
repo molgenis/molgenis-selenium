@@ -14,7 +14,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.molgenis.selenium.model.dataexplorer.annotators.AnnotatorModel;
-import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -60,9 +59,6 @@ public class DataExplorerModel extends AbstractModel
 
 	@FindBy(linkText = "Annotators")
 	private WebElement annotatorTab;
-
-	@FindBy(linkText = "Data")
-	private WebElement dataTab;
 
 	@FindBy(css = "a.tree-deselect-all-btn")
 	private WebElement deselectAllButton;
@@ -126,18 +122,8 @@ public class DataExplorerModel extends AbstractModel
 
 	public AnnotatorModel selectAnnotatorTab()
 	{
-		LOG.info("Select annotator tab...");
 		annotatorTab.click();
-		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, AnnotatorModel.class);
-	}
-
-	public DataModel selectDataTab()
-	{
-		LOG.info("Select data tab...");
-		dataTab.click();
-		spinner().waitTillDone(10, TimeUnit.SECONDS);
-		return PageFactory.initElements(driver, DataModel.class);
 	}
 
 	public DataExplorerModel deselectAll()
