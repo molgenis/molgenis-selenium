@@ -10,8 +10,11 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,12 +124,9 @@ public class Select2Model
 			LOG.debug("Text input box empty. Entering term...");
 			select2InputText.sendKeys(entry.getKey());
 
-			LOG.debug("Waiting for match..");
 			WebElement match = driver.findElement(By
-					.xpath("//div[contains(@class,'select2-result-label')]//b[normalize-space(.)='"
-							+ entry.getKey()
-							+ "']|//div[contains(@class,'select2-result-label')][normalize-space(.)='"
-							+ entry.getKey() + "']"));
+					.xpath("//div[contains(@class,'select2-result-label')][normalize-space(.)='" + entry.getKey()
+							+ "']"));
 			LOG.debug("Click match..");
 			match.click();
 
@@ -137,5 +137,106 @@ public class Select2Model
 			LOG.debug("Selected '{}'.", entry);
 		}
 		LOG.debug("Selected terms with ids and labels {}. Selected labels are: {}.", idsAndLabels, getSelectedLabels());
+	}
+
+	/**
+	 * Types terms into the select box, waits for a matching result to appear and adds them to the selection.
+	 * 
+	 * @param idsAndLabels
+	 *            Map mapping the ID of the term to the label of the term
+	 * @throws InterruptedException
+	 */
+	public void selectReactForms(Map<String, String> idsAndLabels)
+	{
+		LOG.info("Selecting terms with ids and labels {} in Select2 with id {}...", idsAndLabels, id);
+		for (Map.Entry<String, String> entry : idsAndLabels.entrySet())
+		{
+			if (entry.getKey().isEmpty() || entry.getValue().isEmpty()) continue;
+
+			LOG.debug("Click select.");
+			driver.findElement(selectedOptionSelector).click();
+
+			By select2InputTextBy = By.cssSelector(multi ? "#s2id_" + id + " input" : "#select2-drop input");
+			
+			LOG.info("Type value in the search box..");
+			addValueToInputField(select2InputTextBy, entry.getKey());
+
+			LOG.info("Waiting for match..");
+			By by = By
+					.cssSelector("#select2-drop:not([style*='display: none']) .select2-results li.select2-result-selectable");
+			retryingToFindClick(by);
+			LOG.info("Click match..");
+
+			LOG.info("Selected '{}'.", entry);
+		}
+		LOG.debug("Selected terms with ids and labels {}. Selected labels are: {}.", idsAndLabels, getSelectedLabels());
+	}
+
+	private boolean retryingToFindClick(By by)
+	{
+		boolean result = false;
+		int count = 0;
+		while (count < 3)
+		{
+			try
+			{
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException e1)
+			{
+				LOG.warn("InterruptedException id thrown for Thread.sleep(500) in Select2Model");
+			}
+
+			try
+			{
+				List<WebElement> es = driver.findElements(by);
+				if (!es.isEmpty())
+				{
+					es.get(0).click();
+					LOG.info("Click on first match..");
+					result = true;
+					break;
+				}
+					
+			}
+			catch (StaleElementReferenceException e)
+			{
+				// See: http://seleniumhq.org/exceptions/stale_element_reference.html
+				LOG.info("StaleElementReferenceException was thrown for: " + by.toString());
+			}
+			count++;
+		}
+		return result;
+	}
+
+	private boolean addValueToInputField(By by, String value)
+	{
+		boolean result = false;
+		int count = 0;
+		while (count < 3)
+		{
+			try
+			{
+				WebDriverWait wait = new WebDriverWait(driver, 5);
+
+				LOG.debug("Wait for text input box...");
+				WebElement select2InputText = driver.findElement(by);
+
+				LOG.debug("Empty text input box..");
+				select2InputText.clear();
+
+				LOG.debug("Text input box empty. Entering term...");
+				select2InputText.sendKeys(value);
+
+				wait.until(ExpectedConditions.textToBePresentInElementValue(by, value));
+				result = true;
+				break;
+			}
+			catch (TimeoutException te)
+			{
+				count++;
+			}
+		}
+		return result;
 	}
 }

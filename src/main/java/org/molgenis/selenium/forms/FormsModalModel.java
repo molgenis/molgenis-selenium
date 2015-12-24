@@ -79,12 +79,10 @@ public class FormsModalModel extends AbstractModel
 	 * 
 	 * @return boolean
 	 */
-	public boolean isModalFormClosed()
+	public void waitUntilModalFormClosed()
 	{
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 30);
-		Boolean result = webDriverWait.until(ExpectedConditions.invisibilityOfElementLocated(By
-				.cssSelector(".modal-open")));
-		return null != result && result.booleanValue();
+		webDriverWait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".modal-content")));
 	}
 
 	/**
