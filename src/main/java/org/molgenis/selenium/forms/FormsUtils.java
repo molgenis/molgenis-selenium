@@ -33,6 +33,7 @@ public class FormsUtils
 			String value)
 	{
 		WebElement input = driver.findElement(context).findElement(findAttributeInputBy(simpleName, false));
+
 		input.clear();
 		input.sendKeys(value);
 	}
@@ -207,9 +208,7 @@ public class FormsUtils
 			boolean isCompoundAttribute)
 	{
 		return driver.findElement(context).findElement(
-				By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
-				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
-				+ simpleName + "']"));
+				By.xpath(createXPathAttributeContainerWebElement(simpleName, isCompoundAttribute)));
 	}
 	
 	public static String createXPathAttributeContainerWebElement(String simpleName,
@@ -224,7 +223,9 @@ public class FormsUtils
 	public static By findAttributeInputBy(String simpleName,
 			boolean isCompoundAttribute)
 	{
-		return By.xpath(createXPathAttributeContainerWebElement(simpleName, isCompoundAttribute));
+		return By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
+				+ simpleName + "']//input[@name='" + simpleName + "']");
 	}
 
 	public static boolean messageExists(WebDriver driver, String text)
