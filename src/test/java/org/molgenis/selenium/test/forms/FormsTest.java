@@ -211,7 +211,7 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.changeValueNoncompoundAttributeRadio(driver, modalBy, "xcategorical_value", "ref1");
 		FormsUtils.changeValueNoncompoundAttributeRadio(driver, modalBy, "xcategoricalnillable_value", "");
 		FormsUtils.changeValueNoncompoundAttributeCheckbox(driver, modalBy, "xcategoricalmref_value", "ref1", "ref2");
-		FormsUtils.changeValueNoncompoundAttributeCheckbox(driver, modalBy, "xcatmrefnillable_value", "");
+		FormsUtils.clickDeselectAll(driver, modalBy, "xcatmrefnillable_value");
 		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdate", "2015-12-31");
 		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdatenillable", "");
 		FormsUtils.changeValueNoncompoundAttribute(driver, modalBy, "xdatetime", "2015-12-31T23:59:59+0100");
