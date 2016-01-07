@@ -16,9 +16,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FormsUtils
 {
+	private static final Logger LOG = LoggerFactory.getLogger(FormsUtils.class);
 	private static final String NONCOMPOUND_CONTAINER = "div";
 	private static final String COMPOUND_CONTAINER = "fieldset";
 
@@ -30,6 +33,7 @@ public class FormsUtils
 			String value)
 	{
 		WebElement input = driver.findElement(context).findElement(findAttributeInputBy(simpleName, false));
+
 		input.clear();
 		input.sendKeys(value);
 	}
@@ -58,11 +62,12 @@ public class FormsUtils
 	public static void changeValueNoncompoundAttributeRadio(WebDriver driver, By context, String simpleName,
 			String value)
 	{
-		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		attributeContainer.findElement(
-				By.xpath("//input[@name='" + simpleName + "'][@type='radio'][@value='" + value + "']")).click();
+		String xpathContext = createXPathAttributeContainerWebElement(simpleName, false);
+		LOG.info("Click on a radio element of attribute {} with value: '{}'", simpleName, value);
+		driver.findElement(
+				By.xpath(xpathContext + "//input[@name='" + simpleName + "'][@type='radio'][@value='" + value + "']"))
+				.click();
 		assertEquals(value, getValueNoncompoundAttributeRadio(driver, context, simpleName));
-		attributeContainer.click();
 	}
 
 	public static void typeValueNoncompoundAttributeAceEditor(WebDriver driver, By context, String simpleName,
@@ -203,10 +208,17 @@ public class FormsUtils
 			boolean isCompoundAttribute)
 	{
 		return driver.findElement(context).findElement(
-				By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
-				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
-				+ simpleName + "']"));
+				By.xpath(createXPathAttributeContainerWebElement(simpleName, isCompoundAttribute)));
 	}
+	
+	public static String createXPathAttributeContainerWebElement(String simpleName,
+			boolean isCompoundAttribute)
+	{
+		return "//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
+				+ simpleName + "']";
+	}
+	
 	
 	public static By findAttributeInputBy(String simpleName,
 			boolean isCompoundAttribute)

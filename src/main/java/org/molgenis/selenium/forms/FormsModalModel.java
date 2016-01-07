@@ -3,6 +3,7 @@ package org.molgenis.selenium.forms;
 import java.util.concurrent.TimeUnit;
 
 import org.molgenis.selenium.model.AbstractModel;
+import org.molgenis.selenium.model.component.SpinnerModel;
 import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -45,7 +46,7 @@ public class FormsModalModel extends AbstractModel
 	public FormsModalModel clickEyeButton()
 	{
 		this.eyeButton.click();
-		spinner().waitTillDone(2, TimeUnit.SECONDS);
+		spinner().waitTillDone(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 		LOG.info("clicked on the modal eye button");
 		return PageFactory.initElements(driver, FormsModalModel.class);
 	}
@@ -54,7 +55,7 @@ public class FormsModalModel extends AbstractModel
 	{
 		LOG.info("clicked on save changes button");
 		driver.findElement(this.saveChangesButtonBy).click();
-		spinner().waitTillDone(10, TimeUnit.SECONDS);
+		spinner().waitTillDone(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, DataModel.class);
 	}
 	
@@ -62,7 +63,7 @@ public class FormsModalModel extends AbstractModel
 	{
 		LOG.info("clicked on create button");
 		driver.findElement(this.createButtonBy).click();
-		spinner().waitTillDone(10, TimeUnit.SECONDS);
+		spinner().waitTillDone(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, DataModel.class);
 	}
 
@@ -70,7 +71,7 @@ public class FormsModalModel extends AbstractModel
 	{
 		LOG.info("clicked on cancel button");
 		driver.findElement(this.cancelButtonBy).click();
-		spinner().waitTillDone(10, TimeUnit.SECONDS);
+		spinner().waitTillDone(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, DataModel.class);
 	}
 
