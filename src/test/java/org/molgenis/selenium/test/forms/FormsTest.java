@@ -81,6 +81,7 @@ public class FormsTest extends AbstractSeleniumTest
 	@Test
 	public void testVisibilityFirstRow()
 	{
+		LOG.info("testVisibilityFirstRow...");
 		final DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		final FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		
@@ -107,6 +108,7 @@ public class FormsTest extends AbstractSeleniumTest
 	@Test
 	public void testNillableFieldsShouldBeHidden()
 	{
+		LOG.info("testNillableFieldsShouldBeHidden...");
 		final DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		model = model.clickEyeButton();
@@ -122,10 +124,10 @@ public class FormsTest extends AbstractSeleniumTest
 				FormsUtils.getAttributeContainerWebElementBy(model.getModal(), "xcompound", true)));
 		LOG.info("Test that xcompound is not displayed");
 
-		Map<String, WebElement> noncompoundNonnillableAttrbutes = FormsUtils.findAttributesContainerWebElement(driver,
+		Map<String, WebElement> noncompoundNonnillableAttributes = FormsUtils.findAttributesContainerWebElement(driver,
 				model.getModalBy(),
 				TESTTYPE_NONCOMPOUND_NONNILLABLE_ATTRIBUTES, false);
-		noncompoundNonnillableAttrbutes.values().forEach(e -> assertFalse(e.isDisplayed()));
+		noncompoundNonnillableAttributes.values().forEach(e -> assertFalse(e.isDisplayed()));
 		LOG.info("Test that noncompound and nillable attributes are hidden: {}",
 				TESTTYPE_NONCOMPOUND_NONNILLABLE_ATTRIBUTES);
 
@@ -142,10 +144,10 @@ public class FormsTest extends AbstractSeleniumTest
 	@Test
 	public void testSaveChanges()
 	{
+		LOG.info("testSaveChanges...");
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		final FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		dataModel = model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormClosed());
 		LOG.info("Tested save changes button");
 	}
 
@@ -155,6 +157,7 @@ public class FormsTest extends AbstractSeleniumTest
 	@Test
 	public void testCreateNewTypeTestRefAndTypeTest()
 	{
+		LOG.info("testCreateNewTypeTestRefAndTypeTest...");
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTestRef").selectDataTab();
 		FormsModalModel model = dataModel.clickOnAddRowButton();
 
@@ -162,7 +165,7 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "label", "label6");
 
 		dataModel = model.clickOnCreateButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitForModalFormToClose();
 		LOG.info("Added a new row with values: {value:ref6, label:label6} [TypeTestRef]");
 
 		dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
@@ -182,8 +185,6 @@ public class FormsTest extends AbstractSeleniumTest
 		// "These values are computed automatically": xcomputedint, xcomputedxref
 
 		dataModel = model.clickOnCreateButton();
-
-		assertTrue(model.isModalFormClosed());
 		LOG.info("Added a new row with values: {...} [TypeTest]");
 	}
 
@@ -193,6 +194,7 @@ public class FormsTest extends AbstractSeleniumTest
 	@Test
 	public void testEditValuesAndSaveChanges()
 	{
+		LOG.info("testEditValuesAndSaveChanges...");
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 
@@ -200,7 +202,6 @@ public class FormsTest extends AbstractSeleniumTest
 
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormClosed());
 		LOG.info("Tested editing some values and pushing the save changes button");
 	}
 
@@ -263,6 +264,7 @@ public class FormsTest extends AbstractSeleniumTest
 	@Test
 	public void testErrorMessagesInvalidValues()
 	{
+		LOG.info("testErrorMessagesInvalidValues");
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 
@@ -270,7 +272,7 @@ public class FormsTest extends AbstractSeleniumTest
 		// Test change value and invalid value message
 		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_int",
 				"9999999999999");
-		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		FormsUtils.waitForErrors(driver, model.getModalBy());
 		FormsUtils.changeValueCompoundAttribute(driver, model.getModalBy(), "xcompound", "xcompound_int", "30");
 
 		// xdate
@@ -293,7 +295,7 @@ public class FormsTest extends AbstractSeleniumTest
 		// xmref_value
 		FormsUtils.changeValueAttributeSelect2Multi(driver, model.getModalBy(), "xmref_value",
 				ImmutableMap.<String, String> of("", ""), true);
-		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		FormsUtils.waitForErrors(driver, model.getModalBy());
 		FormsUtils.changeValueAttributeSelect2Multi(driver, model.getModalBy(), "xmref_value",
 				ImmutableMap.<String, String> of("ref1", "label1"), true);
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
@@ -319,14 +321,14 @@ public class FormsTest extends AbstractSeleniumTest
 					"xxref_unique",
 					(oXintUnique.equals("ref3") ? ImmutableMap.<String, String> of("ref4", "label4") : ImmutableMap
 							.<String, String> of("ref3", "label3")));
-			assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+			FormsUtils.waitForErrors(driver, model.getModalBy());
 			FormsUtils.changeValueAttributeSelect2NonMulti(driver, model.getModalBy(), "xxref_unique",
 					ImmutableMap.<String, String> of(xXrefUnique, "label" + xXrefUnique.replace("ref", "")));
 		}
 
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitForModalFormToClose();
 		LOG.info("Tested editing some values and pushing the save changes button");
 	}
 
@@ -336,12 +338,13 @@ public class FormsTest extends AbstractSeleniumTest
 	@Test
 	public void testDeselectAll()
 	{
+		LOG.info("testDeselectAll");
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		FormsUtils.clickDeselectAll(driver, model.getModalBy(), "xcategoricalmref_value");
-		assertTrue(FormsUtils.formHasErrors(driver, model.getModalBy()));
+		FormsUtils.waitForErrors(driver, model.getModalBy());
 		model.clickOnCancelButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitForModalFormToClose();
 		LOG.info("Test deselect all checkboxes xcategoricalmref_value");
 	}
 
@@ -351,12 +354,13 @@ public class FormsTest extends AbstractSeleniumTest
 	@Test
 	public void testSelectAll()
 	{
+		LOG.info("testSelectAll");
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		FormsModalModel model = dataModel.clickOnEditFirstRowButton();
 		FormsUtils.clickSelectAll(driver, model.getModalBy(), "xcategoricalmref_value");
 		assertFalse(FormsUtils.formHasErrors(driver, model.getModalBy()));
 		model.clickOnSaveChangesButton();
-		assertTrue(model.isModalFormClosed());
+		model.waitForModalFormToClose();
 		LOG.info("Test select all checkboxes xcategoricalmref_value");
 	}
 

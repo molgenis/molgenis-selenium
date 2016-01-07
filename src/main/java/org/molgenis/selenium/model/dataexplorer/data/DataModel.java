@@ -32,7 +32,7 @@ public class DataModel extends AbstractModel
 
 	public FormsModalModel clickOnAddRowButton()
 	{
-		LOG.info("clicked on add row button for entity TypeTest");
+		LOG.info("click on add row button for entity TypeTest...");
 		this.addRowButton.click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, FormsModalModel.class);
@@ -40,7 +40,7 @@ public class DataModel extends AbstractModel
 	
 	public FormsModalModel clickOnEditFirstRowButton()
 	{
-		LOG.info("clicked on edit first row button for entity TypeTest");
+		LOG.info("click on edit first row button for entity TypeTest...");
 		this.editRowButton.get(0).click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, FormsModalModel.class);

@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -122,14 +124,13 @@ public class Select2Model
 			select2InputText.sendKeys(entry.getKey());
 
 			LOG.debug("Waiting for match..");
-			WebElement match = driver.findElement(By
+			By matchSelector = By
 					.xpath("//div[contains(@class,'select2-result-label')]//b[normalize-space(.)='"
 							+ entry.getKey()
 							+ "']|//div[contains(@class,'select2-result-label')][normalize-space(.)='"
-							+ entry.getKey() + "']"));
-			LOG.debug("Click match..");
-			match.click();
-
+							+ entry.getKey() + "']");
+			selectMatch(matchSelector);
+			
 			LOG.debug("Waiting for selection to appear in the list of search choices...");
 			tenSecondWait.until(textToBePresentInElementLocated(
 					multi ? By.xpath("//div[@id='s2id_" + id + "']") : selectedOptionSelector, entry.getValue()));
@@ -137,5 +138,29 @@ public class Select2Model
 			LOG.debug("Selected '{}'.", entry);
 		}
 		LOG.debug("Selected terms with ids and labels {}. Selected labels are: {}.", idsAndLabels, getSelectedLabels());
+	}
+
+	private void selectMatch(By matchSelector)
+	{
+		try
+		{
+			Thread.sleep(100);
+		}
+		catch (InterruptedException e)
+		{
+			
+		}
+		for(int i = 0; i<10; i++){
+			LOG.info("Wait for result...");
+			WebElement match = driver.findElement(matchSelector);
+			LOG.info("Found result, try to click it...");
+			try {
+				match.click();
+				return;
+			} catch (StaleElementReferenceException|ElementNotVisibleException ex){
+				LOG.warn("Match went stale, attempt {} failed.", i);
+			}
+		}
+		throw new StaleElementReferenceException("Match not found after 10 tries");
 	}
 }
