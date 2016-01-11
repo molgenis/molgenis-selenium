@@ -3,10 +3,9 @@ package org.molgenis.selenium.model.component;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
 
-import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -93,7 +92,12 @@ public class Select2Model
 	 */
 	public void select(String... terms)
 	{
-		select(Arrays.stream(terms).collect(Collectors.<String, String, String> toMap(term -> term, term -> term)));
+		Map<String,String> map = new LinkedHashMap<String,String>();
+		for (String term : terms)
+		{
+			map.put(term, term);
+		}
+		select(map);
 	}
 
 	/**
