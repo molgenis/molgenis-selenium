@@ -113,7 +113,7 @@ public class FormsTest extends AbstractSeleniumTest
 				TESTTYPE_NONCOMPOUND_NILLABLE_ATTRIBUTES);
 
 		assertTrue(AbstractModel.noElementFound(super.driver, model.getModalBy(),
-				FormsUtils.getAttributeContainerWebElementBy(model.getModal(), "xcompound", true)));
+				FormsUtils.getAttributeContainerWebElementBy("xcompound", true)));
 		LOG.info("Test that xcompound is not displayed");
 
 		Map<String, WebElement> noncompoundNonnillableAttributes = FormsUtils.findAttributesContainerWebElement(driver,

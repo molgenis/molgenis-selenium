@@ -119,10 +119,9 @@ public class FormsUtils
 		try
 		{
 			inputElement.clear();
-			Thread.sleep(100);
+			Thread.sleep(200);
 			inputElement.sendKeys(value);
-			Thread.sleep(100);
-			LOG.info("Send TAB...");
+			Thread.sleep(200);
 			inputElement.sendKeys(Keys.TAB);
 		}
 		catch (InterruptedException e)
