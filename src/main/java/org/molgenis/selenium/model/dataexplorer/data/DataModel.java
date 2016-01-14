@@ -36,7 +36,7 @@ public class DataModel extends AbstractModel
 		LOG.info("click on add row button for entity TypeTest...");
 		this.addRowButton.click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
-		return PageFactory.initElements(driver, FormsModalModel.class);
+		return PageFactory.initElements(driver, FormsModalModel.class).waitForModal();
 	}
 	
 	public FormsModalModel clickOnEditFirstRowButton()
@@ -44,7 +44,7 @@ public class DataModel extends AbstractModel
 		LOG.info("click on edit first row button for entity TypeTest...");
 		this.editRowButton.get(0).click();
 		spinner().waitTillDone(IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
-		return PageFactory.initElements(driver, FormsModalModel.class);
+		return PageFactory.initElements(driver, FormsModalModel.class).waitForModal();
 	}
 
 	/**

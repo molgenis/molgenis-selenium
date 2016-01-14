@@ -9,10 +9,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gargoylesoftware.htmlunit.javascript.host.Console;
 import com.google.common.base.Predicate;
 
 public class FormsModalModel extends AbstractModel
@@ -35,7 +37,7 @@ public class FormsModalModel extends AbstractModel
 	private WebElement cancelButton;
 
 	// Modal body
-	private By modalBy = By.cssSelector("div.modal-body");
+	private By modalBy = By.cssSelector("div.modal.in");
 
 	public FormsModalModel(WebDriver driver)
 	{
@@ -100,5 +102,12 @@ public class FormsModalModel extends AbstractModel
 	public By getModalBy()
 	{
 		return modalBy;
+	}
+
+	public FormsModalModel waitForModal()
+	{
+		LOG.info("Wait for modal...");
+		new WebDriverWait(driver, IMPLICIT_WAIT_SECONDS).until(ExpectedConditions.presenceOfElementLocated(getModalBy()));
+		return this;
 	}
 }
