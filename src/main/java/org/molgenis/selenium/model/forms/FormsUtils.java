@@ -146,14 +146,14 @@ public class FormsUtils
 	public static void clickDeselectAll(WebDriver driver, By context, String simpleName)
 	{
 		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
-		WebElement link = container.findElement(By.xpath("//span[contains(text(), 'Deselect all')]/.."));
+		WebElement link = container.findElement(By.xpath(".//span[contains(text(), 'Deselect all')]/.."));
 		link.click();
 	}
 
 	public static void clickSelectAll(WebDriver driver, By context, String simpleName)
 	{
 		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
-		WebElement link = container.findElement(By.xpath("//span[contains(text(), 'Select all')]/.."));
+		WebElement link = container.findElement(By.xpath(".//span[contains(text(), 'Select all')]/.."));
 		link.click();
 	}
 
