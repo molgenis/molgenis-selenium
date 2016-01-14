@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.molgenis.selenium.model.AbstractModel;
+import org.molgenis.selenium.model.component.SpinnerModel;
 import org.molgenis.selenium.model.forms.FormsModalModel;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -42,7 +43,7 @@ public class DataModel extends AbstractModel
 	{
 		LOG.info("click on edit first row button for entity TypeTest...");
 		this.editRowButton.get(0).click();
-		spinner().waitTillDone(10, TimeUnit.SECONDS);
+		spinner().waitTillDone(IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, FormsModalModel.class);
 	}
 

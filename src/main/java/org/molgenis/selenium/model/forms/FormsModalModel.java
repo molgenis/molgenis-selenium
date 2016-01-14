@@ -46,18 +46,20 @@ public class FormsModalModel extends AbstractModel
 	{
 		LOG.info("click on the modal eye button...");
 		this.eyeButton.click();
-		spinner().waitTillDone(2, TimeUnit.SECONDS);
+		spinner().waitTillDone(AbstractModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
+		LOG.info("clicked on the modal eye button");
 		return PageFactory.initElements(driver, FormsModalModel.class);
 	}
 
 	public DataModel clickOnSaveChangesButton()
 	{
 		LOG.info("click on save changes button...");
-		if(FormsUtils.formHasErrors(driver, null)){
-			LOG.warn("Form has errors: {}"+ driver.findElement(By.cssSelector(".has-error")).getText());
+		if (FormsUtils.formHasErrors(driver, null))
+		{
+			LOG.warn("Form has errors: {}", driver.findElement(By.cssSelector(".has-error")).getText());
 		}
 		saveChangesButton.click();
-		waitForModalFormToClose();
+		waitUntilModalFormClosed();
 		return PageFactory.initElements(driver, DataModel.class);
 	}
 
@@ -65,7 +67,7 @@ public class FormsModalModel extends AbstractModel
 	{
 		LOG.info("click on create button...");
 		createButton.click();
-		waitForModalFormToClose();
+		waitUntilModalFormClosed();
 		return PageFactory.initElements(driver, DataModel.class);
 	}
 
@@ -73,14 +75,15 @@ public class FormsModalModel extends AbstractModel
 	{
 		LOG.info("click on cancel button...");
 		cancelButton.click();
-		waitForModalFormToClose();
+		waitUntilModalFormClosed();
 		return PageFactory.initElements(driver, DataModel.class);
 	}
 
-	public void waitForModalFormToClose()
+	private void waitUntilModalFormClosed()
 	{
-		new WebDriverWait(driver, IMPLICIT_WAIT_SECONDS)
-				.until((Predicate<WebDriver>) d -> noElementFound(d, null, By.cssSelector(".modal-open")));
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 30);
+		webDriverWait.until((Predicate<WebDriver>) d -> !d.findElements(By.cssSelector(".modal")).stream()
+				.filter(e -> "block".equals(e.getCssValue("display"))).findAny().isPresent());
 	}
 
 	/**
