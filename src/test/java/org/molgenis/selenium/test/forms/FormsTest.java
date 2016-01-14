@@ -150,7 +150,7 @@ public class FormsTest extends AbstractSeleniumTest
 		DataModel dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTestRef").selectDataTab();
 		FormsModalModel model = dataModel.clickOnAddRowButton();
 
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "value", "ref6");
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "value", "ref6");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "label", "label6");
 
 		dataModel = model.clickOnCreateButton();
@@ -159,8 +159,7 @@ public class FormsTest extends AbstractSeleniumTest
 		dataModel = homepage.menu().selectDataExplorer().selectEntity("TypeTest").selectDataTab();
 		model = dataModel.clickOnAddRowButton();
 
-		// Unique
-		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "id", "55");
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "id", "55");
 
 		populateAllNonUniqueTestTypeAttributeValues(driver, model.getModalBy());
 

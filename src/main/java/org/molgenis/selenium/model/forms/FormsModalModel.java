@@ -14,9 +14,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Console;
-import com.google.common.base.Predicate;
-
 public class FormsModalModel extends AbstractModel
 {
 	private static final Logger LOG = LoggerFactory.getLogger(FormsModalModel.class);
@@ -84,8 +81,21 @@ public class FormsModalModel extends AbstractModel
 	private void waitUntilModalFormClosed()
 	{
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 30);
-		webDriverWait.until((Predicate<WebDriver>) d -> !d.findElements(By.cssSelector(".modal")).stream()
-				.filter(e -> "block".equals(e.getCssValue("display"))).findAny().isPresent());
+		webDriverWait.until(this::isModalFormPresent);
+	}
+
+	private boolean isModalFormPresent(WebDriver d)
+	{
+		try
+		{
+			return !d.findElements(By.cssSelector(".modal")).stream()
+					.filter(e -> "block".equals(e.getCssValue("display"))).findAny().isPresent();
+		}
+		catch (Exception ex)
+		{
+			return false;
+		}
+
 	}
 
 	/**
@@ -107,7 +117,8 @@ public class FormsModalModel extends AbstractModel
 	public FormsModalModel waitForModal()
 	{
 		LOG.info("Wait for modal...");
-		new WebDriverWait(driver, IMPLICIT_WAIT_SECONDS).until(ExpectedConditions.presenceOfElementLocated(getModalBy()));
+		new WebDriverWait(driver, IMPLICIT_WAIT_SECONDS)
+				.until(ExpectedConditions.presenceOfElementLocated(getModalBy()));
 		return this;
 	}
 }

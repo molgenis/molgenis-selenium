@@ -1,5 +1,8 @@
 package org.molgenis.selenium.model.forms;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementValue;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +37,14 @@ public class FormsUtils
 			String value)
 	{
 		WebElement input = driver.findElement(context).findElement(findAttributeInputBy(simpleName, false, true));
-		typeTextIntoInput(value, input);
+		try
+		{
+			typeTextIntoInput(driver, value, input);
+		}
+		catch (Exception ex)
+		{
+			LOG.warn("Failed to enter text {} into input {}", value, simpleName);
+		}
 	}
 
 	public static void changeValueNoncompoundAttribute(WebDriver driver, By context, String simpleName, String value)
@@ -45,13 +55,16 @@ public class FormsUtils
 			try
 			{
 				WebDriverWait wait = new WebDriverWait(driver, 5);
-				changeValueNoncompoundAttributeUnsafe(driver, context, simpleName, value);
+				WebElement input = driver.findElement(context)
+						.findElement(findAttributeInputBy(simpleName, false, true));
+				typeTextIntoInput(driver, value, input);
 				wait.until(ExpectedConditions
 						.textToBePresentInElementValue(findAttributeInputBy(simpleName, false, false), value));
 				break;
 			}
-			catch (TimeoutException te)
+			catch (Exception ex)
 			{
+				LOG.error("Failed to enter text {} into input {}", value, simpleName, ex);
 				count++;
 			}
 		}
@@ -111,23 +124,17 @@ public class FormsUtils
 		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, true);
 		WebElement inputElement = attributeContainer
 				.findElement(By.xpath(".//input[@name='" + simpleNamePartOf + "']"));
-		typeTextIntoInput(value, inputElement);
+		typeTextIntoInput(driver, value, inputElement);
 	}
 
-	private static void typeTextIntoInput(String value, WebElement inputElement)
+	private static void typeTextIntoInput(WebDriver driver, String value, WebElement inputElement)
 	{
-		try
-		{
-			inputElement.clear();
-			Thread.sleep(200);
-			inputElement.sendKeys(value);
-			Thread.sleep(200);
-			inputElement.sendKeys(Keys.TAB);
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		WebDriverWait wait = new WebDriverWait(driver, 1);
+		inputElement.clear();
+		wait.until((Predicate<WebDriver>) d -> isEmpty(inputElement.getAttribute("value")));
+		inputElement.sendKeys(value);
+		wait.until(textToBePresentInElementValue(inputElement, value));
+		inputElement.sendKeys(Keys.TAB);
 	}
 
 	/**
