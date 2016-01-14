@@ -8,6 +8,7 @@ import java.util.Map;
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,10 +33,8 @@ public class FormsUtils
 	public static void changeValueNoncompoundAttributeUnsafe(WebDriver driver, By context, String simpleName,
 			String value)
 	{
-		WebElement input = driver.findElement(context).findElement(findAttributeInputBy(simpleName, false));
-
-		input.clear();
-		input.sendKeys(value);
+		WebElement input = driver.findElement(context).findElement(findAttributeInputBy(simpleName, false, true));
+		typeTextIntoInput(value, input);
 	}
 
 	public static void changeValueNoncompoundAttribute(WebDriver driver, By context, String simpleName, String value)
@@ -47,8 +46,8 @@ public class FormsUtils
 			{
 				WebDriverWait wait = new WebDriverWait(driver, 5);
 				changeValueNoncompoundAttributeUnsafe(driver, context, simpleName, value);
-				wait.until(ExpectedConditions.textToBePresentInElementValue(findAttributeInputBy(simpleName, false),
-						value));
+				wait.until(ExpectedConditions
+						.textToBePresentInElementValue(findAttributeInputBy(simpleName, false, false), value));
 				break;
 			}
 			catch (TimeoutException te)
@@ -60,16 +59,16 @@ public class FormsUtils
 
 	public static void sendKeysNoncompoundAttributeUnsafe(WebDriver driver, By context, String simpleName, String value)
 	{
-		driver.findElement(context).findElement(findAttributeInputBy(simpleName, false)).sendKeys(value);
+		driver.findElement(context).findElement(findAttributeInputBy(simpleName, false, true)).sendKeys(value);
 	}
 
 	public static void changeValueNoncompoundAttributeRadio(WebDriver driver, By context, String simpleName,
 			String value)
 	{
-		String xpathContext = createXPathAttributeContainerWebElement(simpleName, false);
+		String xpathContainer = createXPathAttributeContainerWebElement(simpleName, false, false);
 		LOG.info("Click on a radio element of attribute {} with value: '{}'...", simpleName, value);
 		driver.findElement(
-				By.xpath(xpathContext + "//input[@name='" + simpleName + "'][@type='radio'][@value='" + value + "']"))
+				By.xpath(xpathContainer + "//input[@name='" + simpleName + "'][@type='radio'][@value='" + value + "']"))
 				.click();
 		new WebDriverWait(driver, AbstractModel.IMPLICIT_WAIT_SECONDS).until((Predicate<WebDriver>) d -> value
 				.equals(getValueNoncompoundAttributeRadio(driver, context, simpleName)));
@@ -78,7 +77,7 @@ public class FormsUtils
 	public static void typeValueNoncompoundAttributeAceEditor(WebDriver driver, By context, String simpleName,
 			String value)
 	{
-		By textareaBy = By.xpath("//textarea[@class='ace_text-input']");
+		By textareaBy = By.xpath(".//textarea[@class='ace_text-input']");
 		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
 		WebElement textarea = attributeContainer.findElement(textareaBy);
 		textarea.sendKeys(value);
@@ -96,7 +95,7 @@ public class FormsUtils
 
 	public static String getValueNoncompoundAttribute(WebDriver driver, By context, String simpleName)
 	{
-		return driver.findElement(findAttributeInputBy(simpleName, false)).getAttribute("value");
+		return driver.findElement(findAttributeInputBy(simpleName, false, false)).getAttribute("value");
 	}
 
 	public static String getValueNoncompoundAttributeRadio(WebDriver driver, By context, String simpleName)
@@ -110,9 +109,26 @@ public class FormsUtils
 			String simpleNamePartOf, String value)
 	{
 		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, true);
-		WebElement inputElement = attributeContainer.findElement(By.xpath("//input[@name='" + simpleNamePartOf + "']"));
-		inputElement.clear();
-		inputElement.sendKeys(value);
+		WebElement inputElement = attributeContainer
+				.findElement(By.xpath(".//input[@name='" + simpleNamePartOf + "']"));
+		typeTextIntoInput(value, inputElement);
+	}
+
+	private static void typeTextIntoInput(String value, WebElement inputElement)
+	{
+		try
+		{
+			inputElement.clear();
+			Thread.sleep(100);
+			inputElement.sendKeys(value);
+			Thread.sleep(100);
+			LOG.info("Send TAB...");
+			inputElement.sendKeys(Keys.TAB);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -121,7 +137,7 @@ public class FormsUtils
 	public static void focusOnElement(WebDriver driver, By context, String simpleName)
 	{
 		WebElement attributeContainer = findAttributeContainerWebElement(driver, context, simpleName, false);
-		WebElement inputElement = attributeContainer.findElement(By.xpath("//input[@name='" + simpleName + "']"));
+		WebElement inputElement = attributeContainer.findElement(By.xpath(".//input[@name='" + simpleName + "']"));
 		new Actions(driver).moveToElement(inputElement).perform();
 	}
 
@@ -140,7 +156,7 @@ public class FormsUtils
 		container.findElements(By.cssSelector("input[name='" + simpleName + "']:checked")).stream()
 				.forEachOrdered(e -> e.click());
 		Arrays.asList(values).stream().filter(e -> !"".equals(e)).forEach(e -> container
-				.findElement(By.xpath("//input[@name='" + simpleName + "'][@value='" + e + "']")).click());
+				.findElement(By.xpath(".//input[@name='" + simpleName + "'][@value='" + e + "']")).click());
 	}
 
 	public static void clickDeselectAll(WebDriver driver, By context, String simpleName)
@@ -205,42 +221,52 @@ public class FormsUtils
 			boolean isCompoundAttribute)
 	{
 		return driver.findElement(context)
-				.findElement(By.xpath(createXPathAttributeContainerWebElement(simpleName, isCompoundAttribute)));
+				.findElement(By.xpath(createXPathAttributeContainerWebElement(simpleName, isCompoundAttribute, true)));
 	}
 
-	public static String createXPathAttributeContainerWebElement(String simpleName, boolean isCompoundAttribute)
+	public static String createXPathAttributeContainerWebElement(String simpleName, boolean isCompoundAttribute,
+			boolean relative)
 	{
-		return "//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+		String xpath = getXpathSlashSlashPrefix(relative)
+				+ (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
 				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
 				+ simpleName + "']";
+		LOG.info("xpath: {}", xpath);
+		return xpath;
 	}
 
-	public static By findAttributeInputBy(String simpleName, boolean isCompoundAttribute)
+	private static String getXpathSlashSlashPrefix(boolean relative)
 	{
-		return By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
-				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
-				+ simpleName + "']//input[@name='" + simpleName + "']");
+		return (relative ? "." : "") + "//";
+	}
+
+	public static By findAttributeInputBy(String simpleName, boolean isCompoundAttribute, boolean relative)
+	{
+		return By.xpath(
+				getXpathSlashSlashPrefix(relative) + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+						+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
+						+ simpleName + "']//input[@name='" + simpleName + "']");
 	}
 
 	public static void waitForErrorMessage(WebDriver driver, String simpleName, String simpleNamePartOf,
 			String errorMessage)
 	{
 		waitForErrorMessageInternal(driver, errorMessage,
-				By.xpath(FormsUtils.createXPathAttributeContainerWebElement(simpleName, true)));
+				By.xpath(FormsUtils.createXPathAttributeContainerWebElement(simpleName, true, false)));
 	}
 
 	public static void waitForErrorMessage(WebDriver driver, String simpleName, String errorMessage)
 	{
 		waitForErrorMessageInternal(driver, errorMessage,
-				By.xpath(FormsUtils.createXPathAttributeContainerWebElement(simpleName, false)));
+				By.xpath(FormsUtils.createXPathAttributeContainerWebElement(simpleName, false, false)));
 	}
 
 	private static void waitForErrorMessageInternal(WebDriver driver, String errorMessage, By container)
 	{
 		try
 		{
-			new WebDriverWait(driver, AbstractModel.IMPLICIT_WAIT_SECONDS)
-					.until((Predicate<WebDriver>)d -> d.findElement(container).getAttribute("textContent").contains(errorMessage));
+			new WebDriverWait(driver, AbstractModel.IMPLICIT_WAIT_SECONDS).until((Predicate<WebDriver>) d -> d
+					.findElement(container).getAttribute("textContent").contains(errorMessage));
 		}
 		catch (TimeoutException ex)
 		{
@@ -250,10 +276,9 @@ public class FormsUtils
 		}
 	}
 
-	public static By getAttributeContainerWebElementBy(WebElement context, String simpleName,
-			boolean isCompoundAttribute)
+	public static By getAttributeContainerWebElementBy(String simpleName, boolean isCompoundAttribute)
 	{
-		By by = By.xpath("//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+		By by = By.xpath(".//" + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
 				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
 				+ simpleName + "']");
 		return by;
