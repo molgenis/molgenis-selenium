@@ -291,7 +291,7 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.waitForErrorMessage(driver, "xstring_unique", "This xstring_unique already exists. It must be unique.");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xstring_unique", oXstringUnique);
 
-		// xint_unique
+		// xint_unique: Change into different, but already used, value
 		String oXintUnique = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xint_unique",
 				(oXintUnique.equals("2") ? "1" : "2"));

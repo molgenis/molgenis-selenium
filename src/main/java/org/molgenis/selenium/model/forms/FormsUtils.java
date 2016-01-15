@@ -49,8 +49,9 @@ public class FormsUtils
 
 	public static void changeValueNoncompoundAttribute(WebDriver driver, By context, String simpleName, String value)
 	{
+		LOG.info("Type value {} into input {}...", value, simpleName);
 		int count = 0;
-		while (count < 3)
+		while (count < 10)
 		{
 			try
 			{
@@ -129,11 +130,15 @@ public class FormsUtils
 
 	private static void typeTextIntoInput(WebDriver driver, String value, WebElement inputElement)
 	{
-		WebDriverWait wait = new WebDriverWait(driver, 1);
+		LOG.info("Type {} into input...", value);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		LOG.info("Clear element...");
 		inputElement.clear();
 		wait.until((Predicate<WebDriver>) d -> isEmpty(inputElement.getAttribute("value")));
+		LOG.info("Send value...");
 		inputElement.sendKeys(value);
 		wait.until(textToBePresentInElementValue(inputElement, value));
+		LOG.info("Send TAB...");
 		inputElement.sendKeys(Keys.TAB);
 	}
 
@@ -159,8 +164,12 @@ public class FormsUtils
 			String... values)
 	{
 		WebElement container = findAttributeContainerWebElement(driver, context, simpleName, false);
-		container.findElements(By.cssSelector("input[name='" + simpleName + "']:checked")).stream()
-				.forEachOrdered(e -> e.click());
+		container.findElements(By.cssSelector("input[name='" + simpleName + "']")).forEach(e -> {
+			if (e.isSelected())
+			{
+				e.click();
+			}
+		});
 		Arrays.asList(values).stream().filter(e -> !"".equals(e)).forEach(e -> container
 				.findElement(By.xpath(".//input[@name='" + simpleName + "'][@value='" + e + "']")).click());
 	}

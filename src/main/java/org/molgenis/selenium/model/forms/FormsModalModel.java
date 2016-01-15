@@ -14,6 +14,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Predicate;
+
 public class FormsModalModel extends AbstractModel
 {
 	private static final Logger LOG = LoggerFactory.getLogger(FormsModalModel.class);
@@ -55,7 +57,8 @@ public class FormsModalModel extends AbstractModel
 		LOG.info("click on save changes button...");
 		if (FormsUtils.formHasErrors(driver, null))
 		{
-			LOG.warn("Form has errors: {}", driver.findElement(By.cssSelector(".has-error")).getText());
+			throw new RuntimeException(
+					"Form has errors: " + driver.findElement(By.cssSelector(".has-error")).getText());
 		}
 		saveChangesButton.click();
 		waitUntilModalFormClosed();
@@ -66,6 +69,11 @@ public class FormsModalModel extends AbstractModel
 	{
 		LOG.info("click on create button...");
 		createButton.click();
+		if (FormsUtils.formHasErrors(driver, null))
+		{
+			throw new RuntimeException(
+					"Form has errors: " + driver.findElement(By.cssSelector(".has-error")).getText());
+		}
 		waitUntilModalFormClosed();
 		return PageFactory.initElements(driver, DataModel.class);
 	}
@@ -81,21 +89,8 @@ public class FormsModalModel extends AbstractModel
 	private void waitUntilModalFormClosed()
 	{
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 30);
-		webDriverWait.until(this::isModalFormPresent);
-	}
-
-	private boolean isModalFormPresent(WebDriver d)
-	{
-		try
-		{
-			return !d.findElements(By.cssSelector(".modal")).stream()
-					.filter(e -> "block".equals(e.getCssValue("display"))).findAny().isPresent();
-		}
-		catch (Exception ex)
-		{
-			return false;
-		}
-
+		webDriverWait.pollingEvery(100, TimeUnit.MILLISECONDS);
+		webDriverWait.until((Predicate<WebDriver>)d -> AbstractModel.noElementFound(d, null, modalBy));
 	}
 
 	/**
