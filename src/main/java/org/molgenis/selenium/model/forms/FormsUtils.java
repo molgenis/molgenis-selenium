@@ -64,7 +64,7 @@ public class FormsUtils
 			}
 			catch (Exception ex)
 			{
-				LOG.error("Failed to enter text {} into input {}", value, simpleName, ex);
+				LOG.error("Failed to enter text {} into input {}", value, simpleName);
 				count++;
 			}
 		}
