@@ -68,12 +68,12 @@ public class FormsModalModel extends AbstractModel
 	public DataModel clickOnCreateButton()
 	{
 		LOG.info("click on create button...");
-		createButton.click();
 		if (FormsUtils.formHasErrors(driver, null))
 		{
 			throw new RuntimeException(
 					"Form has errors: " + driver.findElement(By.cssSelector(".has-error")).getText());
 		}
+		createButton.click();
 		waitUntilModalFormClosed();
 		return PageFactory.initElements(driver, DataModel.class);
 	}
