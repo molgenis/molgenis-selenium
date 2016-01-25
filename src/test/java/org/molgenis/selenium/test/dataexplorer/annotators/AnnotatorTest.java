@@ -107,12 +107,16 @@ public class AnnotatorTest extends AbstractSeleniumTest
 					"NM_153252.4", "Coding", "34/41", "c.3863A>G", "p.Lys1288Arg", "4126/12793", "3863/5409",
 					"1288/1802", "", "", "", ""));
 
-	private static final List<List<String>> VCF_EXAC_ANNOTATION = asList(asList("", "0.001209", "0", "23"),
-			asList("rs151276478", "", "", ""), asList("rs1749913", "0.809", "38057", "17422"), asList("", "", "", ""),
-			asList("rs72885464", "0.267", "911", "3366"),
-			asList("", "0.394,0.131,0.005366", "3743,120,0", "27251,7162,414"),
-			asList("rs2063690", "2.471E-5,0.112,1.648E-5", "0,1094,0", "1,11380,2"), asList("rs149296338", "", "", ""),
-			asList("rs3122407", "0.997", "26864", "173"));
+	private static final List<List<String>> VCF_EXAC_ANNOTATION = asList(asList("","0.001209","0","23")
+			,asList("rs151276478","","","")
+			,asList("rs1749913","0.809","38057","17422")
+			,asList("","0.064,0.045,0.433","0,0,93","1424,2956,40688")
+			,asList("rs72885464","0.267","911","3366")
+			,asList("","0.394,0.131,0.005366","3743,120,0","27251,7162,414")
+			,asList("rs2063690","2.471E-5,0.112,1.648E-5","0,1094,0","1,11380,2")
+			,asList("rs149296338","0.965","29713","737")
+			,asList("rs3122407","0.997","26864","173")
+			);
 
 	private static final List<List<String>> VCF_GONL_ANNOTATION = asList(asList("", "", ""),
 			asList("rs151276478", "485,13,0", "0.013052208835341365"),

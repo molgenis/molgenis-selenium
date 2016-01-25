@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.molgenis.selenium.model.component.SpinnerModel;
 import org.openqa.selenium.By;
@@ -17,6 +18,7 @@ public abstract class AbstractModel
 	protected final WebDriver driver;
 	protected final MenuModel menuModel;
 	protected final SpinnerModel spinnerModel;
+	public static final int IMPLICIT_WAIT_SECONDS = 30;
 
 	public AbstractModel(WebDriver driver)
 	{
@@ -42,7 +44,8 @@ public abstract class AbstractModel
 	}
 
 	/**
-	 * Test if an element exists
+	 * Tests the absence of an element right now, without waiting if it perhaps will appear within the implicit timeout.
+	 * Resets the web driver's timeout to {@link #IMPLICIT_WAIT_SECONDS} when done.
 	 * 
 	 * @param webDriver
 	 *            WebDriver
@@ -52,10 +55,16 @@ public abstract class AbstractModel
 	 *            By: by is used to fined the WebElement and define if exist
 	 * @return
 	 */
-	public static boolean exists(WebDriver webDriver, By context, By by)
+	public static boolean noElementFound(WebDriver webDriver, By context, By by)
 	{
-		List<WebElement> webElements = (null == context ? webDriver.findElements(by) : webDriver.findElement(context)
-				.findElements(by));
-		return webElements.size() > 0;
+		try
+		{
+			webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
+			return (null == context ? webDriver : webDriver.findElement(context)).findElements(by).isEmpty();
+		}
+		finally
+		{
+			webDriver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS); // Restore default value
+		}
 	}
 }
