@@ -7,3 +7,5 @@ target/
 src/test/resources/molgenis01.properties
 src/test/resources/molgenis62.properties
 src/test/resources/molgenis31.properties
+**/.DS_Store
+.DS_Store
