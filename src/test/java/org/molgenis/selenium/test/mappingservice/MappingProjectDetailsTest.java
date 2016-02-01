@@ -79,7 +79,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 	{
 		LOG.info("Test mapping Lifelines to HOP entity...");
 		assertEquals(model.addSource("lifelines_test").getMappingProjectTableData(),
-				asList(asList("Gender (categorical)", "Sex"),
+				asList(asList("id (string) required unique", "id"), asList("Gender (categorical)", "Sex"),
 						asList("Measured Standing Height in m (decimal)", "Height in centimeter"),
 						asList("Measured Standing Height in Meter (decimal)", "Height in centimeter"),
 						asList("Measured Weight in Gram (decimal)", "Weight in gram"),
