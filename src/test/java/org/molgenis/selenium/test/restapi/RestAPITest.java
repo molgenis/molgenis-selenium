@@ -161,7 +161,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No READ permission on entity LoggingEvent");
+			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity LoggingEvent");
 		}
 
 		LOG.info("Test that anonymous user cannot read ScriptType...");
@@ -173,7 +173,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No READ permission on entity ScriptType");
+			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity ScriptType");
 		}
 
 		LOG.info("Test that anonymous user cannot read UserAuthority...");
@@ -185,7 +185,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No READ permission on entity UserAuthority");
+			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity UserAuthority");
 		}
 
 		LOG.info("Test that anonymous user cannot read GroupAuthority...");
@@ -197,7 +197,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No READ permission on entity GroupAuthority");
+			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity GroupAuthority");
 		}
 	}
 
@@ -246,7 +246,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No READ permission on entity GroupAuthority");
+			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity GroupAuthority");
 		}
 	}
 
@@ -366,7 +366,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No READ permission on entity LoggingEvent");
+			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity LoggingEvent");
 		}
 	}
 }
