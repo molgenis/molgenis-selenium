@@ -37,10 +37,10 @@ public class DataExplorerModel extends AbstractModel
 
 	private final Select2Model entityModel;
 
-	@FindBy(css = ".page-next")
+	@FindBy(css = ".page-next a")
 	private WebElement next;
 
-	@FindBy(css = ".page-prev")
+	@FindBy(css = ".page-prev a")
 	private WebElement previous;
 
 	@FindBy(id = "entity-class-name")

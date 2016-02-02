@@ -62,25 +62,23 @@ public class DataExplorerTest extends AbstractSeleniumTest
 	public void test1() throws InterruptedException
 	{
 		LOG.info("Test data explorer, select TypeTest in entity select...");
-		// Test 1
 		model.selectEntity("TypeTest");
 		assertEquals(model.getSelectedEntityTitle(), "TypeTest");
 
-		// TODO: What does this test?
 		model.next().previous();
-		assertTrue(driver.getCurrentUrl().endsWith("dataexplorer?entity=org_molgenis_test_TypeTest"));
 
+		assertTrue(driver.getCurrentUrl().endsWith("dataexplorer?entity=org_molgenis_test_TypeTest#"));
 	}
 
 	@Test
 	public void test2() throws InterruptedException
 	{
 		LOG.info("Test data explorer, select TypeTest through URL...");
-		// Test 2
+
 		driver.get(baseURL + "/menu/main/dataexplorer?entity=org_molgenis_test_TypeTest");
 		new WebDriverWait(driver, 2).pollingEvery(100, TimeUnit.MILLISECONDS).until(this::entityTypeTestIsSelected);
 		model.next();
-		assertTrue(driver.getCurrentUrl().endsWith("dataexplorer?entity=org_molgenis_test_TypeTest"));
+		assertTrue(driver.getCurrentUrl().endsWith("dataexplorer?entity=org_molgenis_test_TypeTest#"));
 	}
 
 	private boolean entityTypeTestIsSelected(WebDriver d)
