@@ -103,6 +103,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 				"$('WEIGHT').div(1000.0).div($('HEIGHT').div(100.0).pow(2)).value()");
 		
 		model.spinner().waitTillDone(2, TimeUnit.SECONDS);
+		model.spinner().waitTillDone(10, TimeUnit.SECONDS);
 		bmiAlgorithmEditor.cancelAndGoBack();
 
 		LOG.info("Test creation of integrated dataset...");
