@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
+import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,9 +35,6 @@ public class AnnotatorModel extends AbstractModel
 
 	@FindBy(id = "annotate-dataset-button")
 	private WebElement annotateButton;
-
-	@FindBy(linkText = "Show result")
-	private WebElement showResultText;
 
 	@FindBy(css = "a.select-all-btn")
 	private WebElement selectAll;
@@ -128,17 +126,13 @@ public class AnnotatorModel extends AbstractModel
 		return availableCheckboxes.stream().map(e -> e.getAttribute("name")).collect(Collectors.toList());
 	}
 
-	public AnnotatorModel clickAnnotateButtonAndWait(int timeout, TimeUnit unit)
+	public DataExplorerModel clickAnnotateButtonAndWait(int timeout)
 	{
 		annotateButton.click();
-		spinner().waitTillDone(timeout, unit);
-		return this;
-	}
 
-	public DataExplorerModel goToResult()
-	{
-		showResultText.click();
+		DataModel dataModel = PageFactory.initElements(driver, DataModel.class);
+		dataModel.waitUntilReady(timeout);
+
 		return PageFactory.initElements(driver, DataExplorerModel.class);
 	}
-
 }
