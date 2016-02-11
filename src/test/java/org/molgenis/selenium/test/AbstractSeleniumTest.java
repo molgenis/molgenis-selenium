@@ -146,10 +146,13 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		homepage.menu().signOut();
 	}
 
-	private static void sort(List<List<String>> list){
-		Collections.sort(list, new Comparator<List<String>>() {
+	private static void sort(List<List<String>> list)
+	{
+		Collections.sort(list, new Comparator<List<String>>()
+		{
 			@Override
-			public int compare(List<String> a, List<String> b) {
+			public int compare(List<String> a, List<String> b)
+			{
 				return a.get(0).compareTo(b.get(0));
 			}
 		});
