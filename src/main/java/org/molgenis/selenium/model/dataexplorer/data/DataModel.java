@@ -10,6 +10,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +21,8 @@ public class DataModel extends AbstractModel
 
 	@FindBy(css = "#data-table-container button[title='Add row']")
 	private WebElement addRowButton;
-	
-	@FindBy(css="#data-table-container button[title='Edit row']")
+
+	@FindBy(css = "#data-table-container button[title='Edit row']")
 	private List<WebElement> editRowButton;
 
 	@FindBy(css = "div.alerts")
@@ -38,7 +40,7 @@ public class DataModel extends AbstractModel
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, FormsModalModel.class).waitForModal();
 	}
-	
+
 	public FormsModalModel clickOnEditFirstRowButton()
 	{
 		LOG.info("click on edit first row button for entity TypeTest...");
@@ -54,4 +56,12 @@ public class DataModel extends AbstractModel
 	{
 		return this.alertsContainer;
 	}
+
+	public DataModel waitUntilReady(int timeout)
+	{
+		WebDriverWait wait = new WebDriverWait(driver, timeout);
+		wait.until(ExpectedConditions.visibilityOf(addRowButton));
+		return this;
+	}
+
 }
