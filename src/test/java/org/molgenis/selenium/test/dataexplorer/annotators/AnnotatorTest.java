@@ -297,8 +297,8 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	public void testAnnotateSnpEffCGDAndHPOOnVCFCopyAndDelete()
 	{
 		LOG.info("Test annotation of VCF file with SnpEff and then HPO and CGD, using copy ...");
-		DataExplorerModel dataExplorerModel = model.select("snpEff").clickCopy().clickAnnotateButtonAndWait(300)
-				.selectAnnotatorTab().select("hpo").select("CGD").clickAnnotateButtonAndWait(300);
+		DataExplorerModel dataExplorerModel = model.select("snpEff").clickCopy().clickAnnotateButtonAndWait(600)
+				.selectAnnotatorTab().select("hpo").select("CGD").clickAnnotateButtonAndWait(600);
 
 		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("hpo").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
@@ -318,8 +318,8 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	{
 		LOG.info("Test annotation of EMX file with SnpEff and then HPO and CGD, using copy ...");
 		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("AnnotatorTestSelenium")
-				.selectAnnotatorTab().select("snpEff").clickCopy().clickAnnotateButtonAndWait(300).selectAnnotatorTab()
-				.select("hpo").select("CGD").clickAnnotateButtonAndWait(300);
+				.selectAnnotatorTab().select("snpEff").clickCopy().clickAnnotateButtonAndWait(600).selectAnnotatorTab()
+				.select("hpo").select("CGD").clickAnnotateButtonAndWait(600);
 
 		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("hpo").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
@@ -378,7 +378,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		LOG.info("First annotation with SNPEFF and EXAC on VcfSelenium...");
 
 		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("VcfSelenium").selectAnnotatorTab()
-				.select("snpEff").select("exac").clickAnnotateButtonAndWait(300);
+				.select("snpEff").select("exac").clickAnnotateButtonAndWait(600);
 
 		LOG.info("Check snpEff annotations...");
 		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("snpEff").spinner().waitTillDone(1,
@@ -402,7 +402,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		restClient.update(token, "VCFSelenium", entity.get("INTERNAL_ID").toString(), copyOf(entity));
 
 		LOG.info("Reannotate with snpEff...");
-		dataExplorerModel.selectAnnotatorTab().select("snpEff").clickAnnotateButtonAndWait(300);
+		dataExplorerModel.selectAnnotatorTab().select("snpEff").clickAnnotateButtonAndWait(600);
 
 		LOG.info("Check snpEff annotations...");
 		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("snpEff").spinner().waitTillDone(1,
