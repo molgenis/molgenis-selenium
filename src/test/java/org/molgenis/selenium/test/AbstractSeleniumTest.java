@@ -5,6 +5,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -143,8 +146,23 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		homepage.menu().signOut();
 	}
 
+	private static void sort(List<List<String>> list)
+	{
+		Collections.sort(list, new Comparator<List<String>>()
+		{
+			@Override
+			public int compare(List<String> a, List<String> b)
+			{
+				return a.get(0).compareTo(b.get(0));
+			}
+		});
+	}
+
 	protected static void compareTableData(List<List<String>> actual, List<List<String>> expected)
 	{
+		sort(actual);
+		sort(expected);
+
 		LOG.debug("Compare table data...");
 		try
 		{
