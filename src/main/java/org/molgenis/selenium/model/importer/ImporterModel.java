@@ -162,6 +162,7 @@ public class ImporterModel extends AbstractModel
 	public ImporterModel selectEntityName(String entityName)
 	{
 		oneMinuteWait.until(visibilityOf(stepTwo));
+		entityNameInput.clear();
 		entityNameInput.sendKeys(entityName);
 		nextButton.click();
 		return this;

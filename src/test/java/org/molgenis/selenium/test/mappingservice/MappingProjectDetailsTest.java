@@ -3,6 +3,8 @@ package org.molgenis.selenium.test.mappingservice;
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertEquals;
 
+import java.util.concurrent.TimeUnit;
+
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.mappingservice.AlgorithmEditorModel;
 import org.molgenis.selenium.model.mappingservice.MappingProjectDetailsModel;
@@ -79,7 +81,7 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 	{
 		LOG.info("Test mapping Lifelines to HOP entity...");
 		assertEquals(model.addSource("lifelines_test").getMappingProjectTableData(),
-				asList(asList("Gender (categorical)", "Sex"),
+				asList(asList("id (string) required unique", "id"), asList("Gender (categorical)", "Sex"),
 						asList("Measured Standing Height in m (decimal)", "Height in centimeter"),
 						asList("Measured Standing Height in Meter (decimal)", "Height in centimeter"),
 						asList("Measured Weight in Gram (decimal)", "Weight in gram"),
@@ -99,13 +101,15 @@ public class MappingProjectDetailsTest extends AbstractSeleniumTest
 		AlgorithmEditorModel bmiAlgorithmEditor = model.editAlgorithm("lifelines_test", "Body_Mass_Index");
 		assertEquals(bmiAlgorithmEditor.getAlgorithmValue(),
 				"$('WEIGHT').div(1000.0).div($('HEIGHT').div(100.0).pow(2)).value()");
+		
+		model.spinner().waitTillDone(10, TimeUnit.SECONDS);
 		bmiAlgorithmEditor.cancelAndGoBack();
 
 		LOG.info("Test creation of integrated dataset...");
 		compareTableData(model.createIntegratedDataset("testing_lifelines_hop").getTableData(),
-				asList(asList("", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04",
-						"34.92982846959234", "34.92982846959234", "34.92982846959234", "",
-						"Never + fewer than once a week", "", "Ever had high blood pressure", "lifelines_test")));
+				asList(asList("", "Female", "1.675", "1.675", "98000", "98", "6.6", "1.04", "34.92982846959234",
+						"34.92982846959234", "34.92982846959234", "", "Never + fewer than once a week", "",
+						"Ever had high blood pressure", "lifelines_test")));
 
 	}
 }

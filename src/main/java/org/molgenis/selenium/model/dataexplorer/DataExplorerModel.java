@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Predicate;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.molgenis.selenium.model.AbstractModel;
@@ -16,10 +17,13 @@ import org.molgenis.selenium.model.component.Select2Model;
 import org.molgenis.selenium.model.dataexplorer.annotators.AnnotatorModel;
 import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +41,10 @@ public class DataExplorerModel extends AbstractModel
 
 	private final Select2Model entityModel;
 
-	@FindBy(css = ".page-next")
+	@FindBy(css = ".page-next a")
 	private WebElement next;
 
-	@FindBy(css = ".page-prev")
+	@FindBy(css = ".page-prev a")
 	private WebElement previous;
 
 	@FindBy(id = "entity-class-name")
@@ -148,6 +152,7 @@ public class DataExplorerModel extends AbstractModel
 
 	/**
 	 * Clicks on an attribute's checkbox in the attribute tree.
+	 * 
 	 * @param attributeName
 	 * @return
 	 */

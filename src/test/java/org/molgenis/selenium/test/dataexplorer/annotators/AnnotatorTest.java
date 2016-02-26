@@ -37,20 +37,20 @@ import com.google.common.collect.Maps;
 public class AnnotatorTest extends AbstractSeleniumTest
 {
 	private static final List<List<String>> VCF_CGD_ANNOTATION = asList(
-			asList("", "", "", "", "", "", "", "", "", "", "", "", ""),
-			asList("rs151276478", "", "", "", "", "", "", "", "", "", "", "", ""),
-			asList("rs1749913", "29557", "91624", "Cardiomyopathy, familial hypertrophic, 20; Card...", "AD",
-					"DOMINANT", "Pediatric", "", "Cardiovascular", "Cardiovascular", "",
-					"Surveillance (eg, including echocardiogram/elec...", "19881492; 20970104"),
-			asList("", "", "", "", "", "", "", "", "", "", "", "", ""),
-			asList("rs72885464", "", "", "", "", "", "", "", "", "", "", "", ""),
-			asList("", "", "", "", "", "", "", "", "", "", "", "", ""),
-			asList("rs2063690", "", "", "", "", "", "", "", "", "", "", "", ""),
-			asList("rs149296338", "2195", "80781", "Knobloch syndrome 1", "AR", "RECESSIVE", "N/A", "N/A",
+			asList("13380", "", "", "", "", "", "", "", "", "", "", "", ""),
+			asList("13980", "", "", "", "", "", "", "", "", "", "", "", ""),
+			asList("171570151", "", "", "", "", "", "", "", "", "", "", "", ""),
+			asList("231094050", "", "", "", "", "", "", "", "", "", "", "", ""),
+			asList("46924425", "2195", "80781", "Knobloch syndrome 1", "AR", "RECESSIVE", "N/A", "N/A",
 					"Craniofacial; Musculoskeletal; Neurologic; Opht...", "General", "",
 					"Genetic knowledge may be beneficial related to ...",
 					"1554013; 7802003; 10942434; 14695535; 17546652;..."),
-			asList("rs3122407", "17342", "254065", "Mental retardation, X-linked 93", "XL", "XLINKED", "N/A", "N/A",
+			asList("66641732", "", "", "", "", "", "", "", "", "", "", "", ""),
+			asList("69964234", "", "", "", "", "", "", "", "", "", "", "", ""),
+			asList("78383467", "29557", "91624", "Cardiomyopathy, familial hypertrophic, 20; Card...", "AD", "DOMINANT",
+					"Pediatric", "", "Cardiovascular", "Cardiovascular", "",
+					"Surveillance (eg, including echocardiogram/elec...", "19881492; 20970104"),
+			asList("79943569", "17342", "254065", "Mental retardation, X-linked 93", "XL", "XLINKED", "N/A", "N/A",
 					"Craniofacial; Genitourinary; Musculoskeletal; N...", "General", "",
 					"Genetic knowledge may be beneficial related to ...", "7943039; 17668385; 19377476"));
 
@@ -84,60 +84,57 @@ public class AnnotatorTest extends AbstractSeleniumTest
 			asList("2", "", ""), asList("3", "", ""), asList("4", "", ""));
 
 	private static final List<List<String>> VCF_SNPEFF_ANNOTATION = asList(
-			asList("", "non_coding_exon_variant", "MODIFIER", "DDX11L1", "DDX11L1", "transcript", "NR_046018.2",
+			asList("13380", "non_coding_exon_variant", "MODIFIER", "DDX11L1", "DDX11L1", "transcript", "NR_046018.2",
 					"Noncoding", "3/3", "n.623C>G", "", "", "", "", "", "", "", ""),
-			asList("rs151276478", "non_coding_exon_variant", "MODIFIER", "DDX11L1", "DDX11L1", "transcript",
-					"NR_046018.2", "Noncoding", "3/3", "n.1223T>C", "", "", "", "", "", "", "", ""),
-			asList("rs1749913", "intron_variant", "MODIFIER", "NEXN", "NEXN", "transcript", "NM_144573.3", "Coding",
-					"3/12", "c.219+25G>A", "", "", "", "", "", "", "", ""),
-			asList("", "splice_region_variant&intron_variant", "LOW", "TTC13", "TTC13", "transcript", "NM_024525.4",
-					"Coding", "2/22", "c.367-7_367-6delTT", "", "", "", "", "", ",GA", "", ""),
-			asList("rs72885464", "intron_variant", "MODIFIER", "LOC101926913", "LOC101926913", "transcript",
+			asList("13980", "non_coding_exon_variant", "MODIFIER", "DDX11L1", "DDX11L1", "transcript", "NR_046018.2",
+					"Noncoding", "3/3", "n.1223T>C", "", "", "", "", "", "", "", ""),
+			asList("171570151", "intron_variant", "MODIFIER", "LOC101926913", "LOC101926913", "transcript",
 					"NR_110185.1", "Noncoding", "5/5", "n.376+9863G>A", "", "", "", "", "", ",T", "", ""),
-			asList("", "intron_variant", "MODIFIER", "UGT2B7", "UGT2B7", "transcript", "NM_001074.2", "Coding", "1/5",
-					"c.722-23delT", "", "", "", "", "", ",CTT", "", ""),
-			asList("rs2063690", "missense_variant", "MODERATE", "TIPIN", "TIPIN", "transcript", "NM_017858.2", "Coding",
-					"5/8", "c.332C>T", "p.Ala111Val", "418/1280", "332/906", "111/301", "", ",C", "", ""),
-			asList("rs149296338",
+			asList("231094050", "splice_region_variant&intron_variant", "LOW", "TTC13", "TTC13", "transcript",
+					"NM_024525.4", "Coding", "2/22", "c.367-7_367-6delTT", "", "", "", "", "", ",GA", "", ""),
+			asList("46924425",
 					"frameshift_variant&splice_acceptor_variant&splice_donor_variant&splice_region_variant&intron_variant",
 					"HIGH", "COL18A1", "COL18A1", "transcript", "NM_030582.3", "Coding", "33/42",
 					"c.3364_3365-2delGGCCCCCCA", "p.Pro1123fs", "3385/5894", "3364/4551", "1122/1516", "", "",
 					"(COL18A1|COL18A1|1|1.00)", ""),
-			asList("rs3122407", "missense_variant&splice_region_variant", "MODERATE", "BRWD3", "BRWD3", "transcript",
+			asList("66641732", "missense_variant", "MODERATE", "TIPIN", "TIPIN", "transcript", "NM_017858.2", "Coding",
+					"5/8", "c.332C>T", "p.Ala111Val", "418/1280", "332/906", "111/301", "", ",C", "", ""),
+			asList("69964234", "intron_variant", "MODIFIER", "UGT2B7", "UGT2B7", "transcript", "NM_001074.2", "Coding",
+					"1/5", "c.722-23delT", "", "", "", "", "", ",CTT", "", ""),
+			asList("78383467", "intron_variant", "MODIFIER", "NEXN", "NEXN", "transcript", "NM_144573.3", "Coding",
+					"3/12", "c.219+25G>A", "", "", "", "", "", "", "", ""),
+			asList("79943569", "missense_variant&splice_region_variant", "MODERATE", "BRWD3", "BRWD3", "transcript",
 					"NM_153252.4", "Coding", "34/41", "c.3863A>G", "p.Lys1288Arg", "4126/12793", "3863/5409",
 					"1288/1802", "", "", "", ""));
 
-	private static final List<List<String>> VCF_EXAC_ANNOTATION = asList(asList("","0.001209","0","23")
-			,asList("rs151276478","","","")
-			,asList("rs1749913","0.809","38057","17422")
-			,asList("","0.064,0.045,0.433","0,0,93","1424,2956,40688")
-			,asList("rs72885464","0.267","911","3366")
-			,asList("","0.394,0.131,0.005366","3743,120,0","27251,7162,414")
-			,asList("rs2063690","2.471E-5,0.112,1.648E-5","0,1094,0","1,11380,2")
-			,asList("rs149296338","0.965","29713","737")
-			,asList("rs3122407","0.997","26864","173")
-			);
+	private static final List<List<String>> VCF_EXAC_ANNOTATION = asList(asList("13380", "0.001209", "0", "23"),
+			asList("13980", "", "", ""), asList("171570151", "0.267", "911", "3366"),
+			asList("231094050", "0.064,0.045,0.433", "0,0,93", "1424,2956,40688"),
+			asList("46924425", "0.965", "29713", "737"),
+			asList("66641732", "2.471E-5,0.112,1.648E-5", "0,1094,0", "1,11380,2"),
+			asList("69964234", "0.394,0.131,0.005366", "3743,120,0", "27251,7162,414"),
+			asList("78383467", "0.809", "38057", "17422"), asList("79943569", "0.997", "26864", "173"));
 
-	private static final List<List<String>> VCF_GONL_ANNOTATION = asList(asList("", "", ""),
-			asList("rs151276478", "485,13,0", "0.013052208835341365"),
-			asList("rs1749913", "6,120,372", "0.8674698795180723"), asList("", "", ""),
-			asList("rs72885464", "241,207,50", "0.30823293172690763"), asList("", "", ""),
-			asList("rs2063690", "|412,77,9|", "|0.09538152610441768|"), asList("rs149296338", "", ""),
-			asList("rs3122407", "0,1,496", "0.9989939637826962"));
+	private static final List<List<String>> VCF_GONL_ANNOTATION = asList(asList("13380", "", ""),
+			asList("13980", "485,13,0", "0.013052208835341365"),
+			asList("171570151", "241,207,50", "0.30823293172690763"), asList("231094050", "", ""),
+			asList("46924425", "", ""), asList("66641732", "|412,77,9|", "|0.09538152610441768|"),
+			asList("69964234", "", ""), asList("78383467", "6,120,372", "0.8674698795180723"),
+			asList("79943569", "0,1,496", "0.9989939637826962"));
 
-	private static final List<List<String>> VCF_EMPTY_ANNOTATION_TWO_COLUMNS = asList(asList("", "", ""),
-			asList("rs151276478", "", ""), asList("rs1749913", "", ""), asList("", "", ""),
-			asList("rs72885464", "", ""), asList("", "", ""), asList("rs2063690", "", ""),
-			asList("rs149296338", "", ""), asList("rs3122407", "", ""));
+	private static final List<List<String>> VCF_EMPTY_ANNOTATION_TWO_COLUMNS = asList(asList("13380", "", ""),
+			asList("13980", "", ""), asList("171570151", "", ""), asList("231094050", "", ""),
+			asList("46924425", "", ""), asList("66641732", "", ""), asList("69964234", "", ""),
+			asList("78383467", "", ""), asList("79943569", "", ""));
 
-	private static final List<List<String>> VCF_EMPTY_ANNOTATION = asList(asList("", ""), asList("rs151276478", ""),
-			asList("rs1749913", ""), asList("", ""), asList("rs72885464", ""), asList("", ""), asList("rs2063690", ""),
-			asList("rs149296338", ""), asList("rs3122407", ""));
+	private static final List<List<String>> VCF_EMPTY_ANNOTATION = asList(asList("13380", ""), asList("13980", ""),
+			asList("171570151", ""), asList("231094050", ""), asList("46924425", ""), asList("66641732", ""),
+			asList("69964234", ""), asList("78383467", ""), asList("79943569", ""));
 
-	private static final List<List<String>> VCF_CADD_ANNOTATION = asList(asList("", "-1.358693", "0.027"),
-			asList("rs151276478", "-0.25518", "2.773"), asList("rs1749913", "", ""), asList("", "", ""),
-			asList("rs72885464", "", ""), asList("", "", ""), asList("rs2063690", "", ""),
-			asList("rs149296338", "", ""), asList("rs3122407", "", ""));
+	private static final List<List<String>> VCF_CADD_ANNOTATION = asList(asList("13380", "-1.358693", "0.027"),
+			asList("13980", "-0.25518", "2.773"), asList("171570151", "", ""), asList("231094050", "", ""),
+			asList("46924425", "", ""), asList("66641732", "", ""), asList("69964234", "", ""),
+			asList("78383467", "", ""), asList("79943569", "", ""));
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSeleniumTest.class);
 
@@ -183,53 +180,52 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	public void testAnnotateVcfWithAllAvailableAnnotatorsCopyDelete()
 	{
 		LOG.info("Test annotation of VCF with all available annotators...");
-		DataExplorerModel dataExplorerModel = model.selectAll().clickCopy()
-				.clickAnnotateButtonAndWait(5, TimeUnit.MINUTES).goToResult();
+		DataExplorerModel dataExplorerModel = model.selectAll().clickCopy().clickAnnotateButtonAndWait(300);
 
 		LOG.info("Check results...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("cadd").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated cadd table data: {}", tableData);
 		compareTableData(tableData, VCF_CADD_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("dann").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("dann").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated dann table data: {}", tableData);
 		compareTableData(tableData, VCF_EMPTY_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("clinvar").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("clinvar").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated clinvar table data: {}", tableData);
 		compareTableData(tableData, VCF_EMPTY_ANNOTATION_TWO_COLUMNS);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("gonl").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("gonl").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated gonl table data: {}", tableData);
 		compareTableData(tableData, VCF_GONL_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("exac").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated exac table data: {}", tableData);
 		compareTableData(tableData, VCF_EXAC_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("fitcon").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("fitcon").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated fitcon table data: {}", tableData);
 		compareTableData(tableData, VCF_EMPTY_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("snpEff").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("snpEff").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated snpEff table data: {}", getJavaInitializerString(tableData));
 		compareTableData(tableData, VCF_SNPEFF_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("thousand_genomes").spinner()
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("thousand_genomes").spinner()
 				.waitTillDone(1, TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("thousand_genomes table data: {}", tableData);
@@ -243,54 +239,46 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	{
 		LOG.info("Test annotation with all available annotators...");
 		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("AnnotatorTestSelenium")
-				.selectAnnotatorTab().selectAll().clickCopy().clickAnnotateButtonAndWait(5, TimeUnit.MINUTES)
-				.goToResult();
+				.selectAnnotatorTab().selectAll().clickCopy().clickAnnotateButtonAndWait(3000);
 
 		LOG.info("Check results...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated cadd table data: {}", tableData);
 		compareTableData(tableData, EMX_CADD_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("dann").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("dann").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated dann table data: {}", tableData);
 		compareTableData(tableData, EMX_EMPTY_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("clinvar").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("clinvar").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated clinvar table data: {}", tableData);
 		compareTableData(tableData, EMX_EMPTY_ANNOTATION_TWO_COLUMN);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("gonl").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("gonl").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated gonl table data: {}", tableData);
 		compareTableData(tableData, EMX_GONL_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated exac table data: {}", tableData);
 		compareTableData(tableData, EMX_EXAC_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("fitcon").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("fitcon").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated fitcon table data: {}", tableData);
 		compareTableData(tableData, EMX_EMPTY_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("snpEff").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("snpEff").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated snpEff table data: {}", getJavaInitializerString(tableData));
@@ -309,17 +297,16 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	public void testAnnotateSnpEffCGDAndHPOOnVCFCopyAndDelete()
 	{
 		LOG.info("Test annotation of VCF file with SnpEff and then HPO and CGD, using copy ...");
-		DataExplorerModel dataExplorerModel = model.select("snpEff").clickCopy()
-				.clickAnnotateButtonAndWait(5, TimeUnit.MINUTES).goToResult().selectAnnotatorTab().select("hpo")
-				.select("CGD").clickAnnotateButtonAndWait(5, TimeUnit.MINUTES).goToResult();
+		DataExplorerModel dataExplorerModel = model.select("snpEff").clickCopy().clickAnnotateButtonAndWait(600)
+				.selectAnnotatorTab().select("hpo").select("CGD").clickAnnotateButtonAndWait(600);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("hpo").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("hpo").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
 		LOG.info("HPO table data: {}", tableData);
 		compareTableData(tableData, VCF_EMPTY_ANNOTATION_TWO_COLUMNS);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("CGD").spinner().waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("CGD").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("CGD table data: {}", tableData);
@@ -331,19 +318,16 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	{
 		LOG.info("Test annotation of EMX file with SnpEff and then HPO and CGD, using copy ...");
 		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("AnnotatorTestSelenium")
-				.selectAnnotatorTab().select("snpEff").clickCopy().clickAnnotateButtonAndWait(5, TimeUnit.MINUTES)
-				.goToResult().selectAnnotatorTab().select("hpo").select("CGD")
-				.clickAnnotateButtonAndWait(5, TimeUnit.MINUTES).goToResult();
+				.selectAnnotatorTab().select("snpEff").clickCopy().clickAnnotateButtonAndWait(600).selectAnnotatorTab()
+				.select("hpo").select("CGD").clickAnnotateButtonAndWait(600);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("hpo").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("hpo").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
 		LOG.info("HPO table data: {}", tableData);
 		compareTableData(tableData, EMX_EMPTY_ANNOTATION_TWO_COLUMN);
 
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("CGD").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("CGD").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("CGD table data: {}", tableData);
@@ -363,8 +347,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		LOG.info("Test annotating EMX with CADD twice, using copy ...");
 		LOG.info("Going once..");
 		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("AnnotatorTestSelenium")
-				.selectAnnotatorTab().select("cadd").clickCopy().clickAnnotateButtonAndWait(1, TimeUnit.MINUTES)
-				.goToResult();
+				.selectAnnotatorTab().select("cadd").clickCopy().clickAnnotateButtonAndWait(60);
 		String entityName = dataExplorerModel.getEntityNameFromURL().get();
 		Assert.assertEquals(restClient.getMeta(token, entityName).getBody().getAttributes().keySet(),
 				of("ID", "#CHROM", "POS", "REF", "ALT", "Comment", "MOLGENIS_cadd"));
@@ -375,9 +358,8 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		restClient.update(token, entityName, "1", copyOf(entity));
 
 		LOG.info("Going twice..");
-		dataExplorerModel.selectAnnotatorTab().select("cadd").clickAnnotateButtonAndWait(1, TimeUnit.MINUTES)
-				.goToResult().deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner()
-				.waitTillDone(1, TimeUnit.SECONDS);
+		dataExplorerModel.selectAnnotatorTab().select("cadd").clickAnnotateButtonAndWait(60).deselectAll()
+				.clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1, TimeUnit.SECONDS);
 		Assert.assertEquals(restClient.getMeta(token, entityName).getBody().getAttributes().keySet(),
 				of("ID", "#CHROM", "POS", "REF", "ALT", "Comment", "MOLGENIS_cadd"));
 
@@ -390,52 +372,47 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	}
 
 	@Test(priority = 10) // destructive so this is the last test to run on the VCF
-	public void testRunCaddTwiceOnVcfNoCopy()
+	public void testRunSnpEffTwiceOnVcfNoCopy()
 	{
-		LOG.info("Test annotating VCF with CADD twice, on the VCF entity, no copy ...");
-		LOG.info("First annotation with CADD and EXAC on VcfSelenium...");
-		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("VcfSelenium").selectAnnotatorTab()
-				.select("cadd").select("exac").clickAnnotateButtonAndWait(2, TimeUnit.MINUTES).goToResult();
+		LOG.info("Test annotating VCF with SNPEFF twice, on the VCF entity, no copy ...");
+		LOG.info("First annotation with SNPEFF and EXAC on VcfSelenium...");
 
-		LOG.info("Check cadd annotations...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner()
-				.waitTillDone(1,
+		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("VcfSelenium").selectAnnotatorTab()
+				.select("snpEff").select("exac").clickAnnotateButtonAndWait(600);
+
+		LOG.info("Check snpEff annotations...");
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("snpEff").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
-		LOG.info("Annotated cadd table data: {}", tableData);
-		compareTableData(tableData, VCF_CADD_ANNOTATION);
+		LOG.info("Annotated snpEff table data: {}", tableData);
+		compareTableData(tableData, VCF_SNPEFF_ANNOTATION);
 
 		LOG.info("Check exac annotations...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("exac").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated exac table data: {}", tableData);
 		compareTableData(tableData, VCF_EXAC_ANNOTATION);
 
-		LOG.info("Clear cadd scores in first row...");
+		LOG.info("Clear snpEff scores in first row...");
 		Map<String, Object> entity = restClient.get(token, "VcfSelenium").getItems().get(0);
-		entity.put("CADDABS", 0);
-		entity.put("CADDSCALED", 0);
+		entity.put("Gene_ID", "");
 		entity.put("SAMPLES_ENTITIES", emptyList()); // easiest update
 		LOG.info("entity: {}", entity);
 		restClient.update(token, "VCFSelenium", entity.get("INTERNAL_ID").toString(), copyOf(entity));
 
-		LOG.info("Reannotate with CADD...");
-		dataExplorerModel.selectAnnotatorTab().select("cadd").clickAnnotateButtonAndWait(1, TimeUnit.MINUTES)
-				.goToResult();
+		LOG.info("Reannotate with snpEff...");
+		dataExplorerModel.selectAnnotatorTab().select("snpEff").clickAnnotateButtonAndWait(600);
 
-		LOG.info("Check cadd annotations...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner()
-				.waitTillDone(1,
+		LOG.info("Check snpEff annotations...");
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("snpEff").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
-		LOG.info("CADD table data after annotating twice: {}", tableData);
-		compareTableData(tableData, moveFirstRowToLast(VCF_CADD_ANNOTATION));
+		LOG.info("SNPEFF table data after annotating twice: {}", tableData);
+		compareTableData(tableData, moveFirstRowToLast(VCF_SNPEFF_ANNOTATION));
 
 		LOG.info("Check exac annotations...");
-		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("exac").spinner()
-				.waitTillDone(1,
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("exac").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("exac table data after annotating twice: {}", tableData);
