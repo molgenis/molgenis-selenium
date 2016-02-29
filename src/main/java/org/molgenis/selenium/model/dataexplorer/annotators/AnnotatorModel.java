@@ -27,9 +27,6 @@ public class AnnotatorModel extends AbstractModel
 	@FindBy(css = "#enabled-annotator-selection-container input:checked")
 	private List<WebElement> selectedCheckboxes;
 
-	@FindBy(css = "#annotator-select-container input[name=createCopy]")
-	private WebElement copyCheckbox;
-
 	@FindBy(id = "enabled-annotator-selection-container")
 	private WebElement enabledAnnotatorSelectionContainer;
 
@@ -53,6 +50,8 @@ public class AnnotatorModel extends AbstractModel
 	public DataExplorerModel selectDataTab()
 	{
 		LOG.info("Select Data tab...");
+		WebDriverWait wait = new WebDriverWait(driver, 60);
+		wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Data")));
 		dataTab.click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, DataExplorerModel.class);
@@ -67,10 +66,14 @@ public class AnnotatorModel extends AbstractModel
 	{
 		LOG.info("Select {}...", annotator);
 		WebElement checkbox = findAnnotatorCheckbox(annotator);
+		WebDriverWait wait = new WebDriverWait(driver, 60);
+		wait.until(ExpectedConditions.elementToBeClickable(checkbox));
+
 		if (!checkbox.isSelected())
 		{
 			checkbox.click();
 		}
+
 		return this;
 	}
 
@@ -106,12 +109,6 @@ public class AnnotatorModel extends AbstractModel
 		return driver.findElement(By.cssSelector("#annotator-select-container input[value=" + annotator + "]"));
 	}
 
-	public AnnotatorModel clickCopy()
-	{
-		copyCheckbox.click();
-		return this;
-	}
-
 	public List<String> getSelectedAnnotators()
 	{
 		LOG.info("getSelectedAnnotators()...");
@@ -134,5 +131,13 @@ public class AnnotatorModel extends AbstractModel
 		dataModel.waitUntilReady(timeout);
 
 		return PageFactory.initElements(driver, DataExplorerModel.class);
+	}
+
+	public AnnotatorModel clickCopy(String entityName, String newEntityName)
+	{
+		selectDataTab().selectEntity(entityName);
+		DataExplorerModel dataExplorerModel = PageFactory.initElements(driver, DataExplorerModel.class);
+		dataExplorerModel.copyEntity(newEntityName);
+		return this;
 	}
 }

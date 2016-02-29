@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Predicate;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.molgenis.selenium.model.AbstractModel;
@@ -17,7 +16,6 @@ import org.molgenis.selenium.model.component.Select2Model;
 import org.molgenis.selenium.model.dataexplorer.annotators.AnnotatorModel;
 import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -76,6 +74,9 @@ public class DataExplorerModel extends AbstractModel
 
 	@FindBy(css = ".molgenis-table-container tbody tr")
 	private List<WebElement> tableRows;
+
+	@FindBy(css = "#copy-data-btn")
+	private WebElement copyCheckBtn;
 
 	public DataExplorerModel(WebDriver driver)
 	{
@@ -147,6 +148,7 @@ public class DataExplorerModel extends AbstractModel
 	public DataExplorerModel deselectAll()
 	{
 		deselectAllButton.click();
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return this;
 	}
 
@@ -158,8 +160,10 @@ public class DataExplorerModel extends AbstractModel
 	 */
 	public DataExplorerModel clickAttribute(String attributeName)
 	{
-		driver.findElement(By.xpath("//div[@class='molgenis-tree']//li[span/span/text()='" + attributeName
-				+ "']/span/span[@class='fancytree-checkbox']")).click();
+		LOG.info("Click on attribute: " + attributeName);
+		driver.findElement(
+				By.xpath("//div[@class='molgenis-tree']//li[span/span/text()='" + attributeName
+						+ "']/span/span[@class='fancytree-checkbox']")).click();
 		return this;
 	}
 
@@ -189,5 +193,25 @@ public class DataExplorerModel extends AbstractModel
 		{
 			return empty();
 		}
+	}
+
+	public DataExplorerModel copyEntity(String newEntityName)
+	{
+		LOG.info("Start copy");
+
+		WebDriverWait wait = new WebDriverWait(driver, 60);
+		wait.until(ExpectedConditions.visibilityOf(copyCheckBtn));
+		copyCheckBtn.click();
+
+		WebElement input = driver.findElement(By.cssSelector("input.bootbox-input"));
+		input.clear();
+		input.sendKeys(newEntityName);
+
+		WebElement okBtn = driver.findElement(By.cssSelector("div.bootbox .modal-footer button.btn-primary"));
+		okBtn.click();
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
+
+		LOG.info("Finished copy");
+		return this;
 	}
 }
