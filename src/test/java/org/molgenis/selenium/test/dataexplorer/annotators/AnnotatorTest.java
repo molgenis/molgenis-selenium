@@ -179,42 +179,50 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	@Test
 	public void testAnnotateVcfWithAllAvailableAnnotatorsCopyDelete()
 	{
+		// Copy
+		String entityNameOriginal = "VcfSelenium";
+		String entityName = entityNameOriginal + "_Copy1";
+		restClient.deleteMetadata(token, entityName);
+		model.clickCopy(entityNameOriginal, entityName);
+
 		LOG.info("Test annotation of VCF with all available annotators...");
-		DataExplorerModel dataExplorerModel = model.selectAll().clickCopy().clickAnnotateButtonAndWait(300);
+		DataExplorerModel dataExplorerModel = model.selectDataTab();
+		dataExplorerModel = model.selectDataTab().selectAnnotatorTab().selectAll()
+				.clickAnnotateButtonAndWait(300);
 
 		LOG.info("Check results...");
-		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("cadd").spinner().waitTillDone(1,
-				TimeUnit.SECONDS);
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("cadd").spinner()
+				.waitTillDone(1, TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated cadd table data: {}", tableData);
 		compareTableData(tableData, VCF_CADD_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("dann").spinner().waitTillDone(1,
-				TimeUnit.SECONDS);
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("dann").spinner()
+				.waitTillDone(1, TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated dann table data: {}", tableData);
 		compareTableData(tableData, VCF_EMPTY_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("clinvar").spinner().waitTillDone(1,
-				TimeUnit.SECONDS);
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("clinvar").spinner()
+				.waitTillDone(1, TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated clinvar table data: {}", tableData);
 		compareTableData(tableData, VCF_EMPTY_ANNOTATION_TWO_COLUMNS);
 
-		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("gonl").spinner().waitTillDone(1,
-				TimeUnit.SECONDS);
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("gonl").spinner()
+				.waitTillDone(1, TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated gonl table data: {}", tableData);
 		compareTableData(tableData, VCF_GONL_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("exac").spinner().waitTillDone(1,
-				TimeUnit.SECONDS);
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("exac").spinner()
+				.waitTillDone(1, TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated exac table data: {}", tableData);
 		compareTableData(tableData, VCF_EXAC_ANNOTATION);
 
-		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("fitcon").spinner().waitTillDone(1,
-				TimeUnit.SECONDS);
+		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("fitcon").spinner()
+				.waitTillDone(1, TimeUnit.SECONDS);
 		tableData = dataExplorerModel.getTableData();
 		LOG.info("Annotated fitcon table data: {}", tableData);
 		compareTableData(tableData, VCF_EMPTY_ANNOTATION);
@@ -237,14 +245,21 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	@Test
 	public void testEmxWithAllAvailableAnnotatorsCopyDelete()
 	{
+		// Copy
+		String entityNameOriginal = "AnnotatorTestSelenium";
+		String entityName = entityNameOriginal + "_Copy2";
+		restClient.deleteMetadata(token, entityName);
+		model.clickCopy(entityNameOriginal, entityName);
+
 		LOG.info("Test annotation with all available annotators...");
-		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("AnnotatorTestSelenium")
-				.selectAnnotatorTab().selectAll().clickCopy().clickAnnotateButtonAndWait(3000);
+		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity(entityName).selectAnnotatorTab()
+				.selectAll().clickAnnotateButtonAndWait(3000);
 
 		LOG.info("Check results...");
 		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("cadd").spinner().waitTillDone(1,
 				TimeUnit.SECONDS);
 		List<List<String>> tableData = dataExplorerModel.getTableData();
+
 		LOG.info("Annotated cadd table data: {}", tableData);
 		compareTableData(tableData, EMX_CADD_ANNOTATION);
 
@@ -296,8 +311,15 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	@Test
 	public void testAnnotateSnpEffCGDAndHPOOnVCFCopyAndDelete()
 	{
-		LOG.info("Test annotation of VCF file with SnpEff and then HPO and CGD, using copy ...");
-		DataExplorerModel dataExplorerModel = model.select("snpEff").clickCopy().clickAnnotateButtonAndWait(600)
+		// Copy
+		String entityNameOriginal = "VcfSelenium";
+		String entityName = entityNameOriginal + "_Copy3";
+		restClient.deleteMetadata(token, entityName);
+		model.clickCopy(entityNameOriginal, entityName);
+
+		LOG.info("Test annotation of VCF file with SnpEff and then HPO and CGD");
+		DataExplorerModel dataExplorerModel = model.selectDataTab().selectAnnotatorTab().select("snpEff")
+				.clickAnnotateButtonAndWait(600)
 				.selectAnnotatorTab().select("hpo").select("CGD").clickAnnotateButtonAndWait(600);
 
 		dataExplorerModel.deselectAll().clickAttribute("POS").clickAttribute("hpo").spinner().waitTillDone(1,
@@ -316,9 +338,16 @@ public class AnnotatorTest extends AbstractSeleniumTest
 	@Test
 	public void testAnnotateSnpEffCGDAndHPOOnEMXCopyAndDelete()
 	{
-		LOG.info("Test annotation of EMX file with SnpEff and then HPO and CGD, using copy ...");
-		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("AnnotatorTestSelenium")
-				.selectAnnotatorTab().select("snpEff").clickCopy().clickAnnotateButtonAndWait(600).selectAnnotatorTab()
+		// Copy
+		String entityNameOriginal = "AnnotatorTestSelenium";
+		String entityName = entityNameOriginal + "_Copy4";
+		restClient.deleteMetadata(token, entityName);
+		model.clickCopy(entityNameOriginal, entityName);
+
+		LOG.info("Test annotation of EMX file with SnpEff and then HPO and CGD");
+		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity(entityName)
+				.selectAnnotatorTab().select("snpEff")
+				.clickAnnotateButtonAndWait(600).selectAnnotatorTab()
 				.select("hpo").select("CGD").clickAnnotateButtonAndWait(600);
 
 		dataExplorerModel.deselectAll().clickAttribute("ID").clickAttribute("hpo").spinner().waitTillDone(1,
@@ -341,14 +370,22 @@ public class AnnotatorTest extends AbstractSeleniumTest
 								"1554013; 7802003; 10942434; 14695535; 17546652;...")));
 	}
 
-	@Test(enabled = false)
+	@Test
 	public void testRunCaddTwiceOnEMXWithCopy() throws URISyntaxException
 	{
+		// Copy
+		String entityNameOriginal = "AnnotatorTestSelenium";
+		String entityName = entityNameOriginal + "_Copy5";
+		restClient.deleteMetadata(token, entityName);
+		model.clickCopy(entityNameOriginal, entityName);
+
 		LOG.info("Test annotating EMX with CADD twice, using copy ...");
 		LOG.info("Going once..");
-		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity("AnnotatorTestSelenium")
-				.selectAnnotatorTab().select("cadd").clickCopy().clickAnnotateButtonAndWait(60);
-		String entityName = dataExplorerModel.getEntityNameFromURL().get();
+		DataExplorerModel dataExplorerModel = model.selectDataTab().selectEntity(entityName)
+				.selectAnnotatorTab()
+				.select("cadd").clickAnnotateButtonAndWait(60);
+		
+		entityName = dataExplorerModel.getEntityNameFromURL().get();
 		Assert.assertEquals(restClient.getMeta(token, entityName).getBody().getAttributes().keySet(),
 				of("ID", "#CHROM", "POS", "REF", "ALT", "Comment", "MOLGENIS_cadd"));
 
@@ -371,7 +408,8 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		restClient.deleteMetadata(token, entityName);
 	}
 
-	@Test(priority = 10) // destructive so this is the last test to run on the VCF
+	@Test(priority = 10)
+	// destructive so this is the last test to run on the VCF
 	public void testRunSnpEffTwiceOnVcfNoCopy()
 	{
 		LOG.info("Test annotating VCF with SNPEFF twice, on the VCF entity, no copy ...");

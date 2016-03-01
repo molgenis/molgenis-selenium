@@ -5,7 +5,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +19,8 @@ import org.molgenis.selenium.model.HomepageModel;
 import org.molgenis.selenium.model.importer.ImporterModel;
 import org.molgenis.selenium.model.importer.ImporterModel.EntitiesOptions;
 import org.molgenis.util.GsonConfig;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
@@ -65,6 +66,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	{
 		driver = DriverType.FIREFOX.getDriver();
 		driver.manage().timeouts().implicitlyWait(AbstractModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
+		this.setBrowserDefaultSize();
 	}
 
 	@AfterClass
@@ -214,5 +216,20 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	public static String getJavaInitializerStringForRow(List<String> row)
 	{
 		return row.stream().map(Object::toString).collect(Collectors.joining("\",\"", "asList(\"", "\")\n"));
+	}
+
+	/**
+	 * This is a workaround to avoid the exception when the size of the browser is (width = 1280, height = 800):
+	 * 
+	 * "org.openqa.selenium.WebDriverException: Element is not clickable at point (XX, XX). Other element would receive
+	 * the click: <a href="/menu/main/dataexplorer"></a> (WARNING: The server did not provide any stacktrace
+	 * information)"
+	 */
+	public void setBrowserDefaultSize()
+	{
+		driver.manage().window().setPosition(new Point(0, 0));
+		driver.manage().window().setSize(new Dimension(1920, 1080));
+		// FIXME MOLGENIS should be able to work with this browser size
+		// driver.manage().window().setSize(new Dimension(1280, 800));
 	}
 }

@@ -257,10 +257,10 @@ public class FormsUtils
 
 	public static By findAttributeInputBy(String simpleName, boolean isCompoundAttribute, boolean relative)
 	{
-		return By.xpath(
-				getXpathSlashSlashPrefix(relative) + (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
-						+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
-						+ simpleName + "']//input[@name='" + simpleName + "']");
+		return By.xpath(getXpathSlashSlashPrefix(relative)
+				+ (isCompoundAttribute ? COMPOUND_CONTAINER : NONCOMPOUND_CONTAINER)
+				+ "[substring(@data-reactid, string-length(@data-reactid) - " + simpleName.length() + ") = '$"
+				+ simpleName + "']//input[@name='" + simpleName + "']");
 	}
 
 	public static void waitForErrorMessage(WebDriver driver, String simpleName, String simpleNamePartOf,
