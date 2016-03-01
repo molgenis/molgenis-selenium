@@ -50,8 +50,6 @@ public class AnnotatorModel extends AbstractModel
 	public DataExplorerModel selectDataTab()
 	{
 		LOG.info("Select Data tab...");
-		WebDriverWait wait = new WebDriverWait(driver, 60);
-		wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Data")));
 		dataTab.click();
 		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, DataExplorerModel.class);
@@ -66,8 +64,6 @@ public class AnnotatorModel extends AbstractModel
 	{
 		LOG.info("Select {}...", annotator);
 		WebElement checkbox = findAnnotatorCheckbox(annotator);
-		WebDriverWait wait = new WebDriverWait(driver, 60);
-		wait.until(ExpectedConditions.elementToBeClickable(checkbox));
 
 		if (!checkbox.isSelected())
 		{
