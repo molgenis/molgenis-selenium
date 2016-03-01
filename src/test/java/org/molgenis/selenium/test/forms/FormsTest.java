@@ -259,8 +259,9 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdate", "");
 		FormsUtils.waitForErrorMessage(driver, "xdate", "Please enter a value.");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xdate", "2015-12-31");
-		// At this stage the date JavaScript event is still working. Testing onBlur of a date is very difficult.
-
+		String actualXDate = FormsUtils.getValueNoncompoundAttribute(driver, model.getModalBy(), "xdate");
+		assertEquals(actualXDate, "2015-12-31");
+		
 		// Test onblur xdecimal
 		FormsUtils.changeValueNoncompoundAttributeUnsafe(driver, model.getModalBy(), "xdecimal", "1-1-1-1-1");
 		FormsUtils.focusOnElement(driver, model.getModalBy(), "xdecimal");
@@ -273,7 +274,7 @@ public class FormsTest extends AbstractSeleniumTest
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xemail", "molgenis@gmail.com");
 
 		// xhyperlink
-		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink", "www.molgenis.org");
+		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink", " www.molgenis.org");
 		FormsUtils.waitForErrorMessage(driver, "xhyperlink", "Please enter a valid URL.");
 		FormsUtils.changeValueNoncompoundAttribute(driver, model.getModalBy(), "xhyperlink", "http://www.molgenis.org");
 
