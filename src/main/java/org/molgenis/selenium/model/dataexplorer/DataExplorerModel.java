@@ -18,7 +18,6 @@ import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -102,8 +101,6 @@ public class DataExplorerModel extends AbstractModel
 			default:
 				break;
 		}
-		WebDriverWait wait = new WebDriverWait(driver, 60);
-		wait.until(ExpectedConditions.elementToBeClickable(confirmButton));
 		confirmButton.click();
 		spinner().waitTillDone(20, TimeUnit.SECONDS);
 	}
@@ -150,11 +147,7 @@ public class DataExplorerModel extends AbstractModel
 
 	public DataExplorerModel deselectAll()
 	{
-		WebDriverWait wait = new WebDriverWait(driver, 60);
-		wait.until(ExpectedConditions.elementToBeClickable(deselectAllButton));
-		Actions action = new Actions(driver);
-		action.moveToElement(deselectAllButton).click().perform();
-		spinner().waitTillDone(60, TimeUnit.SECONDS);
+		deselectAllButton.click();
 		return this;
 	}
 
