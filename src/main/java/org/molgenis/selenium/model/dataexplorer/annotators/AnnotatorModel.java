@@ -135,6 +135,7 @@ public class AnnotatorModel extends AbstractModel
 
 	public AnnotatorModel clickCopy(String entityName, String newEntityName)
 	{
+		LOG.info("Copy [" + entityName + "] and create [" + newEntityName + "]");
 		selectDataTab().selectEntity(entityName);
 		DataExplorerModel dataExplorerModel = PageFactory.initElements(driver, DataExplorerModel.class);
 		dataExplorerModel.copyEntity(newEntityName);
