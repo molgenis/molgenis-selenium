@@ -52,17 +52,17 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 	@Autowired
 	private GsonHttpMessageConverter gsonHttpMessageConverter;
 
-	private Resource testVcf = new ClassPathResource("vcf/test.vcf", getClass());
-	private Resource weirdnameVcf = new ClassPathResource("vcf/di@gno$&.vcf", getClass());
-	private Resource testXlsx = new ClassPathResource("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
-	private Resource testEmxZip = new ClassPathResource("org/molgenis/selenium/emx/csv.zip/emx_all_datatypes_csv.zip");
+	private final Resource testVcf = new ClassPathResource("vcf/test.vcf", getClass());
+	private final Resource weirdnameVcf = new ClassPathResource("vcf/di@gno$&.vcf", getClass());
+	private final Resource testXlsx = new ClassPathResource("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
+	private final Resource testEmxZip = new ClassPathResource("org/molgenis/selenium/emx/csv.zip/emx_all_datatypes_csv.zip");
 
 	RestTemplate template = new RestTemplate();
 	RestTemplate template2 = new RestTemplate();
 
-	private HttpHeaders headers = new HttpHeaders();
+	private final HttpHeaders headers = new HttpHeaders();
 
-	private Pattern importRunUrl = Pattern.compile("\"/api/v2/ImportRun/(.*)\"");
+	private final Pattern importRunUrl = Pattern.compile("\"/api/v2/ImportRun/(.*)\"");
 
 	@BeforeClass
 	public void loginAdmin()
@@ -398,7 +398,7 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 			{
 				continue;
 			}
-			Thread.sleep(100);
+			Thread.sleep(200);
 			importRun = getImportRun(importRunId);
 		}
 		return importRun;
