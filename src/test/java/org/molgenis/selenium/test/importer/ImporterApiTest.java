@@ -82,8 +82,13 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		client.deleteMetadata(adminToken, "test_Sample");
 		client.deleteMetadata(adminToken, "org_molgenis_test_TypeTest");
 		client.deleteMetadata(adminToken, "TypeTestRef");
+		client.deleteMetadata(adminToken, "Location");
+		client.deleteMetadata(adminToken, "org_molgenis_test_Person");
+		client.deleteMetadata(adminToken, "org_molgenis_test_Location");
 		client.deleteMetadata(adminToken, "org_molgenis_test_TypeTestCSV");
 		client.deleteMetadata(adminToken, "org_molgenis_test_TypeTestRefCSV");
+		client.deleteMetadata(adminToken, "org_molgenis_test_PersonCSV");
+		client.deleteMetadata(adminToken, "org_molgenis_test_LocationCSV");
 	}
 
 	@Test
@@ -210,7 +215,8 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		assertEquals(importRun.get("status"), "FINISHED");
 		assertEquals(importRun.get("message"),
 				"Imported 5 org_molgenis_test_TypeTestRefCSV entities.<br />Imported 38 org_molgenis_test_TypeTestCSV entities.<br />");
-		assertEquals(importRun.get("importedEntities"), "org_molgenis_test_TypeTestRefCSV,org_molgenis_test_TypeTestCSV");
+		assertEquals(importRun.get("importedEntities"),
+				"org_molgenis_test_PersonCSV,org_molgenis_test_TypeTestRefCSV,org_molgenis_test_LocationCSV,org_molgenis_test_TypeTestCSV");
 		assertEquals(importRun.get("notify"), false);
 	}
 
@@ -236,9 +242,10 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		Map<String, Object> importRun = waitForImportRunToFinish(importRunId);
 		System.out.println(importRun);
 		assertEquals(importRun.get("status"), "FAILED");
-		assertTrue(importRun.get("message").toString().startsWith("Trying to add existing org_molgenis_test_TypeTestRefCSV entities as new insert: ref"));
+		assertTrue(importRun.get("message").toString()
+				.startsWith("Trying to add existing org_molgenis_test_TypeTestRefCSV entities as new insert: ref"));
 	}
-	
+
 	@Test
 	public void testUploadZipUpdateExistingEntities() throws InterruptedException
 	{
@@ -266,7 +273,7 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		assertEquals(importRun.get("importedEntities"), "");
 		assertEquals(importRun.get("notify"), false);
 	}
-	
+
 	@Test
 	public void testUploadZipUnknownAction() throws InterruptedException
 	{
@@ -286,7 +293,6 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 					"\"Invalid action:[BUG] valid values: [ADD, ADD_UPDATE_EXISTING, UPDATE, ADD_IGNORE_EXISTING]\"");
 		}
 	}
-	
 
 	@Test
 	public void testUploadExcelCleanStart() throws InterruptedException
@@ -304,7 +310,7 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		assertEquals(importRun.get("status"), "FINISHED");
 		assertEquals(importRun.get("message"),
 				"Imported 5 TypeTestRef entities.<br />Imported 38 org_molgenis_test_TypeTest entities.<br />");
-		assertEquals(importRun.get("importedEntities"), "TypeTestRef,org_molgenis_test_TypeTest");
+		assertEquals(importRun.get("importedEntities"), "TypeTestRef,Location,org_molgenis_test_TypeTest");
 		assertEquals(importRun.get("notify"), false);
 	}
 
@@ -330,9 +336,10 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		Map<String, Object> importRun = waitForImportRunToFinish(importRunId);
 		System.out.println(importRun);
 		assertEquals(importRun.get("status"), "FAILED");
-		assertTrue(importRun.get("message").toString().startsWith("Trying to add existing TypeTestRef entities as new insert: ref"));
+		assertTrue(importRun.get("message").toString()
+				.startsWith("Trying to add existing TypeTestRef entities as new insert: ref"));
 	}
-	
+
 	@Test
 	public void testUploadExcelUpdateExistingEntities() throws InterruptedException
 	{
@@ -360,7 +367,7 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		assertEquals(importRun.get("importedEntities"), "");
 		assertEquals(importRun.get("notify"), false);
 	}
-	
+
 	@Test
 	public void testUploadExcelUnknownAction() throws InterruptedException
 	{
