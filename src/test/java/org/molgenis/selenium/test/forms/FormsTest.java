@@ -143,7 +143,7 @@ public class FormsTest extends AbstractSeleniumTest
 	/**
 	 * Create new TypeTestRef Fill in all attributes (Use new TypeTestRef) and click 'Create'
 	 */
-	@Test
+	//@Test
 	public void testCreateNewTypeTestRefAndTypeTest()
 	{
 		LOG.info("testCreateNewTypeTestRefAndTypeTest...");
@@ -178,7 +178,7 @@ public class FormsTest extends AbstractSeleniumTest
 	/**
 	 * Action: Edit some values and save changes. Result: Values should be updated
 	 */
-	@Test
+	//@Test
 	public void testEditValuesAndSaveChanges()
 	{
 		LOG.info("testEditValuesAndSaveChanges...");
@@ -242,7 +242,7 @@ public class FormsTest extends AbstractSeleniumTest
 	/**
 	 * Action: Test error messages for invalid values
 	 */
-	@Test
+	//@Test
 	public void testErrorMessagesInvalidValues()
 	{
 		LOG.info("testErrorMessagesInvalidValues");

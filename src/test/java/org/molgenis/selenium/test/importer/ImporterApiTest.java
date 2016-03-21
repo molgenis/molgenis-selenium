@@ -91,7 +91,7 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		client.deleteMetadata(adminToken, "org_molgenis_test_LocationCSV");
 	}
 
-	@Test
+	//@Test
 	public void testUploadVcfCleanStart() throws InterruptedException
 	{
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
@@ -199,7 +199,10 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		}
 	}
 
-	@Test
+	/**
+	 * @throws InterruptedException
+	 */
+	//@Test
 	public void testUploadZipCleanStart() throws InterruptedException
 	{
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
@@ -246,7 +249,10 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 				.startsWith("Trying to add existing org_molgenis_test_TypeTestRefCSV entities as new insert: ref"));
 	}
 
-	@Test
+	/**
+	 * @throws InterruptedException
+	 */
+	//@Test
 	public void testUploadZipUpdateExistingEntities() throws InterruptedException
 	{
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
@@ -294,7 +300,10 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		}
 	}
 
-	@Test
+	/**
+	 * @throws InterruptedException
+	 */
+	//@Test
 	public void testUploadExcelCleanStart() throws InterruptedException
 	{
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
@@ -314,7 +323,10 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 		assertEquals(importRun.get("notify"), false);
 	}
 
-	@Test
+	/**
+	 * @throws InterruptedException
+	 */
+	//@Test
 	public void testUploadExcelExistingEntities() throws InterruptedException
 	{
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
@@ -340,7 +352,7 @@ public class ImporterApiTest extends AbstractTestNGSpringContextTests
 				.startsWith("Trying to add existing TypeTestRef entities as new insert: ref"));
 	}
 
-	@Test
+	//@Test
 	public void testUploadExcelUpdateExistingEntities() throws InterruptedException
 	{
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();

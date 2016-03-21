@@ -165,7 +165,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		model = homepage.menu().selectDataExplorer().selectEntity("VcfSelenium").selectAnnotatorTab();
 	}
 
-	@Test
+	//@Test
 	public void testSelectAllDeselectAll()
 	{
 		LOG.info("Test select all / deselect all...");
@@ -176,7 +176,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		assertEquals(model.getSelectedAnnotators(), Arrays.asList("cadd"));
 	}
 
-	@Test
+	//@Test
 	public void testAnnotateVcfWithAllAvailableAnnotatorsCopyDelete()
 	{
 		// Copy
@@ -242,7 +242,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		dataExplorerModel.deleteEntity(DeleteOption.DATA_AND_METADATA);
 	}
 
-	@Test
+	//@Test
 	public void testEmxWithAllAvailableAnnotatorsCopyDelete()
 	{
 		// Copy
@@ -308,7 +308,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		dataExplorerModel.deleteEntity(DeleteOption.DATA_AND_METADATA);
 	}
 
-	@Test
+	//@Test
 	public void testAnnotateSnpEffCGDAndHPOOnVCFCopyAndDelete()
 	{
 		// Copy
@@ -335,7 +335,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		compareTableData(tableData, VCF_CGD_ANNOTATION);
 	}
 
-	@Test
+	//@Test
 	public void testAnnotateSnpEffCGDAndHPOOnEMXCopyAndDelete()
 	{
 		// Copy
@@ -370,7 +370,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 								"1554013; 7802003; 10942434; 14695535; 17546652;...")));
 	}
 
-	@Test
+	//@Test
 	public void testRunCaddTwiceOnEMXWithCopy() throws URISyntaxException
 	{
 		// Copy
@@ -408,7 +408,7 @@ public class AnnotatorTest extends AbstractSeleniumTest
 		restClient.deleteMetadata(token, entityName);
 	}
 
-	@Test(priority = 10)
+	//@Test(priority = 10)
 	// destructive so this is the last test to run on the VCF
 	public void testRunSnpEffTwiceOnVcfNoCopy()
 	{
