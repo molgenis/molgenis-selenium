@@ -79,7 +79,7 @@ public class TagWizardTest extends AbstractSeleniumTest
 				asList("DIS_HBP\nHistory of Hypertension", "Hypertension")));
 	}
 
-	@Test
+	//@Test
 	public void testManualTagging() throws InterruptedException
 	{
 		LOG.info("Test Manual tagging of weight attribute with combined tag...");
