@@ -1,17 +1,8 @@
 package org.molgenis.selenium.test.restapi;
 
-import static java.util.Arrays.asList;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
 import org.molgenis.data.rest.client.bean.LoginResponse;
@@ -28,9 +19,14 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.springframework.http.HttpStatus.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 /**
  * Automated version of the REST API test sheet.
@@ -79,18 +75,18 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 	public void grant(String userName, String entityName, String permission)
 	{
 		Object id = getUserId(userName);
-		client.create(adminToken, "UserAuthority", ImmutableMap.<String, Object> of("role",
-				"ROLE_ENTITY_" + permission + "_" + entityName.toUpperCase(), "molgenisUser", id));
+		client.create(adminToken, "sys_sec_UserAuthority", ImmutableMap.of("role",
+				"ROLE_ENTITY_" + permission + "_" + entityName.toUpperCase(), "User", id));
 	}
 
 	public void createUser()
 	{
 		try
 		{
-			client.create(adminToken, "MolgenisUser", testUser);
-			grant("test", "LoggingEvent", "WRITE");
-			grant("test", "ScriptType", "READ");
-			grant("test", "UserAuthority", "COUNT");
+			client.create(adminToken, "sys_sec_User", testUser);
+			grant("test", "sys_scr_Script", "WRITE");
+			grant("test", "sys_scr_ScriptType", "READ");
+			grant("test", "sys_sec_UserAuthority", "COUNT");
 		}
 		catch (Exception ex)
 		{
@@ -103,31 +99,32 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		Object id = getUserId("test");
 		if (id != null)
 		{
-			QueryResponse response = client.queryEquals(adminToken, "UserAuthority", "molgenisUser", id);
+			QueryResponse response = client.queryEquals(adminToken, "sys_sec_UserAuthority", "User", id);
 			for (Map<String, Object> item : response.getItems())
 			{
 				System.out.println("Deleting UserAuthority" + item);
-				client.delete(adminToken, "UserAuthority", item.get("id"));
+				client.delete(adminToken, "sys_sec_UserAuthority", item.get("id"));
 			}
 
-			response = client.queryEquals(adminToken, "MolgenisToken", "molgenisUser", id);
+			response = client.queryEquals(adminToken, "sys_sec_Token", "User", id);
 			for (Map<String, Object> item : response.getItems())
 			{
-				System.out.println("Deleting MolgenisToken" + item);
-				client.delete(adminToken, "MolgenisToken", item.get("id"));
+				System.out.println("Deleting sys_sec_Token" + item);
+				client.delete(adminToken, "sys_sec_Token", item.get("id"));
 			}
-			client.delete(adminToken, "MolgenisUser", id);
+			client.delete(adminToken, "sys_sec_User", id);
 		}
 	}
 
 	protected Object getUserId(String username)
 	{
-		QueryResponse response = client.queryEquals(adminToken, "MolgenisUser", "username", username);
+		QueryResponse response = client.queryEquals(adminToken, "sys_sec_User", "username", username);
 		if (response.getItems().isEmpty())
 		{
 			return null;
 		}
-		return response.getItems().get(0).get("id");
+		Object userId = response.getItems().get(0).get("id");
+		return userId;
 	}
 
 	@PostConstruct
@@ -155,49 +152,49 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		LOG.info("Test that anonymous user cannot read LoggingEvent...");
 		try
 		{
-			client.get(null, "LoggingEvent");
-			fail("anonymous user should not be able to retrieve LoggingEvent");
+			client.get(null, "sys_scr_Script");
+			fail("anonymous user should not be able to retrieve Script");
 		}
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity LoggingEvent");
+			assertEquals(parseErrorMessage(actual), "No [COUNT] permission on entity [sys_scr_Script]");
 		}
 
 		LOG.info("Test that anonymous user cannot read ScriptType...");
 		try
 		{
-			client.get(null, "ScriptType");
+			client.get(null, "sys_scr_ScriptType");
 			fail("anonymous user should not be able to retrieve ScriptType");
 		}
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity ScriptType");
+			assertEquals(parseErrorMessage(actual), "No [COUNT] permission on entity [sys_scr_ScriptType]");
 		}
 
 		LOG.info("Test that anonymous user cannot read UserAuthority...");
 		try
 		{
-			client.get(null, "UserAuthority");
-			fail("anonymous user should not be able to retrieve UserAuthority");
+			client.get(null, "sys_sec_UserAuthority");
+			fail("anonymous user should not be able to retrieve sys_sec_UserAuthority");
 		}
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity UserAuthority");
+			assertEquals(parseErrorMessage(actual), "No [COUNT] permission on entity [sys_sec_UserAuthority]");
 		}
 
 		LOG.info("Test that anonymous user cannot read GroupAuthority...");
 		try
 		{
-			client.get(null, "GroupAuthority");
-			fail("anonymous user should not be able to retrieve GroupAuthority");
+			client.get(null, "sys_sec_GroupAuthority");
+			fail("anonymous user should not be able to retrieve sys_sec_GroupAuthority");
 		}
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity GroupAuthority");
+			assertEquals(parseErrorMessage(actual), "No [COUNT] permission on entity [sys_sec_GroupAuthority]");
 		}
 	}
 
@@ -219,34 +216,34 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		LOG.debug("login test user...");
 		String token = client.login("test", "secret").getToken();
 
-		LOG.info("Test that test user can read LoggingEvents...");
-		client.get(token, "LoggingEvent");
+		LOG.info("Test that test user can read Script...");
+		client.get(token, "sys_scr_Script");
 
 		LOG.info("Test that test user can read ScriptType...");
-		client.get(token, "ScriptType");
+		client.get(token, "sys_scr_ScriptType");
 
 		LOG.info("Test that test user cannot read UserAuthority...");
 		try
 		{
-			client.get(token, "UserAuthority");
+			client.get(token, "sys_sec_UserAuthority");
 			fail("test user should not be able to retrieve UserAuthority");
 		}
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No READ permission on entity UserAuthority");
+			assertEquals(parseErrorMessage(actual), "No [READ] permission on entity [sys_sec_UserAuthority]");
 		}
 
-		LOG.info("Test that test user cannot read GroupAuthority...");
+		LOG.info("Test that test user cannot read sys_sec_GroupAuthority...");
 		try
 		{
-			client.get(token, "GroupAuthority");
-			fail("test user should not be able to retrieve GroupAuthority");
+			client.get(token, "sys_sec_GroupAuthority");
+			fail("test user should not be able to retrieve sys_sec_GroupAuthority");
 		}
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity GroupAuthority");
+			assertEquals(parseErrorMessage(actual), "No [COUNT] permission on entity [sys_sec_GroupAuthority]");
 		}
 	}
 
@@ -332,7 +329,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No WRITE permission on entity GroupAuthority");
+			assertEquals(parseErrorMessage(actual), "No [WRITE] permission on entity [sys_sec_GroupAuthority]");
 		}
 	}
 
@@ -366,7 +363,7 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No COUNT permission on entity LoggingEvent");
+			assertEquals(parseErrorMessage(actual), "No [COUNT] permission on entity LoggingEvent");
 		}
 	}
 }
