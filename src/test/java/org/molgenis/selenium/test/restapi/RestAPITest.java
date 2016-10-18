@@ -357,13 +357,13 @@ public class RestAPITest extends AbstractTestNGSpringContextTests
 		client.logout(token);
 		try
 		{
-			client.get(token, "LoggingEvent");
+			client.get(token, "sys_scr_Script");
 			fail("logout should invalidate token");
 		}
 		catch (HttpClientErrorException actual)
 		{
 			assertEquals(actual.getStatusCode(), UNAUTHORIZED);
-			assertEquals(parseErrorMessage(actual), "No [COUNT] permission on entity LoggingEvent");
+			assertEquals(parseErrorMessage(actual), "No [COUNT] permission on entity [sys_scr_Script]");
 		}
 	}
 }
