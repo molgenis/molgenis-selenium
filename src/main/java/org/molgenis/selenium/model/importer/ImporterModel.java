@@ -1,7 +1,6 @@
 package org.molgenis.selenium.model.importer;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -144,7 +143,6 @@ public class ImporterModel extends AbstractModel
 	public ImporterModel uploadFile(File file)
 	{
 		LOG.info("uploadFile {}...", file);
-		assertTrue(file.exists());
 		stepOne.click();
 		upload.sendKeys(file.getAbsolutePath());
 		nextButton.click();

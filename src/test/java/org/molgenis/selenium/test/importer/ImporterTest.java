@@ -12,6 +12,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.assertTrue;
+
 public class ImporterTest extends AbstractSeleniumTest
 {
 	private static final Logger LOG = LoggerFactory.getLogger(ImporterTest.class);
@@ -32,6 +34,7 @@ public class ImporterTest extends AbstractSeleniumTest
 		File xlsxFile = ImporterModel.getFile("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
 
 		LOG.info("Import XLSX file in ADD mode...");
+		assertTrue(xlsxFile.exists());
 		model.importFile(xlsxFile, EntitiesOptions.ADD);
 		Assert.assertEquals(model.getMessageHeader(), "Import success");
 		Assert.assertEquals(model.getMessage(),
@@ -63,6 +66,7 @@ public class ImporterTest extends AbstractSeleniumTest
 				"org_molgenis_test_PersonCSV", "org_molgenis_test_LocationCSV");
 		File csvZipFile = ImporterModel.getFile("org/molgenis/selenium/emx/csv.zip/emx_all_datatypes_csv.zip");
 		LOG.info("Import CSV Zipfile in ADD mode...");
+		assertTrue(csvZipFile.exists());
 		model.importFile(csvZipFile, EntitiesOptions.ADD);
 		Assert.assertEquals(model.getMessageHeader(), "Import success");
 		Assert.assertEquals(model.getMessage(),

@@ -7,6 +7,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Predicate;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.selenium.model.HomepageModel;
 import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
@@ -40,6 +41,7 @@ public class DataExplorerTest extends AbstractSeleniumTest
 		File emxAllDatatypes = ImporterModel.getFile("org/molgenis/selenium/emx/xlsx/emx_all_datatypes.xlsx");
 		driver.get(baseURL);
 		HomepageModel homePage = PageFactory.initElements(driver, HomepageModel.class);
+		assertTrue(emxAllDatatypes.exists());
 		homePage.menu().openSignInDialog().signIn(uid, pwd).menu().selectImporter().importFile(emxAllDatatypes, ADD)
 				.finish().menu().signOut();
 	}
@@ -76,7 +78,8 @@ public class DataExplorerTest extends AbstractSeleniumTest
 		LOG.info("Test data explorer, select TypeTest through URL...");
 
 		driver.get(baseURL + "/menu/main/dataexplorer?entity=org_molgenis_test_TypeTest");
-		new WebDriverWait(driver, 2).pollingEvery(100, TimeUnit.MILLISECONDS).until(this::entityTypeTestIsSelected);
+		new WebDriverWait(driver, 2).pollingEvery(100, TimeUnit.MILLISECONDS).until(
+				(Predicate<WebDriver>) this::entityTypeTestIsSelected);
 		model.next();
 		assertTrue(driver.getCurrentUrl().endsWith("dataexplorer?entity=org_molgenis_test_TypeTest#"));
 	}

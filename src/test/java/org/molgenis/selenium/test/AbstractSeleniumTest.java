@@ -3,6 +3,7 @@ package org.molgenis.selenium.test;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Collections;
@@ -133,6 +134,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 			LOG.info("Import file {}...", newArrayList(relativePaths));
 			File annotatorTestFile = ImporterModel.getFile(path);
 			driver.get(baseURL);
+			assertTrue(annotatorTestFile.exists());
 			homepage.menu().selectImporter().importFile(annotatorTestFile, EntitiesOptions.ADD).finish();
 		}
 		homepage.menu().signOut();
@@ -144,6 +146,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		homepage = PageFactory.initElements(driver, HomepageModel.class).menu().openSignInDialog().signIn(uid, pwd);
 		File annotatorTestFile = ImporterModel.getFile(relativePath);
 		driver.get(baseURL);
+		assertTrue(annotatorTestFile.exists());
 		homepage.menu().selectImporter().importVcf(annotatorTestFile, entityName).finish();
 		homepage.menu().signOut();
 	}
