@@ -59,7 +59,7 @@ public class FormsUtils
 				WebElement input = driver.findElement(context)
 						.findElement(findAttributeInputBy(simpleName, false, true));
 				typeTextIntoInput(driver, value, input);
-				wait.until(ExpectedConditions
+				wait.until(webDriver -> ExpectedConditions
 						.textToBePresentInElementValue(findAttributeInputBy(simpleName, false, false), value));
 				break;
 			}
@@ -84,7 +84,7 @@ public class FormsUtils
 		driver.findElement(
 				By.xpath(xpathContainer + "//input[@name='" + simpleName + "'][@type='radio'][@value='" + value + "']"))
 				.click();
-		new WebDriverWait(driver, AbstractModel.IMPLICIT_WAIT_SECONDS).until((Predicate<WebDriver>) d -> value
+		new WebDriverWait(driver, AbstractModel.IMPLICIT_WAIT_SECONDS).until(webDriver -> value
 				.equals(getValueNoncompoundAttributeRadio(driver, context, simpleName)));
 	}
 
@@ -134,10 +134,10 @@ public class FormsUtils
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		LOG.info("Clear element...");
 		inputElement.clear();
-		wait.until((Predicate<WebDriver>) d -> isEmpty(inputElement.getAttribute("value")));
+		wait.until(webDriver -> isEmpty(inputElement.getAttribute("value")));
 		LOG.info("Send value...");
 		inputElement.sendKeys(value);
-		wait.until(textToBePresentInElementValue(inputElement, value));
+		wait.until(webDriver -> textToBePresentInElementValue(inputElement, value));
 		LOG.info("Send TAB...");
 		inputElement.sendKeys(Keys.TAB);
 	}
@@ -280,7 +280,7 @@ public class FormsUtils
 	{
 		try
 		{
-			new WebDriverWait(driver, AbstractModel.IMPLICIT_WAIT_SECONDS).until((Predicate<WebDriver>) d -> d
+			new WebDriverWait(driver, AbstractModel.IMPLICIT_WAIT_SECONDS).until(webDriver -> webDriver
 					.findElement(container).getAttribute("textContent").contains(errorMessage));
 		}
 		catch (TimeoutException ex)

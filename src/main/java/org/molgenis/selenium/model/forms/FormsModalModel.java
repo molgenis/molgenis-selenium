@@ -90,7 +90,7 @@ public class FormsModalModel extends AbstractModel
 	{
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 30);
 		webDriverWait.pollingEvery(100, TimeUnit.MILLISECONDS);
-		webDriverWait.until((Predicate<WebDriver>)d -> AbstractModel.noElementFound(d, null, modalBy));
+		webDriverWait.until(webDriver -> AbstractModel.noElementFound(webDriver, null, modalBy));
 	}
 
 	/**

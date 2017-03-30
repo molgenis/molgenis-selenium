@@ -235,7 +235,7 @@ public class Select2Model
 				LOG.debug("Text input box empty. Entering term...");
 				select2InputText.sendKeys(value);
 
-				wait.until(ExpectedConditions.textToBePresentInElementValue(by, value));
+				wait.until(webDriver -> ExpectedConditions.textToBePresentInElementValue(by, value));
 				result = true;
 				break;
 			}
