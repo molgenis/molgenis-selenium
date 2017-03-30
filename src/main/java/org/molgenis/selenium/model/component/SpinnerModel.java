@@ -6,6 +6,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.util.concurrent.TimeUnit;
 
+import org.molgenis.selenium.model.AbstractModel;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NotFoundException;
@@ -22,7 +23,6 @@ import com.google.common.base.Stopwatch;
 
 public class SpinnerModel
 {
-	public static final int IMPLICIT_WAIT_SECONDS = 30;
 	private static final int SPINNER_APPEAR_TIMEOUT = 1;
 
 	private static final Logger LOG = LoggerFactory.getLogger(SpinnerModel.class);
@@ -58,7 +58,7 @@ public class SpinnerModel
 
 	private void restoreImplicitWait()
 	{
-		driver.manage().timeouts().implicitlyWait(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(AbstractModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 	}
 
 	private void noExplicitWait()

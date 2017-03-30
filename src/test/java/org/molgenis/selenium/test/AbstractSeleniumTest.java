@@ -5,6 +5,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -12,11 +14,13 @@ import java.util.stream.Collectors;
 import org.molgenis.DriverType;
 import org.molgenis.JenkinsConfig;
 import org.molgenis.data.rest.client.MolgenisClient;
+import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.HomepageModel;
-import org.molgenis.selenium.model.component.SpinnerModel;
 import org.molgenis.selenium.model.importer.ImporterModel;
 import org.molgenis.selenium.model.importer.ImporterModel.EntitiesOptions;
 import org.molgenis.util.GsonConfig;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
@@ -65,7 +69,8 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	{
 		System.setProperty("webdriver.gecko.driver", webdriverGeckoDriver);
 		driver = DriverType.FIREFOX.getDriver();
-		driver.manage().timeouts().implicitlyWait(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(AbstractModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
+		this.setBrowserDefaultSize();
 	}
 
 	@AfterClass
@@ -147,8 +152,23 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		homepage.menu().signOut();
 	}
 
+	private static void sort(List<List<String>> list)
+	{
+		Collections.sort(list, new Comparator<List<String>>()
+		{
+			@Override
+			public int compare(List<String> a, List<String> b)
+			{
+				return a.get(0).compareTo(b.get(0));
+			}
+		});
+	}
+
 	protected static void compareTableData(List<List<String>> actual, List<List<String>> expected)
 	{
+		sort(actual);
+		sort(expected);
+
 		LOG.debug("Compare table data...");
 		try
 		{
@@ -202,4 +222,18 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 		return row.stream().map(Object::toString).collect(Collectors.joining("\",\"", "asList(\"", "\")\n"));
 	}
 
+	/**
+	 * This is a workaround to avoid the exception when the size of the browser is (width = 1280, height = 800):
+	 * 
+	 * "org.openqa.selenium.WebDriverException: Element is not clickable at point (XX, XX). Other element would receive
+	 * the click: <a href="/menu/main/dataexplorer"></a> (WARNING: The server did not provide any stacktrace
+	 * information)"
+	 */
+	public void setBrowserDefaultSize()
+	{
+		driver.manage().window().setPosition(new Point(0, 0));
+		driver.manage().window().setSize(new Dimension(1920, 1080));
+		// FIXME MOLGENIS should be able to work with this browser size
+		// driver.manage().window().setSize(new Dimension(1280, 800));
+	}
 }

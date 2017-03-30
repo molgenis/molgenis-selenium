@@ -14,11 +14,14 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.component.Select2Model;
 import org.molgenis.selenium.model.dataexplorer.annotators.AnnotatorModel;
+import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +39,10 @@ public class DataExplorerModel extends AbstractModel
 
 	private final Select2Model entityModel;
 
-	@FindBy(css = ".page-next")
+	@FindBy(css = ".page-next a")
 	private WebElement next;
 
-	@FindBy(css = ".page-prev")
+	@FindBy(css = ".page-prev a")
 	private WebElement previous;
 
 	@FindBy(id = "entity-class-name")
@@ -60,6 +63,9 @@ public class DataExplorerModel extends AbstractModel
 	@FindBy(linkText = "Annotators")
 	private WebElement annotatorTab;
 
+	@FindBy(linkText = "Data")
+	private WebElement dataTab;
+
 	@FindBy(css = "a.tree-deselect-all-btn")
 	private WebElement deselectAllButton;
 
@@ -68,6 +74,9 @@ public class DataExplorerModel extends AbstractModel
 
 	@FindBy(css = ".molgenis-table-container tbody tr")
 	private List<WebElement> tableRows;
+
+	@FindBy(css = "#copy-data-btn")
+	private WebElement copyCheckBtn;
 
 	public DataExplorerModel(WebDriver driver)
 	{
@@ -122,8 +131,18 @@ public class DataExplorerModel extends AbstractModel
 
 	public AnnotatorModel selectAnnotatorTab()
 	{
+		LOG.info("Select annotator tab...");
 		annotatorTab.click();
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
 		return PageFactory.initElements(driver, AnnotatorModel.class);
+	}
+
+	public DataModel selectDataTab()
+	{
+		LOG.info("Select data tab...");
+		dataTab.click();
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
+		return PageFactory.initElements(driver, DataModel.class);
 	}
 
 	public DataExplorerModel deselectAll()
@@ -134,13 +153,16 @@ public class DataExplorerModel extends AbstractModel
 
 	/**
 	 * Clicks on an attribute's checkbox in the attribute tree.
+	 * 
 	 * @param attributeName
 	 * @return
 	 */
 	public DataExplorerModel clickAttribute(String attributeName)
 	{
-		driver.findElement(By.xpath("//div[@class='molgenis-tree']//li[span/span/text()='" + attributeName
-				+ "']/span/span[@class='fancytree-checkbox']")).click();
+		LOG.info("Click on attribute: " + attributeName);
+		driver.findElement(
+				By.xpath("//div[@class='molgenis-tree']//li[span/span/text()='" + attributeName
+						+ "']/span/span[@class='fancytree-checkbox']")).click();
 		return this;
 	}
 
@@ -170,5 +192,25 @@ public class DataExplorerModel extends AbstractModel
 		{
 			return empty();
 		}
+	}
+
+	public DataExplorerModel copyEntity(String newEntityName)
+	{
+		LOG.info("Start copy");
+
+		WebDriverWait wait = new WebDriverWait(driver, 60);
+		wait.until(ExpectedConditions.visibilityOf(copyCheckBtn));
+		copyCheckBtn.click();
+
+		WebElement input = driver.findElement(By.cssSelector("input.bootbox-input"));
+		input.clear();
+		input.sendKeys(newEntityName);
+
+		WebElement okBtn = driver.findElement(By.cssSelector("div.bootbox .modal-footer button.btn-primary"));
+		okBtn.click();
+		spinner().waitTillDone(10, TimeUnit.SECONDS);
+
+		LOG.info("Finished copy");
+		return this;
 	}
 }

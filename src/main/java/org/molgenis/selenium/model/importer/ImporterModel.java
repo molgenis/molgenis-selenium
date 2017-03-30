@@ -162,6 +162,7 @@ public class ImporterModel extends AbstractModel
 	public ImporterModel selectEntityName(String entityName)
 	{
 		oneMinuteWait.until(webDriver -> visibilityOf(stepTwo));
+		entityNameInput.clear();
 		entityNameInput.sendKeys(entityName);
 		nextButton.click();
 		return this;
@@ -199,13 +200,6 @@ public class ImporterModel extends AbstractModel
 	public ImporterModel validate()
 	{
 		LOG.info("validate...");
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
 		oneMinuteWait.until(webDriver -> visibilityOf(stepFour));
 		nextButton.click();
 		return this;

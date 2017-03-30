@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.molgenis.selenium.model.AbstractModel;
 import org.molgenis.selenium.model.dataexplorer.DataExplorerModel;
+import org.molgenis.selenium.model.dataexplorer.data.DataModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -26,17 +27,11 @@ public class AnnotatorModel extends AbstractModel
 	@FindBy(css = "#enabled-annotator-selection-container input:checked")
 	private List<WebElement> selectedCheckboxes;
 
-	@FindBy(css = "#annotator-select-container input[name=createCopy]")
-	private WebElement copyCheckbox;
-
 	@FindBy(id = "enabled-annotator-selection-container")
 	private WebElement enabledAnnotatorSelectionContainer;
 
 	@FindBy(id = "annotate-dataset-button")
 	private WebElement annotateButton;
-
-	@FindBy(linkText = "Show result")
-	private WebElement showResultText;
 
 	@FindBy(css = "a.select-all-btn")
 	private WebElement selectAll;
@@ -69,10 +64,12 @@ public class AnnotatorModel extends AbstractModel
 	{
 		LOG.info("Select {}...", annotator);
 		WebElement checkbox = findAnnotatorCheckbox(annotator);
+
 		if (!checkbox.isSelected())
 		{
 			checkbox.click();
 		}
+
 		return this;
 	}
 
@@ -108,12 +105,6 @@ public class AnnotatorModel extends AbstractModel
 		return driver.findElement(By.cssSelector("#annotator-select-container input[value=" + annotator + "]"));
 	}
 
-	public AnnotatorModel clickCopy()
-	{
-		copyCheckbox.click();
-		return this;
-	}
-
 	public List<String> getSelectedAnnotators()
 	{
 		LOG.info("getSelectedAnnotators()...");
@@ -128,17 +119,22 @@ public class AnnotatorModel extends AbstractModel
 		return availableCheckboxes.stream().map(e -> e.getAttribute("name")).collect(Collectors.toList());
 	}
 
-	public AnnotatorModel clickAnnotateButtonAndWait(int timeout, TimeUnit unit)
+	public DataExplorerModel clickAnnotateButtonAndWait(int timeout)
 	{
 		annotateButton.click();
-		spinner().waitTillDone(timeout, unit);
-		return this;
-	}
 
-	public DataExplorerModel goToResult()
-	{
-		showResultText.click();
+		DataModel dataModel = PageFactory.initElements(driver, DataModel.class);
+		dataModel.waitUntilReady(timeout);
+
 		return PageFactory.initElements(driver, DataExplorerModel.class);
 	}
 
+	public AnnotatorModel clickCopy(String entityName, String newEntityName)
+	{
+		LOG.info("Copy [" + entityName + "] and create [" + newEntityName + "]");
+		selectDataTab().selectEntity(entityName);
+		DataExplorerModel dataExplorerModel = PageFactory.initElements(driver, DataExplorerModel.class);
+		dataExplorerModel.copyEntity(newEntityName);
+		return this;
+	}
 }
