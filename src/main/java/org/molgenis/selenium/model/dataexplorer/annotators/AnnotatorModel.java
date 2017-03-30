@@ -62,7 +62,7 @@ public class AnnotatorModel extends AbstractModel
 
 	private void waitForAnnotators()
 	{
-		new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOf(enabledAnnotatorSelectionContainer));
+		new WebDriverWait(driver, 10).until(webDriver -> ExpectedConditions.visibilityOf(enabledAnnotatorSelectionContainer));
 	}
 
 	public AnnotatorModel select(String annotator)

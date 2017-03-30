@@ -52,6 +52,9 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	@Value("${test.pwd}")
 	protected String pwd;
 
+	@Value("${webdriver.gecko.driver}")
+	protected String webdriverGeckoDriver;
+
 	@Autowired
 	protected MolgenisClient restClient;
 
@@ -60,6 +63,7 @@ public abstract class AbstractSeleniumTest extends AbstractTestNGSpringContextTe
 	@BeforeClass
 	public void abstractBeforeClass()
 	{
+		System.setProperty("webdriver.gecko.driver", webdriverGeckoDriver);
 		driver = DriverType.FIREFOX.getDriver();
 		driver.manage().timeouts().implicitlyWait(SpinnerModel.IMPLICIT_WAIT_SECONDS, TimeUnit.SECONDS);
 	}

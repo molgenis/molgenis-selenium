@@ -1,11 +1,5 @@
 package org.molgenis.selenium.model.component;
 
-import static java.util.stream.Collectors.toList;
-import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,6 +7,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
 
 /**
  * Model for a select2 selection box. This class works for both multi selects and single selects.
@@ -33,11 +33,9 @@ public class Select2Model
 
 	/**
 	 * Creates a new Select2Model
-	 * 
-	 * @param driver
-	 *            the {@link WebDriver} to use
-	 * @param selector
-	 *            the id of the Select2, without the s2id_ prefix
+	 *
+	 * @param driver   the {@link WebDriver} to use
+	 * @param id the id of the Select2, without the s2id_ prefix
 	 */
 	public Select2Model(WebDriver driver, String id, boolean multi)
 	{
@@ -54,7 +52,7 @@ public class Select2Model
 
 	/**
 	 * Retrieves the labels for the selected items.
-	 * 
+	 *
 	 * @return List containing the selected item texts
 	 */
 	public List<String> getSelectedLabels()
@@ -79,9 +77,8 @@ public class Select2Model
 
 	/**
 	 * Types terms into the select box, waits for a matching result to appear and adds them to the selection.
-	 * 
-	 * @param term
-	 *            the term to type
+	 *
+	 * @param terms the terms to type
 	 * @throws InterruptedException
 	 */
 	public void select(String... terms)
@@ -110,7 +107,7 @@ public class Select2Model
 			match.click();
 
 			LOG.debug("Waiting for selection to appear in the list of search choices...");
-			tenSecondWait.until(textToBePresentInElementLocated(
+			tenSecondWait.until(webDriver -> textToBePresentInElementLocated(
 					multi ? By.xpath("//div[@id='s2id_" + id + "']") : selectedOptionSelector, term));
 
 			LOG.debug("Selected term '{}'.", term);
