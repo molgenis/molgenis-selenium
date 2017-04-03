@@ -155,13 +155,13 @@ public class ImporterModel extends AbstractModel
 	{
 		LOG.info("finish()");
 		finishButton.click();
-		oneMinuteWait.until(visibilityOf(stepOne));
+		oneMinuteWait.until(webDriver -> visibilityOf(stepOne));
 		return this;
 	}
 
 	public ImporterModel selectEntityName(String entityName)
 	{
-		oneMinuteWait.until(visibilityOf(stepTwo));
+		oneMinuteWait.until(webDriver -> visibilityOf(stepTwo));
 		entityNameInput.clear();
 		entityNameInput.sendKeys(entityName);
 		nextButton.click();
@@ -171,7 +171,7 @@ public class ImporterModel extends AbstractModel
 	public ImporterModel selectOptions(EntitiesOptions options)
 	{
 		LOG.info("selectOptions {}...", options);
-		oneMinuteWait.until(visibilityOf(stepTwo));
+		oneMinuteWait.until(webDriver -> visibilityOf(stepTwo));
 		switch (options)
 		{
 			case ADD:
@@ -191,7 +191,7 @@ public class ImporterModel extends AbstractModel
 	public ImporterModel selectBasePackage()
 	{
 		LOG.info("selectBasePackage...");
-		oneMinuteWait.until(visibilityOf(stepThree));
+		oneMinuteWait.until(webDriver -> visibilityOf(stepThree));
 		basePackageRadioButton.click();
 		nextButton.click();
 		return this;
@@ -200,7 +200,7 @@ public class ImporterModel extends AbstractModel
 	public ImporterModel validate()
 	{
 		LOG.info("validate...");
-		oneMinuteWait.until(visibilityOf(stepFour));
+		oneMinuteWait.until(webDriver -> visibilityOf(stepFour));
 		nextButton.click();
 		return this;
 	}
@@ -208,7 +208,7 @@ public class ImporterModel extends AbstractModel
 	public ImporterModel waitForResult()
 	{
 		LOG.info("waitForResult...");
-		oneMinuteWait.until(visibilityOf(stepFive));
+		oneMinuteWait.until(webDriver -> visibilityOf(stepFive));
 		fiveMinuteWait.until(this::importFinished);
 		return this;
 	}

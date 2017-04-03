@@ -112,14 +112,14 @@ public class SpinnerModel
 		LOG.debug("Spinner showing. Wait {} more seconds for spinner to hide...", timeOutInSeconds);
 		Wait<WebDriver> spinnerWait = new WebDriverWait(driver, timeOutInSeconds).ignoreAll(
 				asList(NotFoundException.class, ElementNotVisibleException.class, NoSuchElementException.class));
-		spinnerWait.until(not(visibilityOf(spinner)));
+		spinnerWait.until(webDriver -> not(visibilityOf(spinner)));
 		LOG.debug("Spinner hidden.");
 	}
 
 	/**
 	 * Waits for the spinner to appear.
 	 * 
-	 * @param secondWait
+	 * @param seconds
 	 * @return
 	 */
 	private boolean waitForSpinnerToAppear(int seconds)
@@ -130,7 +130,7 @@ public class SpinnerModel
 		try
 		{
 			// wait for the spinner to appear, this may take a while
-			secondWait.until(visibilityOf(spinner));
+			secondWait.until(webDriver -> visibilityOf(spinner));
 			return true;
 		}
 		catch (TimeoutException expected)
